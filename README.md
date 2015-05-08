@@ -3,6 +3,10 @@ Robust ATD CLI tools
 
 "Robust" is a set of tools to leverage the CLI of the Intel Security ATD appliance.
 
+## Important
+
+This is *not a supported or official application of Intel Security*. This work is based off of published documentation for integrating with the ATD REST API.
+
 ## Install
 
 ```
@@ -45,9 +49,9 @@ Authentication parameters:
   -u USER              (u)sername for the API of the ATD
                        		(default: admin)
   -p PASSWORD          (p)assword for username
-                       		(default: password!) 
+                       		(default: password!)
   -i ATD IP            (i)p or hostname address of ATD
-                       		(default: atd.localhost.localdomain) 
+                       		(default: atd.localhost.localdomain)
   -n                   do (n)ot verify the SSL certificate for the communications
                        		(default: False)
 
@@ -59,7 +63,7 @@ Sample parameters:
 
 Examples:
 	robust.py -u admin -p password! -i atd.localhost.localdomain -s /usr/local/bin/file_to_scan -a 1
-```	
+```
 
 Submitting a Sample
 
@@ -68,6 +72,8 @@ $(robust)> robust.py -u admin -p password! -i atd.localhost.localdomain -s /home
 ```
 
 ### Pulling the Policy List
+
+In order to submit a sample using `robust` you must identify the Analyzer Profile ID. `robust-profiles` assists in identifing the available profiles your user can submit to.
 
 ```
 $(robust)> robust-profiles.py -n -l
@@ -108,11 +114,6 @@ host: atd.localhost.localdomain
 
 This file is expanded via the `os` module and maps to windows too.
 
-Example using `~/.robust`
-
-```shell
-python robust-policy.py -n -l
-```
 
 ### Development Tasks
 
