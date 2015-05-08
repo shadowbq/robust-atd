@@ -27,10 +27,71 @@ $(robust)> pip install -r devel-requirements.txt
 
 ## Example Outputs:
 
+Using `robust` for submitting samples.
+
+```shell
+usage: robust.py [-h] [-u USER] [-p PASSWORD] [-i ATD IP] [-n] -s
+                 FILE_TO_UPLOAD -a ANALYZER_PROFILE [-v] [--version]
+
+Robust Intel Security ATD Python CLI tool
+
+optional arguments:
+  -h, --help           show this help message and exit
+  -v, --verbose        increase output verbosity
+                       		(default: False)
+  --version            show program's version number and exit
+
+Authentication parameters:
+  -u USER              (u)sername for the API of the ATD
+                       		(default: admin)
+  -p PASSWORD          (p)assword for username
+                       		(default: password!) 
+  -i ATD IP            (i)p or hostname address of ATD
+                       		(default: atd.localhost.localdomain) 
+  -n                   do (n)ot verify the SSL certificate for the communications
+                       		(default: False)
+
+Sample parameters:
+  -s FILE_TO_UPLOAD    (s)ample or file to be analyzed
+                       		(default: None)
+  -a ANALYZER_PROFILE  (a)nalyzer profile id to be used during analysis
+                       		(default: None)
+
+Examples:
+	robust.py -u admin -p password! -i atd.localhost.localdomain -s /usr/local/bin/file_to_scan -a 1
+```	
+
 Submitting a Sample
 
 ```shell
-$(robust)> python robust.py -u admin -p password! -i atd.localhost.localdomain -s /home/malware/non-malicious-container/putty_upx_7.exe
+$(robust)> robust.py -u admin -p password! -i atd.localhost.localdomain -s /home/malware/non-malicious-container/putty_upx_7.exe
+```
+
+### Pulling the Policy List
+
+```
+$(robust)> robust-profiles.py -n -l
+ATD profiles:  10
+Profile id:  1
+Name:  Android
+OS: android
+Run All Selected?: Off
+******************
+Profile id:  26
+Name:  Win XP Down Select (Online)
+OS: winXPsp3
+Run All Selected?: Off
+******************
+Profile id:  25
+Name:  Windows XP Full Run (Offline)
+OS: winXPsp3
+Run All Selected?: On
+******************
+Profile id:  24
+Name:  Windows XP Full Run (Online)
+OS: winXPsp3
+Run All Selected?: On
+******************
 ```
 
 ## Robust (DOT) FILE
