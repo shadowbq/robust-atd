@@ -1,0 +1,9 @@
+## -----------------------------------
+#   Intel Security McAfee Robust ATD r
+## -----------------------------------
+
+##
+#-e .[docs,test]
+
+urllib3
+requests==2.7.0

@@ -1,0 +1,32 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept: [application/vnd.ve.v1.0+json]
+      Accept-Encoding: ['gzip, deflate']
+      Connection: [keep-alive]
+      Content-Type: [application/json]
+      User-Agent: [python-requests/2.5.3 CPython/2.7.6 Linux/3.13.0-46-generic]
+      VE-SDK-API: [cmN0YmM2ZTFubm43bzJ2ZGFidDZpdG1zMjc6MQ==]
+    method: GET
+    uri: https://atd.localhost.localdomain/php/samplestatus.php?iTaskId=20072
+  response:
+    body: {string: !!python/unicode '{"success": true, "results": {"userid": 1,"taskid":
+        20072,"istate": 4,"status": "Waiting","filename": "putty_upx_7.exe","md5":
+        "792FD7682C4002B9A60B02C41ED3E20C","vmProfile": "1","jobid": 8055, "submitTime":
+        "2015-03-02 01: 03: 50","summaryFiles": "0","useLogs": "0", "asmListing":
+        "0","PEInfo": "0","family": "0","vmName": "Android","vmDesc": "Android OS
+        version 4.3"} }'}
+    headers:
+      cache-control: ['no-store, no-cache, must-revalidate, private,max-age=0']
+      connection: [keep-alive]
+      content-length: ['371']
+      content-type: [text/html]
+      date: ['Mon, 02 Mar 2015 06:03:50 GMT']
+      expires: ['Sat, 26 Jul 1997 05:00:00 GMT']
+      pragma: [no-cache]
+      server: [nginx/1.4.6 (Ubuntu)]
+      x-content-type-options: [nosniff]
+      x-powered-by: [PHP/5.3.3]
+    status: {code: 200, message: OK}
+version: 1

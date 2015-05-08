@@ -1,0 +1,28 @@
+#---------------------------------
+## Development Packages Required
+#---------------------------------
+
+# Testing
+rednose
+nose
+nose-regression
+nose-watch
+
+# Coverage Climate
+coverage
+flake8
+pep8-naming
+
+# +-+- MultiPlatform Testing +-+-
+# tox
+
+# Toolsets
+invoke
+
+# HTTP Mocks
+HTTPretty
+vcrpy
+
+
+# Publishing
+twine

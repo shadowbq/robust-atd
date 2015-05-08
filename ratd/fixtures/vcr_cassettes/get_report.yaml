@@ -1,0 +1,100 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept: [application/vnd.ve.v1.0+json]
+      Accept-Encoding: ['gzip, deflate']
+      Connection: [keep-alive]
+      User-Agent: [python-requests/2.5.3 CPython/2.7.6 Linux/3.13.0-51-generic]
+      VE-SDK-API: [M2pzMHNhNjMzNWg3M3VvNW85NmJma2NiaTU6MQ==]
+    method: GET
+    uri: https://atd.localhost.localdomain/php/showreport.php?iType=json&jobId=8062
+  response:
+    body: {string: "{\r\n\"Summary\": {\r\n \t\"MISversion\": \"3.4.4.14.43919\",\r\n\t\"SUMversion\":
+        \"3.4.4.14.43919\",\r\n\t\"OSversion\": \"win7sp1x64\",\r\n\t\"JSONversion\":
+        \"1.001.0718\",\r\n\t\"hasDynamicAnalysis\": \"true\",\r\n\t\"Subject\": \t{\r\n\t\t\"Name\":
+        \"putty_upx_7.exe\",\r\n\t\t\"Type\": \"PE32 executable (GUI) Intel 80386\",\r\n\t\t\"md5\":
+        \"792FD7682C4002B9A60B02C41ED3E20C\",\r\n\t\t\"sha-1\": \"FF8D5BF3E854F7391E9CB2AA3202BEB51D9B877F\",\r\n\t\t\"size\":
+        \"257536\",\r\n\t\t\"Timestamp\": \"2015-03-02 02:30:20\",\r\n\t\t\"parent_archive\":
+        \"Not Available\"\r\n\t},\r\n\t\"Environment\": [\r\n\t\t\"Microsoft Windows
+        7 Enterprise Edition Service Pack 1 (build 7601), 64-bit \",\r\n\t\t\"Internet
+        Explorer version: 8 \",\r\n\t\t\"Microsoft Office version: 2010 \",\r\n\t\t\"PDF
+        Reader version: 9.0 \"\r\n\t],\r\n\t\"Data\": {\r\n\t\t\"analysis_seconds\":
+        \"202\",\r\n\t\t\"sandbox_analysis\": \"168\",\r\n\t\t\"compiled_with\": \"Not
+        Available\"\r\n\t},\r\n\t\"Bait\": \"Baitexe activated but not infected\",\r\n\t\"Properties\":
+        {\r\n\t\t\"signature\": \"unsigned\",\r\n\t\t\"publisher\": \"Simon Tatham\",\r\n\t\t\"description\":
+        \"SSH, Telnet and Rlogin client\",\r\n\t\t\"product_name\": \"PuTTY suite\",\r\n\t\t\"version_info\":
+        \"Release 0.63\",\r\n\t\t\"file_version\": \"Release 0.63\",\r\n\t\t\"strong_name\":
+        \"Unsigned\",\r\n\t\t\"original_name\": \"PuTTY\",\r\n\t\t\"internal_name\":
+        \"PuTTY\",\r\n\t\t\"copyright\": \"Copyright \xA9 1997-2013 Simon Tatham.\",\r\n\t\t\"comments\":
+        \"Not Available\"\r\n\t},\r\n\t\"Selectors\": [\r\n\t\t{\r\n\t\t\t\"Engine\":
+        \"Gateway Anti-Malware\",\r\n\t\t\t\"MalwareName\": \"---\",\r\n\t\t\t\"Severity\":
+        \"0\"\r\n\t\t},\r\n\t\t{\r\n\t\t\t\"Engine\": \"GTI File Reputation\",\r\n\t\t\t\"MalwareName\":
+        \"---\",\r\n\t\t\t\"Severity\": \"0\"\r\n\t\t},\r\n\t\t{\r\n\t\t\t\"Engine\":
+        \"Anti-Malware\",\r\n\t\t\t\"MalwareName\": \"---\",\r\n\t\t\t\"Severity\":
+        \"0\"\r\n\t\t},\r\n\t\t{\r\n\t\t\t\"Engine\": \"CustomYara\",\r\n\t\t\t\"MalwareName\":
+        \"Malware.Dynamic\",\r\n\t\t\t\"Severity\": \"4\"\r\n\t\t},\r\n\t\t{\r\n\t\t\t\"Engine\":
+        \"Sandbox\",\r\n\t\t\t\"MalwareName\": \"---\",\r\n\t\t\t\"Severity\": \"1\"\r\n\t\t}\r\n\t],\r\n\t\"Verdict\":
+        {\r\n\t\t\"Severity\": \"4\",\r\n\t\t\"Description\": \"Sample is malicious\"\r\n\t},\r\n\t\"Process\":
+        [\r\n\t\t{\r\n\t\t\t\"Name\": \"putty_upx_7.exe\",\r\n\t\t\t\"Reason\": \"loaded
+        by MATD Analyzer\",\r\n\t\t\t\"Severity\": \"4\"\r\n\t\t}\r\n\t],\r\n\t\"Stats\":
+        [\r\n\t\t{\r\n\t\t\t\"ID\": \"0\",\r\n\t\t\t\"Category\": \"Persistence, Installation
+        Boot Survival\",\r\n\t\t\t\"Severity\": \"4\"\r\n\t\t},\r\n\t\t{\r\n\t\t\t\"ID\":
+        \"1\",\r\n\t\t\t\"Category\": \"Hiding, Camouflage, Stealthiness, Detection
+        and Removal Protection\",\r\n\t\t\t\"Severity\": \"0\"\r\n\t\t},\r\n\t\t{\r\n\t\t\t\"ID\":
+        \"2\",\r\n\t\t\t\"Category\": \"Security Solution / Mechanism bypass, termination
+        and removal, Anti Debugging, VM Detection\",\r\n\t\t\t\"Severity\": \"1\"\r\n\t\t},\r\n\t\t{\r\n\t\t\t\"ID\":
+        \"3\",\r\n\t\t\t\"Category\": \"Spreading\",\r\n\t\t\t\"Severity\": \"0\"\r\n\t\t},\r\n\t\t{\r\n\t\t\t\"ID\":
+        \"4\",\r\n\t\t\t\"Category\": \"Exploiting, Shellcode\",\r\n\t\t\t\"Severity\":
+        \"0\"\r\n\t\t},\r\n\t\t{\r\n\t\t\t\"ID\": \"5\",\r\n\t\t\t\"Category\": \"Networking\",\r\n\t\t\t\"Severity\":
+        \"4\"\r\n\t\t},\r\n\t\t{\r\n\t\t\t\"ID\": \"6\",\r\n\t\t\t\"Category\": \"Data
+        spying, Sniffing, Keylogging, Ebanking Fraud\",\r\n\t\t\t\"Severity\": \"0\"\r\n\t\t}\r\n\t],\r\n\t\"Behavior\":
+        [\r\n\t\t\"Identified as --- by Gateway Anti-Malware\",\r\n\t\t\"Identified
+        as --- by GTI File Reputation\",\r\n\t\t\"Identified as --- by Anti-Malware\",\r\n\t\t\"
+        Find PuTTY via reg read access  [PuttyRegKeyAccess]\",\r\n\t\t\"Obtained user's
+        logon name\",\r\n\t\t\"Disabled attach/detach notifications from dynamic link
+        library\"\r\n\t],\r\n\t\"Processes\": [\r\n\t{\r\n\t\t\"Name\": \"putty_upx_7.exe\",\r\n\t\t\"File
+        Operations\": [\r\n\t\t{\r\n\t\t\t\"Files Opened\": [\r\n\t\t\t\t\"C:/Program
+        Files/.../Temp/putty.hlp, Access=Read, Attribute=Normal\",\r\n\t\t\t\t\"C:/Program
+        Files/.../Temp/putty.cnt, Access=Read, Attribute=Normal\",\r\n\t\t\t\t\"C:/Program
+        Files/.../Temp/putty.chm, Access=Read, Attribute=Normal\"\r\n\t\t\t],\r\n\t\t\t\"Other\":
+        [\r\n\t\t\t\t\"Obtained the current directory for the current process\",\r\n\t\t\t\t\"Retrieved
+        the full path for the module\",\r\n\t\t\t\t\"Obtained the path of the Windows
+        system directory\"\r\n\t\t\t]\r\n\t\t}\r\n\t\t],\r\n\t\t\"Registry Operations\":
+        [\r\n\t\t{\r\n\t\t\t\"Registry Opened\": [\r\n\t\t\t\t\"HKCU/Software/SimonTatham/PuTTY/Sessions\"\r\n\t\t\t]\r\n\t\t}\r\n\t\t],\r\n\t\t\"Process
+        Operations\": [\r\n\t\t{\r\n\t\t\t\"Process Created\": [\r\n\t\t\t\t\"{FA445657-9379-11D6-B41A-00065B83EE53}\"\r\n\t\t\t],\r\n\t\t\t\"Other\":
+        [\r\n\t\t\t\t\"Disabled the DLL_THREAD_ATTACH and DLL_THREAD_DETACH notifications
+        for the dynamic-link library\",\r\n\t\t\t\t\"Changed the protection attribute
+        of process address: 0x400000, new attribute: ReadWrite\",\r\n\t\t\t\t\"Changed
+        the protection attribute of process address: 0x400000, new attribute: ReadOnly\"\r\n\t\t\t]\r\n\t\t}\r\n\t\t],\r\n\t\t\"Network
+        Operations\": [\r\n\t\t{\r\n\t\t\t\"Socket Activities\": [\r\n\t\t\t\t\"Initiated
+        WS2_32 socket DLL\"\r\n\t\t\t]\r\n\t\t}\r\n\t\t],\r\n\t\t\"Other Operations\":
+        [\r\n\t\t{\r\n\t\t\t\"Others\": [\r\n\t\t\t\t\"Obtained the system metric
+        or system configuration setting\",\r\n\t\t\t\t\"Retrieved the User's logon
+        name\"\r\n\t\t\t]\r\n\t\t}\r\n\t\t]\r\n\t}\r\n\t],\r\n\t\"URL_Reputation\":[\t\t{\r\n\t\t\t\"severity\":
+        \"0\", \r\n\t\t\t\"reputation\": \"Clean\", \r\n\t\t\t\"category\": \"Business
+        \", \r\n\t\t\t\"risk\": \"Information \", \r\n\t\t\t\"functional\": \"Business/Services
+        \", \r\n\t\t\t\"port\": \"80\", \r\n\t\t\t\"url\": \"134.170.189.4\"\r\n\t\t},\r\n\t\t{\r\n\t\t\t\"severity\":
+        \"0\", \r\n\t\t\t\"reputation\": \"Clean\", \r\n\t\t\t\"category\": \"Business
+        \", \r\n\t\t\t\"risk\": \"Information \", \r\n\t\t\t\"functional\": \"Business/Services
+        \", \r\n\t\t\t\"port\": \"80\", \r\n\t\t\t\"url\": \"GO.MICROSOFT.COM:80\"\r\n\t\t}\r\n\t],\r\n\t\"Network\":[\r\n\t\t{\r\n\t\t\t\"Start\":
+        \"1425281454.87651\",\r\n\t\t\t\"Duration\": \"0.000\",\r\n\t\t\t\"Info\":
+        \"DNS QUERY: GO.MICROSOFT.COM. : CINFO=WWW.GO.MICROSOFT.AKADNS.NETIP=134.170.189.4
+        \"\r\n\t\t},\r\n\t\t{\r\n\t\t\t\"Start\": \"1425281454.95100\",\r\n\t\t\t\"Duration\":
+        \"0.074\",\r\n\t\t\t\"Info\": \"OUTGOING TCP CONNECTION TO IP: 134.170.189.4
+        PORT: 80 (HTTP) \"\r\n\t\t},\r\n\t\t{\r\n\t\t\t\"Start\": \"1425281455.00963\",\r\n\t\t\t\"Duration\":
+        \"0.133\",\r\n\t\t\t\"Info\": \"HTTP QUERY: HTTP://GO.MICROSOFT.COM:80 POST
+        /FWLINK/?LINKID=88339 HTTP/1.1 SLSSOAPCLIENT \"\r\n\t\t}\r\n\t]\r\n\t}\r\n}\r\n"}
+    headers:
+      cache-control: ['no-store, no-cache, must-revalidate, private,max-age=0']
+      connection: [keep-alive]
+      content-length: ['5347']
+      content-type: [text/plain;charset=UTF-8]
+      date: ['Thu, 07 May 2015 18:17:17 GMT']
+      expires: ['Sat, 26 Jul 1997 05:00:00 GMT']
+      pragma: [no-cache]
+      server: [nginx/1.4.6 (Ubuntu)]
+      set-cookie: [PHPSESSID=il9a2ojmk4ferv0e4o7f76fiu2; path=/]
+      x-content-type-options: [nosniff]
+    status: {code: 200, message: OK}
+version: 1

@@ -1,0 +1,29 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept: [application/vnd.ve.v1.0+json]
+      Accept-Encoding: ['gzip, deflate']
+      Connection: [keep-alive]
+      Content-Type: [application/json]
+      User-Agent: [python-requests/2.5.3 CPython/2.7.6 Linux/3.13.0-51-generic]
+      VE-SDK-API: [YWRtaW46UjB4M3JIQHgwcnMh]
+    method: GET
+    uri: https://atd.localhost.localdomain/php/session.php
+  response:
+    body: {string: !!python/unicode '{"success": true, "results": {"session": "3js0sa6335h73uo5o96bfkcbi5","userId":
+        "1","isAdmin": "1","serverTZ": "PDT","apiVersion": "1.4.2","matdVersion":
+        "3.4.6.69.47214"} }'}
+    headers:
+      cache-control: ['no-store, no-cache, must-revalidate, private,max-age=0']
+      connection: [keep-alive]
+      content-length: ['173']
+      content-type: [text/html; charset=UTF-8]
+      date: ['Thu, 07 May 2015 18:17:16 GMT']
+      expires: ['Sat, 26 Jul 1997 05:00:00 GMT']
+      pragma: [no-cache]
+      server: [nginx/1.4.6 (Ubuntu)]
+      set-cookie: [PHPSESSID=3js0sa6335h73uo5o96bfkcbi5; path=/; secure; HttpOnly]
+      x-content-type-options: [nosniff]
+    status: {code: 200, message: OK}
+version: 1
