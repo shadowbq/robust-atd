@@ -5,15 +5,14 @@ import sys, traceback, time
 import argparse
 import getpass
 import pprint as pp
+import urllib3
 
 import ratd
 import ratd.api
 from ratd.api import atd
-
 import ratd.utils as utils
-
-import urllib3
-
+import ratd.cliargs
+from ratd.cliargs import cliargs
 
 EXIT_SUCCESS = 0
 EXIT_FAILURE = 1
@@ -36,11 +35,12 @@ EXIT_FAILURE = 1
 def main():
     # Get the list of parameters passed from command line
 
-    options = utils.profileargs()
+    options = cliargs('profile')
 
-    if options.verbose:
-        options = utils.copyleftnotice()
+    if options.verbosity:
+        utils.copyleftnotice()
 
+    print options
     # Create the ATD object and connect to it
     myatd = atd(options.atd_ip, options.skipssl)
     error_control, data = myatd.connect(options.user, options.password)
@@ -49,7 +49,7 @@ def main():
         print data
         sys.exit(-1)
 
-    if options.verbose:
+    if options.verbosity:
         print 'Connection successful...\n'
         print 'Session Value:     ',myatd.session
         print 'User ID:           ',myatd.userId
@@ -58,7 +58,7 @@ def main():
     # Get the heartbeat value of the ATD Box
     error_control, data = myatd.heartbeat()
 
-    if options.verbose:
+    if options.verbosity:
         if error_control == 0:
             print 'ATD Box heartbeat: Error Obtaining value'
         else:
@@ -77,7 +77,7 @@ def main():
                 print 'Profile id: ', profile['vmProfileid']
                 print 'Name: ', profile['name']
                 print 'OS:', profile['selectedOSName']
-                print 'Run All Selected?: {0}'.format(['Off','On'][profile['recusiveAnalysis']])
+                print 'Run all down selects?: {0}'.format(['Off','On'][profile['recusiveAnalysis']])
                 print '******************'
             myatd.disconnect()
             sys.exit(EXIT_SUCCESS)

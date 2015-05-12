@@ -43,7 +43,7 @@ Robust Intel Security ATD Python CLI tool
 
 optional arguments:
   -h, --help           show this help message and exit
-  -v, --verbose        increase output verbosity
+  -v, --verbosity        increase output verbosity
                        		(default: False)
   --version            show program's version number and exit
 

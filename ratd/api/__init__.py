@@ -187,7 +187,7 @@ class atd():
         try:
             r = requests.post(url, headers = custom_header, files=files, data={'data':data}, verify=False)
 
-            print r.text
+            # print r.text
 
         except Exception as e:
             error_info = 'Error submitting file to ATD:\n%s'%e
