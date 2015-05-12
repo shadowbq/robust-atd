@@ -14,6 +14,7 @@ class cliargs():
             'skipssl':'do (n)ot verify the SSL certificate for the communications\n\t\t(default: %(default)s)',
             'analyzer':'(a)nalyzer profile id to be used during analysis\n\t\t(default: %(default)s)',
             'profiles':'(l)ist analyzer profiles available\n\t\t(default: %(default)s)',
+            'quiet':'silence all output\n\t\t(default: %(default)s)',
             'verbosity':'increase output verbosity\n\t\t(default: %(default)s)'
             }
         self.description = 'Robust Intel Security ATD Python CLI tool'
@@ -31,9 +32,7 @@ class cliargs():
             self.auth_args()
             self.sample_args()
 
-        self.parser.add_argument('--version', action='version', version=ratd.__version__)
-        self.parser.add_argument('-v', "--verbosity", action="count", help=self.arg_dict['verbosity'])
-
+        self.common_args()
         self.parser.parse_args(namespace=self)
 
     def dot_robust_helper(self):
@@ -51,6 +50,13 @@ class cliargs():
             dot_robust_dict = {'user': False, 'password': False, 'host': False, 'skipssl': False}
         return dot_robust_dict
 
+    def common_args(self):
+        self.parser.add_argument('--version', action='version', version=ratd.__version__)
+
+        exclusive = self.parser.add_mutually_exclusive_group()
+        exclusive.add_argument('-v', "--verbosity", action="count", help=self.arg_dict['verbosity'])
+        exclusive.add_argument('-q', "--quiet", required=False, action='store_true', dest='quiet', help=self.arg_dict['quiet'])
+
     def auth_args(self):
 
         auth_group = self.parser.add_argument_group('Authentication parameters')
@@ -63,7 +69,7 @@ class cliargs():
         if self.dot_robust['password']:
             auth_group.add_argument('-p', required=False, action='store', default=self.dot_robust['password'], dest='password', help=self.arg_dict['password'], metavar='PASSWORD')
         else:
-            auth_group.add_argument('-p', required=True, action='store', dest='password', help=self.arg_dict['password'], metavar='PASSWORD')
+            auth_group.add_argument('-p', required=False, action='store', dest='password', help=self.arg_dict['password'], metavar='PASSWORD')
 
         if self.dot_robust['host']:
             auth_group.add_argument('-i', required=False, action='store', default=self.dot_robust['host'], dest='atd_ip', help=self.arg_dict['ip'], metavar='ATD IP')

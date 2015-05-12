@@ -40,6 +40,9 @@ def main():
 
     options = cliargs('sample')
 
+    if options.password is False:
+        options.password = getpass.getpass()
+
     if options.verbosity:
         utils.copyleftnotice()
 
@@ -99,8 +102,9 @@ def main():
                 print ('{0} - Waiting for {1} seconds'.format(data, stepwait))
                 sys.stdout.flush()
             else:
-                print ('.', end="")
-                sys.stdout.flush()
+                if options.quiet is not True:
+                  print ('.', end="")
+                  sys.stdout.flush()
         elif error_control == -1:
             print (data)
             myatd.disconnect()
@@ -157,7 +161,7 @@ def main():
         time.sleep(30)
 
     myatd.disconnect()
-    sys.exit(severity)
+    sys.exit(int(severity))
 
 if __name__ == '__main__':
     main()

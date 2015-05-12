@@ -37,10 +37,12 @@ def main():
 
     options = cliargs('profile')
 
+    if options.password is None:
+        options.password = getpass.getpass()
+
     if options.verbosity:
         utils.copyleftnotice()
 
-    print options
     # Create the ATD object and connect to it
     myatd = atd(options.atd_ip, options.skipssl)
     error_control, data = myatd.connect(options.user, options.password)

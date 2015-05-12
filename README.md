@@ -20,6 +20,9 @@ $> pip install robust-atd
 ```
 $> mkvirtualenv robust
 $> workon robust
+$(robust)> wget https://github.com/shadowbq/robust-atd/archive/master.zip
+$(robust)> unzip master.zip
+$(robust)> cd master
 $(robust)> pip install -r requirements.txt
 $(robust)> python setup.py install
 ```
@@ -67,10 +70,25 @@ Examples:
 	robust.py -u admin -p password! -i atd.localhost.localdomain -s /usr/local/bin/file_to_scan -a 1
 ```
 
-Submitting a Sample
+### Submitting a Sample
+
+A sample can be submitted via cli with full flags, .robust configs, or interrupt passwords.
 
 ```shell
 $(robust)> robust.py -u admin -p password! -i atd.localhost.localdomain -s /home/malware/non-malicious-container/putty_upx_7.exe
+```
+
+Using interupt passwords
+
+```shell
+$ robust-profiles.py -n -l
+Password: <input password>
+ATD profiles:  1
+Profile id:  26
+Name:  Win XP Down Select (Online)
+OS: winXPsp3
+Run all down selects?: Off
+******************
 ```
 
 ### Pulling the Policy List
@@ -101,6 +119,15 @@ OS: winXPsp3
 Run All Selected?: On
 ******************
 ```
+### Managing Outputs
+
+Using Unix Return codes with Quiet output flag
+
+```
+(robust)>$ robust.py -n -a 26 -s ./.samples/Morph.exe -q
+(robust)>$ echo $?
+2
+```
 
 ## Robust (DOT) FILE
 
@@ -117,7 +144,7 @@ host: atd.localhost.localdomain
 This file is expanded via the `os` module and maps to windows too.
 
 
-### Development Tasks
+## Development Tasks
 
 ```shell
 $ invoke -l
