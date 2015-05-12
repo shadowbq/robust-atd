@@ -32,7 +32,7 @@ class cliargs():
             self.sample_args()
 
         self.parser.add_argument('--version', action='version', version=ratd.__version__)
-        self.parser.add_argument('-v', "--verbosity", action="store_true", help=self.arg_dict['verbosity'])
+        self.parser.add_argument('-v', "--verbosity", action="count", help=self.arg_dict['verbosity'])
 
         self.parser.parse_args(namespace=self)
 

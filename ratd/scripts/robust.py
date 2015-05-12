@@ -44,7 +44,7 @@ def main():
         utils.copyleftnotice()
 
     # Create the ATD object and connect to it
-    
+
     myatd = atd(options.atd_ip, options.skipssl)
     error_control, data = myatd.connect(options.user, options.password)
 
@@ -97,6 +97,7 @@ def main():
         if error_control == 4 or error_control == 3:
             if options.verbosity:
                 print ('{0} - Waiting for {1} seconds'.format(data, stepwait))
+                sys.stdout.flush()
             else:
                 print ('.', end="")
                 sys.stdout.flush()
@@ -146,10 +147,13 @@ def main():
                     print ('\nFinal results...')
                     print (' Severity:    %s'%severity)
                     print (' Description: %s'%desc)
+                    if options.verbosity > 1:
+                        print (data)
                 break
         # error_control = 2
         if options.verbosity:
             print (' %s - Waiting for 30 seconds...'%data)
+            sys.stdout.flush()
         time.sleep(30)
 
     myatd.disconnect()
