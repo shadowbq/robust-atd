@@ -32,6 +32,17 @@ Exit test ENV
 $>
 ```
 
+List the Availabled ENV
+
+```shell
+$> lsvirtualenv 
+test
+===
+test-1
+======
+```
+
+
 Blow away test ENV
 
 ```shell

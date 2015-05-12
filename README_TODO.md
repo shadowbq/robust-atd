@@ -1,12 +1,19 @@
 Robust ATD CLI tools
 ================
 
+## Fix verbosity
+
+should output like a test no flag, current verbose 1, debug verbose 2
+
+<https://docs.python.org/2/howto/argparse.html#combining-positional-and-optional-arguments>
+
 ## General Flags
 
 Add output flags
 ```
 -o <OUTPUT_FILE>
 -t <type|[JSON/XML/TXT]>
+-q quiet 
 ```
 
 ## robust-watchdog
