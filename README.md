@@ -84,7 +84,7 @@ $(robust)> robust.py -u admin -p password! -i atd.localhost.localdomain -s /home
 Using interupt passwords
 
 ```shell
-$ robust-profiles.py -n -l
+$(robust)> robust-profiles.py -n -l
 Password: <input password>
 ATD profiles:  1
 Profile id:  26
@@ -127,7 +127,7 @@ Run All Selected?: On
 Using Unix Return codes with Quiet output flag
 
 ```
-(robust)>$ robust.py -n -a 26 -s ./.samples/Morph.exe -q
+(robust)>$ robust.py -n -a 26 -s ./.samples/Sample.exe -q
 (robust)>$ echo $?
 2
 ```
@@ -137,7 +137,7 @@ Using Unix Return codes with Quiet output flag
 Robust can use a `~\.robust` file to load defaults in the auth context
 
 ```shell
-$ cat ~/.robust
+$(robust)> cat ~/.robust
 [auth]
 user: admin
 password: password!
@@ -152,23 +152,27 @@ A tool that watches a directory recursively for any new files to submit.
 
 Example CLI
 ```
-$> robust-watchdog -d <directoryToMonitor> -a <Analyzer profile> <<ADDITIONAL SUBMISSION FLAGS>>
+$(robust)> usage: robust-watchdog.py [-h] [-u USER] [-p PASSWORD] [-i ATD IP] [-n] -a
+                          ANALYZER_PROFILE -d DIRECTORY [-e] [--version]
+                          [-v | -q]
 ```
 
 Let it run in a shell and open another one or the file browser to create files in the /path/to/directory. Since the handler is printing the results, the output will reflect the flags chosen similar to `robust.py`:
 
-```
-(robust)$> robust-watchdog.py -a 26 -d ./ -n
-.
-.
-```
-
 The `-e` flag can be passed to cause all existing files in the directory (recurisively) to be submitted upon start.
+
+```shell
+(robust)$> robust-watchdog.py -a 26 -d ./ -n -e
+.
+...
+.
+.....
+````
 
 ## Development Tasks
 
 ```shell
-$ invoke -l
+(robust)$> invoke -l
 Available tasks:
 
   build       Build the setup.py
@@ -185,7 +189,7 @@ Available tasks:
 Nose is run via `invoke test`
 
 ```
-$ invoke test
+(robust)$> invoke test
 Clearing rm -rf build
 Clearing rm -rf dist
 Clearing rm -rf *.egg-info
@@ -198,24 +202,12 @@ Clearing rm -rf ./*.pyc
 8 tests run in 0.2 seconds (8 tests passed)
 1       E121 continuation line under-indented for hanging indent
 4       E122 continuation line missing indentation or outdented
-8       E126 continuation line over-indented for hanging indent
-2       E201 whitespace after '{'
-2       E202 whitespace before '}'
-27      E203 whitespace before ':'
-12      E221 multiple spaces before operator
-30      E228 missing whitespace around modulo operator
-29      E231 missing whitespace after ','
-10      E251 unexpected spaces around keyword / parameter equals
-1       E265 block comment should start with '# '
-7       E302 expected 2 blank lines, found 1
-4       E303 too many blank lines (2)
-2       E401 multiple imports on one line
-76      E501 line too long (97 > 79 characters)
-2       E703 statement ends with a semicolon
-21      F401 'sys' imported but unused
-1       F841 local variable 'auth_group' is assigned to but never used
-1       N801 class names should use CapWords convention
+7       E126 continuation line over-indented for hanging indent
+30      E225 missing whitespace around operator
+78      E501 line too long (146 > 79 characters)
+3       F401 'ratd' imported but unused
 1       N802 function name should be lowercase
-3       N803 argument name should be lowercase
+2       N803 argument name should be lowercase
 2       N806 variable in function should be lowercase
+
 ```
