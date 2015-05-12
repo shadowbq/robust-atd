@@ -36,17 +36,15 @@ EXIT_FAILURE = 1
 
 
 def main():
-    # Get the list of parameters passed from command line
 
+    # Create the ATD object and connect to it
     options = cliargs('sample')
 
-    if options.password is False:
+    if options.password is None:
         options.password = getpass.getpass()
 
     if options.verbosity:
         utils.copyleftnotice()
-
-    # Create the ATD object and connect to it
 
     myatd = atd(options.atd_ip, options.skipssl)
     error_control, data = myatd.connect(options.user, options.password)
@@ -164,4 +162,7 @@ def main():
     sys.exit(int(severity))
 
 if __name__ == '__main__':
+    # Get the list of parameters passed from command line
+
+    #main(options)
     main()
