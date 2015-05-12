@@ -148,7 +148,7 @@ This file is expanded via the `os` module and maps to windows too.
 
 ## robust-watchdog
 
-A tool that watches directory for changes and submits new files to ATD.
+A tool that watches a directory recursively for any new files to submit.
 
 Example CLI
 ```
@@ -162,6 +162,8 @@ Let it run in a shell and open another one or the file browser to create files i
 .
 .
 ```
+
+The `-e` flag can be passed to cause all existing files in the directory (recurisively) to be submitted upon start.
 
 ## Development Tasks
 

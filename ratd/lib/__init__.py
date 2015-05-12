@@ -4,11 +4,13 @@ import sys, traceback, time
 import argparse
 import getpass
 import pprint as pp
+import os
 
 from watchdog.observers import Observer
 import watchdog.events
 
 import urllib3
+
 
 import ratd
 import ratd.api
@@ -28,7 +30,7 @@ class ScanFolder:
 
         self.options = options
         self.path = options.directory
-        
+
         # self.event_handler = watchdog.events.PatternMatchingEventHandler(patterns=["*.jpg", "*.jpeg", "*.png", "*.bmp", "*.pdf"],
         #                            ignore_patterns=[],
         #                            ignore_directories=True)
@@ -36,7 +38,7 @@ class ScanFolder:
         self.event_handler = watchdog.events.FileSystemEventHandler()
         self.event_handler.on_created = self.on_created
         self.observer = Observer()
-        self.observer.schedule(self.event_handler, self.path, recursive=False)
+        self.observer.schedule(self.event_handler, self.path, recursive=True)
         self.observer.start()
 
     def on_created(self, event):
@@ -50,6 +52,32 @@ class ScanFolder:
     def stop(self):
         self.observer.stop()
         self.observer.join()
+
+class ExistingFolder:
+    'Submit Existing files in directory'
+
+    def __init__(self, options):
+        # Run the above function and store its results in a variable.
+        self.options = options
+        self.path = options.directory
+
+        full_file_paths = self.get_filepaths(self.path)
+
+        for file_name in full_file_paths:
+            self.options.file_to_upload = file_name
+            SampleSubmit(self.options)
+
+    def get_filepaths(self, directory):
+
+        file_paths = []
+
+        for root, directories, files in os.walk(directory):
+            for filename in files:
+                filepath = os.path.join(root, filename)
+                file_paths.append(filepath)
+
+        return file_paths
+
 
 class SampleSubmit:
     'Class defining a file submission'

@@ -15,6 +15,7 @@ class cliargs():
             'analyzer':'(a)nalyzer profile id to be used during analysis\n\t\t(default: %(default)s)',
             'profiles':'(l)ist analyzer profiles available\n\t\t(default: %(default)s)',
             'directory':'(d)irectory to watch for events\n\t\t(default: %(default)s)',
+            'existing':'(e)xisting files in directory will be submitted\n\t\t(default: %(default)s)',
             'quiet':'(q)uiet all output\n\t\t(default: %(default)s)',
             'verbosity':'increase output (v)erbosity\n\t\t(default: %(default)s)'
             }
@@ -38,8 +39,10 @@ class cliargs():
 
             watch_group = self.parser.add_argument_group('Watch parameters')
             watch_group.add_argument('-a', required=True, action='store', dest='analyzer_profile', help=self.arg_dict['analyzer'])
+            watch_group.add_argument('-d', required=True, action='store', dest='directory', help=self.arg_dict['directory'])
+            watch_group.add_argument('-e', required=False, action='store_true', dest='existing', help=self.arg_dict['existing'])
+            # SUPPRESSION flag for hidden submission
             watch_group.add_argument('--sample', dest='file_to_upload', help=argparse.SUPPRESS)
-            watch_group.add_argument('-d', required=True, action='store', dest='directory', help=self.arg_dict['profiles'])
 
         self.common_args()
         self.parser.parse_args(namespace=self)

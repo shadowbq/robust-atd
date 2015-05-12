@@ -10,8 +10,6 @@ import ratd.cliargs
 from ratd.cliargs import cliargs
 
 import ratd.lib
-from ratd.lib import ScanFolder
-
 
 if __name__ == '__main__':
     # Get the list of parameters passed from command line
@@ -24,7 +22,10 @@ if __name__ == '__main__':
     if options.verbosity:
         utils.copyleftnotice()
 
-    job = ScanFolder(options)
+    if options.existing:
+        ratd.lib.ExistingFolder(options)
+        
+    job = ratd.lib.ScanFolder(options)
 
     try:
         while True:
