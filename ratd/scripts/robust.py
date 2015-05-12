@@ -1,13 +1,13 @@
 #!/usr/bin/env python
 # Copyright (C) 2015 McAfee, Inc.  All Rights Reserved.
 
-import sys, traceback, time
+import sys
 import getpass
 
 import ratd.utils as utils
 
-import ratd.cliargs
-from ratd.cliargs import cliargs
+import ratd.CliArgs
+from ratd.CliArgs import CliArgs
 
 import ratd.lib
 from ratd.lib import SampleSubmit
@@ -32,7 +32,7 @@ EXIT_FAILURE = 1
 
 if __name__ == '__main__':
     # Get the list of parameters passed from command line
-    options = cliargs('sample')
+    options = CliArgs('sample')
 
     if options.password is None:
         options.password = getpass.getpass()

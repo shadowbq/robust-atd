@@ -1,27 +1,17 @@
-
 from __future__ import print_function
-import sys, traceback, time
-import argparse
-import getpass
-import pprint as pp
+import sys
+import time
 import os
 
 from watchdog.observers import Observer
 import watchdog.events
 
-import urllib3
-
-
-import ratd
 import ratd.api
-from ratd.api import atd
-import ratd.utils as utils
-import ratd.cliargs
-from ratd.cliargs import cliargs
-
+from ratd.api import Atd
 
 EXIT_SUCCESS = 0
 EXIT_FAILURE = 1
+
 
 class ScanFolder:
     'Class defining a scan folder'
@@ -52,6 +42,7 @@ class ScanFolder:
     def stop(self):
         self.observer.stop()
         self.observer.join()
+
 
 class ExistingFolder:
     'Submit Existing files in directory'
@@ -86,7 +77,7 @@ class SampleSubmit:
         self.rtnv = EXIT_FAILURE
 
         # Create the ATD object and connect to it
-        myatd = atd(options.atd_ip, options.skipssl)
+        myatd = Atd(options.atd_ip, options.skipssl)
         error_control, data = myatd.connect(options.user, options.password)
 
         if error_control == 0:
@@ -95,9 +86,9 @@ class SampleSubmit:
 
         if options.verbosity > 1:
             print ('Connection successful...\n')
-            print ('Session Value:     ',myatd.session)
-            print ('User ID:           ',myatd.userId)
-            print ('ATD ver:           ',myatd.matdver)
+            print ('Session Value:     ', myatd.session)
+            print ('User ID:           ', myatd.userId)
+            print ('ATD ver:           ', myatd.matdver)
 
         # Get the heartbeat value of the ATD Box
         error_control, data = myatd.heartbeat()
@@ -106,7 +97,7 @@ class SampleSubmit:
             if error_control == 0:
                 print ('ATD Box heartbeat: Error Obtaining value')
             else:
-                print ('ATD Box heartbeat: ',data)
+                print ('ATD Box heartbeat: ', data)
 
         # Upload file to ATD Server
         error_control, data = myatd.upload_file(options.file_to_upload, options.analyzer_profile)
@@ -119,16 +110,16 @@ class SampleSubmit:
             if options.verbosity > 2:
                 print (data)
 
-        jobId  = data['jobId']
+        jobId = data['jobId']
         taskId = data['taskId']
 
         if options.verbosity:
-            print ('\nFile %s uploaded\n'%data['file'])
-            print ('jobId:    ',data['jobId'])
-            print ('taskId:   ',data['taskId'])
-            print ('md5:      ',data['md5'])
-            print ('size:     ',data['size'])
-            print ('mimeType: ',data['mimeType'])
+            print ('\nFile %s uploaded\n' %data['file'])
+            print ('jobId:    ', data['jobId'])
+            print ('taskId:   ', data['taskId'])
+            print ('md5:      ', data['md5'])
+            print ('size:     ', data['size'])
+            print ('mimeType: ', data['mimeType'])
             print ('')
 
         # Check status before requesting the report
@@ -141,8 +132,8 @@ class SampleSubmit:
                     sys.stdout.flush()
                 else:
                     if options.quiet is not True:
-                      print ('.', end="")
-                      sys.stdout.flush()
+                        print ('.', end="")
+                        sys.stdout.flush()
             elif error_control == -1:
                 print (data)
                 myatd.disconnect()
@@ -152,8 +143,8 @@ class SampleSubmit:
                     print ('\nAnalysis done')
                 else:
                     if options.quiet is not True:
-                      print ('.', end="")
-                      sys.stdout.flush()
+                        print ('.', end="")
+                        sys.stdout.flush()
                 break
             time.sleep(stepwait)
             if stepwait < 30:
@@ -167,12 +158,12 @@ class SampleSubmit:
             error_control, data = myatd.get_report(jobId)
 
             if error_control == 0:
-                print ('\n',data)
+                print ('\n', data)
                 myatd.disconnect()
                 sys.exit(-4)
 
             if error_control == 3:
-                print ('\n',data)
+                print ('\n', data)
                 myatd.disconnect()
                 sys.exit(0)
 
@@ -191,14 +182,14 @@ class SampleSubmit:
                 else:
                     if options.verbosity:
                         print ('\nFinal results...')
-                        print (' Severity:    %s'%severity)
-                        print (' Description: %s'%desc)
+                        print (' Severity:    %s' %severity)
+                        print (' Description: %s' %desc)
                         if options.verbosity > 1:
                             print (data)
                     break
             # error_control = 2
             if options.verbosity:
-                print (' %s - Waiting for 30 seconds...'%data)
+                print (' %s - Waiting for 30 seconds...' %data)
                 sys.stdout.flush()
             time.sleep(30)
 
@@ -210,6 +201,7 @@ class SampleSubmit:
     def rtnv(self):
         return self.rtnv
 
+
 class FetchProfiles():
     'Class defining fetching the Analyzer Profiles from ATD'
 
@@ -217,7 +209,7 @@ class FetchProfiles():
         # Create the ATD object and connect to it
         self.rtnv = EXIT_FAILURE
 
-        myatd = atd(options.atd_ip, options.skipssl)
+        myatd = Atd(options.atd_ip, options.skipssl)
         error_control, data = myatd.connect(options.user, options.password)
 
         if error_control == 0:
@@ -226,9 +218,9 @@ class FetchProfiles():
 
         if options.verbosity > 1:
             print ('Connection successful...\n')
-            print ('Session Value:     ',myatd.session)
-            print ('User ID:           ',myatd.userId)
-            print ('ATD ver:           ',myatd.matdver)
+            print ('Session Value:     ', myatd.session)
+            print ('User ID:           ', myatd.userId)
+            print ('ATD ver:           ', myatd.matdver)
 
         # Get the heartbeat value of the ATD Box
         error_control, data = myatd.heartbeat()
@@ -237,7 +229,7 @@ class FetchProfiles():
             if error_control == 0:
                 print ('ATD Box heartbeat: Error Obtaining value')
             else:
-                print ('ATD Box heartbeat: ',data)
+                print ('ATD Box heartbeat: ', data)
 
         # Get the vmprofilelist
         if options.listprofiles:
@@ -247,12 +239,12 @@ class FetchProfiles():
                 myatd.disconnect()
                 sys.exit(-5)
             else:
-                print ('ATD profiles: ',len(data))
+                print ('ATD profiles: ', len(data))
                 for profile in data:
                     print ('Profile id: ', profile['vmProfileid'])
                     print ('Name: ', profile['name'])
                     print ('OS:', profile['selectedOSName'])
-                    print ('Run all down selects?: {0}'.format(['Off','On'][profile['recusiveAnalysis']]))
+                    print ('Run all down selects?: {0}'.format(['Off', 'On'][profile['recusiveAnalysis']]))
                     print ('******************')
                 myatd.disconnect()
                 self.rtnv = EXIT_SUCCESS

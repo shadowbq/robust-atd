@@ -3,24 +3,25 @@ import ConfigParser
 import os.path
 import ratd
 
-class cliargs():
+
+class CliArgs():
 
     def __init__(self, tool):
         self.arg_dict = {
-            'user':'(u)sername for the API of the ATD\n\t\t(default: %(default)s)',
-            'password':'(p)assword for username\n\t\t(default: %(default)s) ',
-            'ip':'(i)p or hostname address of ATD\n\t\t(default: %(default)s) ',
-            'sample':'(s)ample or file to be analyzed\n\t\t(default: %(default)s)',
-            'skipssl':'do (n)ot verify the SSL certificate for the communications\n\t\t(default: %(default)s)',
-            'analyzer':'(a)nalyzer profile id to be used during analysis\n\t\t(default: %(default)s)',
-            'profiles':'(l)ist analyzer profiles available\n\t\t(default: %(default)s)',
-            'directory':'(d)irectory to watch for events\n\t\t(default: %(default)s)',
-            'existing':'(e)xisting files in directory will be submitted\n\t\t(default: %(default)s)',
-            'quiet':'(q)uiet all output\n\t\t(default: %(default)s)',
-            'verbosity':'increase output (v)erbosity\n\t\t(default: %(default)s)'
+            'user': '(u)sername for the API of the ATD\n\t\t(default: %(default)s)',
+            'password': '(p)assword for username\n\t\t(default: %(default)s) ',
+            'ip': '(i)p or hostname address of ATD\n\t\t(default: %(default)s) ',
+            'sample': '(s)ample or file to be analyzed\n\t\t(default: %(default)s)',
+            'skipssl': 'do (n)ot verify the SSL certificate for the communications\n\t\t(default: %(default)s)',
+            'analyzer': '(a)nalyzer profile id to be used during analysis\n\t\t(default: %(default)s)',
+            'profiles': '(l)ist analyzer profiles available\n\t\t(default: %(default)s)',
+            'directory': '(d)irectory to watch for events\n\t\t(default: %(default)s)',
+            'existing': '(e)xisting files in directory will be submitted\n\t\t(default: %(default)s)',
+            'quiet': '(q)uiet all output\n\t\t(default: %(default)s)',
+            'verbosity': 'increase output (v)erbosity\n\t\t(default: %(default)s)'
             }
         self.description = 'Robust Intel Security ATD Python CLI tool'
-        self.epilog      = ''
+        self.epilog = ''
         self.dot_robust = self.dot_robust_helper()
 
         self.parser = argparse.ArgumentParser(epilog=self.epilog, description=self.description, formatter_class=argparse.RawTextHelpFormatter)
@@ -53,10 +54,10 @@ class cliargs():
         if os.path.isfile(fname):
             config.read(fname)
             dot_robust_dict = {
-            'user' : config.get("auth", "user"),
-            'password' : config.get("auth", "password"),
-            'host' : config.get("auth", "host"),
-            'skipssl' : config.get("auth", "skipssl")
+            'user': config.get("auth", "user"),
+            'password': config.get("auth", "password"),
+            'host': config.get("auth", "host"),
+            'skipssl': config.get("auth", "skipssl")
             }
         else:
             dot_robust_dict = {'user': False, 'password': False, 'host': False, 'skipssl': False}

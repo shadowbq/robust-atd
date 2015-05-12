@@ -3,16 +3,15 @@ import vcr
 
 from pkg_resources import parse_version
 
-import ratd as robust
-import ratd.api as core
-from ratd.api import atd
+from ratd.api import Atd
+
 
 class ATDTests(unittest.TestCase):
 
     # Create & Authenticate for subsequent tests
     @vcr.use_cassette('fixtures/vcr_cassettes/connect.yaml')
     def setUp(self):
-        self.myatd = atd('atd.localhost.localdomain')
+        self.myatd = Atd('atd.localhost.localdomain')
         error_control, data = self.myatd.connect('admin', 'password!')
         self.assertEqual(1, error_control)
 
@@ -59,7 +58,7 @@ class ATDTests(unittest.TestCase):
     @vcr.use_cassette('fixtures/vcr_cassettes/check_status_notready.yaml')
     def test_checkstatus_waiting(self):
         error_control, data = self.myatd.check_status(20072)
-        self.assertIn(error_control, [1,4])
+        self.assertIn(error_control, [1, 4])
 
     @vcr.use_cassette('fixtures/vcr_cassettes/get_report.yaml')
     def test_fetchreport(self):
