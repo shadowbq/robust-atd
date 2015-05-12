@@ -13,21 +13,7 @@ Add output flags
 ```
 -o <OUTPUT_FILE>
 -t <type|[JSON/XML/TXT]>
--q quiet 
 ```
-
-## robust-watchdog
-
-Create a tool that watches directory for changes and submits the files to ATD.
-
-Add Directory Watch tool
-https://pypi.python.org/pypi/watchdog
-
-Example CLI
-```
-$> robust-watchdog -D <daemon> -p <PID> -d <directoryToMonitor> -O <OUTPUT_DIR> -t <type|[JSON/XML/TXT]>
-```
-
 
 ## robust-reporter
 

@@ -46,28 +46,31 @@ Robust Intel Security ATD Python CLI tool
 
 optional arguments:
   -h, --help           show this help message and exit
-  -v, --verbosity        increase output verbosity
-                       		(default: False)
   --version            show program's version number and exit
+  -v, --verbosity      increase output verbosity
+                             (default: None)
+  -q, --quiet          (q)uiet all output
+                             (default: False)
+
 
 Authentication parameters:
   -u USER              (u)sername for the API of the ATD
-                       		(default: admin)
+                               (default: admin)
   -p PASSWORD          (p)assword for username
-                       		(default: password!)
+                               (default: password!)
   -i ATD IP            (i)p or hostname address of ATD
-                       		(default: atd.localhost.localdomain)
+                               (default: atd.localhost.localdomain)
   -n                   do (n)ot verify the SSL certificate for the communications
-                       		(default: False)
+                               (default: False)
 
 Sample parameters:
   -s FILE_TO_UPLOAD    (s)ample or file to be analyzed
-                       		(default: None)
+                               (default: None)
   -a ANALYZER_PROFILE  (a)nalyzer profile id to be used during analysis
-                       		(default: None)
+                               (default: None)
 
 Examples:
-	robust.py -u admin -p password! -i atd.localhost.localdomain -s /usr/local/bin/file_to_scan -a 1
+    robust.py -u admin -p password! -i atd.localhost.localdomain -s /usr/local/bin/file_to_scan -a 1
 ```
 
 ### Submitting a Sample
@@ -143,6 +146,22 @@ host: atd.localhost.localdomain
 
 This file is expanded via the `os` module and maps to windows too.
 
+## robust-watchdog
+
+A tool that watches directory for changes and submits new files to ATD.
+
+Example CLI
+```
+$> robust-watchdog -d <directoryToMonitor> -a <Analyzer profile> <<ADDITIONAL SUBMISSION FLAGS>>
+```
+
+Let it run in a shell and open another one or the file browser to create files in the /path/to/directory. Since the handler is printing the results, the output will reflect the flags chosen similar to `robust.py`:
+
+```
+(robust)$> robust-watchdog.py -a 26 -d ./ -n
+.
+.
+```
 
 ## Development Tasks
 
