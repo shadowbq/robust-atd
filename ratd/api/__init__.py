@@ -164,8 +164,7 @@ class atd():
         '''
 
         url = 'https://%s/php/fileupload.php'%self.atdserver
-
-
+        
         payload = { "data": { "vmProfileList" : vmProfile, "submitType": 0 }, "amas_filename": self.get_filename(filetosubmit) }
 
 

@@ -14,11 +14,12 @@ class cliargs():
             'skipssl':'do (n)ot verify the SSL certificate for the communications\n\t\t(default: %(default)s)',
             'analyzer':'(a)nalyzer profile id to be used during analysis\n\t\t(default: %(default)s)',
             'profiles':'(l)ist analyzer profiles available\n\t\t(default: %(default)s)',
-            'quiet':'silence all output\n\t\t(default: %(default)s)',
-            'verbosity':'increase output verbosity\n\t\t(default: %(default)s)'
+            'directory':'(d)irectory to watch for events\n\t\t(default: %(default)s)',
+            'quiet':'(q)uiet all output\n\t\t(default: %(default)s)',
+            'verbosity':'increase output (v)erbosity\n\t\t(default: %(default)s)'
             }
         self.description = 'Robust Intel Security ATD Python CLI tool'
-        self.epilog      = 'Examples:\n\trobust-profiles.py -u admin -p admin -i 192.168.0.202 -l'
+        self.epilog      = ''
         self.dot_robust = self.dot_robust_helper()
 
         self.parser = argparse.ArgumentParser(epilog=self.epilog, description=self.description, formatter_class=argparse.RawTextHelpFormatter)
@@ -31,6 +32,14 @@ class cliargs():
         if tool == 'sample':
             self.auth_args()
             self.sample_args()
+
+        if tool == 'watch':
+            self.auth_args()
+
+            watch_group = self.parser.add_argument_group('Watch parameters')
+            watch_group.add_argument('-a', required=True, action='store', dest='analyzer_profile', help=self.arg_dict['analyzer'])
+            watch_group.add_argument('--sample', dest='file_to_upload', help=argparse.SUPPRESS)
+            watch_group.add_argument('-d', required=True, action='store', dest='directory', help=self.arg_dict['profiles'])
 
         self.common_args()
         self.parser.parse_args(namespace=self)
