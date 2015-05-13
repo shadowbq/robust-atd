@@ -9,6 +9,7 @@ import sys
 # Redirect Standard Error from Argparse failures so they are quiet during testing
 sys.stderr = sys.stdout
 
+
 class CommandLineTestCases(unittest.TestCase):
 
     def test_with_empty_args(self):

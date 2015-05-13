@@ -224,7 +224,6 @@ Available tasks:
 Nose is run via `invoke test`
 
 ```
-(robust)$> invoke test
 Clearing rm -rf build
 Clearing rm -rf dist
 Clearing rm -rf *.egg-info
@@ -232,17 +231,24 @@ Clearing rm -rf pyclient.log
 Clearing rm -rf **/**/*.pyc
 Clearing rm -rf **/*.pyc
 Clearing rm -rf ./*.pyc
-........
+...................
 -----------------------------------------------------------------------------
-8 tests run in 0.2 seconds (8 tests passed)
+19 tests run in 0.3 seconds (19 tests passed)
+11      E111 indentation is not a multiple of four
 1       E121 continuation line under-indented for hanging indent
 4       E122 continuation line missing indentation or outdented
-7       E126 continuation line over-indented for hanging indent
-30      E225 missing whitespace around operator
-78      E501 line too long (146 > 79 characters)
-3       F401 'ratd' imported but unused
+8       E126 continuation line over-indented for hanging indent
+36      E225 missing whitespace around operator
+18      E231 missing whitespace after ','
+1       E301 expected 1 blank line, found 0
+4       E302 expected 2 blank lines, found 1
+2       E303 too many blank lines (2)
+87      E501 line too long (97 > 79 characters)
+5       F401 'ratd' imported but unused
+1       F821 undefined name 'md5'
 1       N802 function name should be lowercase
 2       N803 argument name should be lowercase
 2       N806 variable in function should be lowercase
+
 
 ```

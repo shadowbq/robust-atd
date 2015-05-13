@@ -3,16 +3,21 @@ import ConfigParser
 import os.path
 import ratd
 
+
 def check_md5(value):
     if len(value) != 32:
          raise argparse.ArgumentTypeError("%s is an invalid md5 hash value" % value)
     return value
 
+
 class CliArgError(Exception):
+
      def __init__(self, value):
          self.value = value
+
      def __str__(self):
          return repr(self.value)
+
 
 class CliArgs():
 

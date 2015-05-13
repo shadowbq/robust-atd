@@ -315,7 +315,7 @@ class Atd():
                 server_info = json.loads(r.content)
                 return (1, server_info)
 
-    def get_report_md5(self, md5hash):
+    def get_report_md5(self, md5):
         '''
         Description: Get the final result of the inspection of the sample submitted
         Input:       md5, Hash of the sample to find
@@ -329,7 +329,7 @@ class Atd():
 
         url = 'https://%s/php/showreport.php' %self.atdserver
 
-        payload = {'md5': md5hash, 'iType': 'json'}
+        payload = {'md5': md5, 'iType': 'json'}
 
         custom_header = {
                     'Accept': 'application/vnd.ve.v1.0+json',
