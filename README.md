@@ -151,6 +151,7 @@ Malware ranking:
     N/A -> Sample did not run
     -1 --> Sample is white listed
     0 ---> No malicious activity detected
+    1 ---> Sample is slightly suspicious
     2 ---> Sample is somewhat suspicious
     4 ---> Sample is malicious
     5 ---> Sample is malicious
