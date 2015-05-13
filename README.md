@@ -204,6 +204,47 @@ A tool designed to search and return reports for a specific md5 hash.
 (Sample.exe:2F7568342339CDB8321B52FF7BEBE661) = 2: "Sample probably is suspicious"
 ```
 
+### Fetching Reporting data
+
+robust-search has the options `-f` and `-t` to collect the proper report on the submission.
+
+```
+usage: robust-search.py [-h] [-u USER] [-p PASSWORD] [-i ATD IP] [-n] -m MD5
+                        [-t {html,txt,xml,zip,json,ioc,stix,pdf,sample}]
+                        [-f FILENAME] [--version] [-v | -q]
+
+Robust Intel Security ATD Python CLI tool
+
+optional arguments:
+  -h, --help            show this help message and exit
+  --version             show program's version number and exit
+  -v, --verbosity       increase output (v)erbosity
+                        		(default: None)
+  -q, --quiet           (q)uiet all output
+                        		(default: False)
+
+Authentication parameters:
+  -u USER               (u)sername for the API of the ATD
+                        		(default: robust)
+  -p PASSWORD           (p)assword for username
+                        		(default: P@ssword1!)
+  -i ATD IP             (i)p or hostname address of ATD
+                        		(default: atd.vanillasystem.com)
+  -n                    do (n)ot verify the SSL certificate for the communications
+                        		(default: False)
+
+Search parameters:
+  -m MD5                (m)d5 32bit hash of the sample to search
+                        		(default: None)
+
+Reporting parameters:
+  -t {html,txt,xml,zip,json,ioc,stix,pdf,sample}
+                        (t)ype of report requested
+                        		(default: None)
+  -f FILENAME           (f)ilename for saving the requested report
+                        		(default: None)
+```
+
 ## Development Tasks
 
 ```shell
