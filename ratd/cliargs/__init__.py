@@ -3,6 +3,11 @@ import ConfigParser
 import os.path
 import ratd
 
+def check_md5(value):
+    if len(value) != 32:
+         raise argparse.ArgumentTypeError("%s is an invalid md5 hash value" % value)
+    return value
+
 class CliArgError(Exception):
      def __init__(self, value):
          self.value = value
@@ -22,7 +27,7 @@ class CliArgs():
             'profiles': '(l)ist analyzer profiles available\n\t\t(default: %(default)s)',
             'directory': '(d)irectory to watch for events\n\t\t(default: %(default)s)',
             'existing': '(e)xisting files in directory will be submitted\n\t\t(default: %(default)s)',
-            'md5': '(m)d5 hash of the sample to search\n\t\t(default: %(default)s)',
+            'md5': '(m)d5 32bit hash of the sample to search\n\t\t(default: %(default)s)',
             'quiet': '(q)uiet all output\n\t\t(default: %(default)s)',
             'verbosity': 'increase output (v)erbosity\n\t\t(default: %(default)s)'
             }
@@ -118,4 +123,4 @@ class CliArgs():
     def search_args(self):
 
         search_group = self.parser.add_argument_group('Search parameters')
-        search_group.add_argument('-m', required=True, action='store', dest='md5', help=self.arg_dict['md5'])
+        search_group.add_argument('-m', required=True, type=check_md5, action='store', dest='md5', help=self.arg_dict['md5'])

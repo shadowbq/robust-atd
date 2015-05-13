@@ -88,3 +88,10 @@ class CommandLineTestCases(unittest.TestCase):
         """
         test_dict = CliArgs('search', ['-m', 'c35b154e995a9380664a95ef132df41f', '-n','-u','foo','-v']).__dict__
         self.assertEqual('c35b154e995a9380664a95ef132df41f', test_dict['md5'])
+
+    def test_with_explicit_badmd5_search_args(self):
+        """
+        User passes md5 not of 32bits length, should fail
+        """
+        with self.assertRaises(SystemExit):
+            CliArgs('search', ['-m', 'c35b1380664a95ef132df41f', '-n','-u','foo','-v']).__dict__

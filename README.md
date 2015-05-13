@@ -124,7 +124,7 @@ Run All Selected?: On
 ```
 ### Managing Outputs
 
-Using System Return codes with ``-q` Quiet output flag. When the quiet flag is
+Using System Return codes with `-q` Quiet output flag. When the quiet flag is
 used for submitting samples or searching reports the *severity* of the application
 is returned as a system exit/return code. Negative return codes indicate *faults*
 or failure during submission.
