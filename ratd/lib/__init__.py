@@ -296,7 +296,8 @@ class SearchReports():
                 sys.exit(-4)
 
             if error_control == 3:
-                print ('\n', data)
+                if options.quiet is not True:
+                    print ('({0}:{1}) = {2}: \"{3}\"'.format('-', options.md5, '-', data))
                 myatd.disconnect()
                 sys.exit(0)
 
