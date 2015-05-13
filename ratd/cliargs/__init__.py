@@ -3,10 +3,15 @@ import ConfigParser
 import os.path
 import ratd
 
+class CliArgError(Exception):
+     def __init__(self, value):
+         self.value = value
+     def __str__(self):
+         return repr(self.value)
 
 class CliArgs():
 
-    def __init__(self, tool):
+    def __init__(self, tool, explicit=None):
         self.arg_dict = {
             'user': '(u)sername for the API of the ATD\n\t\t(default: %(default)s)',
             'password': '(p)assword for username\n\t\t(default: %(default)s) ',
@@ -31,11 +36,11 @@ class CliArgs():
             profile_group = self.parser.add_argument_group('Profile parameters')
             profile_group.add_argument('-l', required=True, action='store_true', dest='listprofiles', help=self.arg_dict['profiles'])
 
-        if tool == 'sample':
+        elif tool == 'sample':
             self.auth_args()
             self.sample_args()
 
-        if tool == 'watch':
+        elif tool == 'watch':
             self.auth_args()
 
             watch_group = self.parser.add_argument_group('Watch parameters')
@@ -44,9 +49,14 @@ class CliArgs():
             watch_group.add_argument('-e', required=False, action='store_true', dest='existing', help=self.arg_dict['existing'])
             # SUPPRESSION flag for hidden submission
             watch_group.add_argument('--sample', dest='file_to_upload', help=argparse.SUPPRESS)
+        else:
+            raise CliArgError(tool)
 
         self.common_args()
-        self.parser.parse_args(namespace=self)
+        if explicit is None:
+            self.parser.parse_args(namespace=self)
+        else:
+            self.parser.parse_args(args=explicit, namespace=self)    
 
     def dot_robust_helper(self):
         config = ConfigParser.ConfigParser({'user': False, 'password': False, 'host': False, 'skipssl': False})

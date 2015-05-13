@@ -6,8 +6,8 @@ import getpass
 
 import ratd.utils as utils
 
-import ratd.CliArgs
-from ratd.CliArgs import CliArgs
+import ratd.cliargs
+from ratd.cliargs import CliArgs
 
 import ratd.lib
 from ratd.lib import FetchProfiles

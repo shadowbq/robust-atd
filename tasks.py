@@ -38,8 +38,7 @@ def build(docs=False):
 @task(pre=[clean], post=[codestats])
 def test():
     """ Run Unit tests """
-    run("cd ratd && nosetests --rednose test/tests.py")
-
+    run("cd ratd && nosetests --rednose test/tests.py test/test_clitools.py")
 
 @task
 def release(version):

@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 # Fork from atdcli.py (Carlos Munoz (carlos_munoz@mcafee.com))
 # -------------------------------------------------------------------------------

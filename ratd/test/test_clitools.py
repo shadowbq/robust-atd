@@ -1,0 +1,76 @@
+import unittest
+from pkg_resources import parse_version
+
+import ratd.cliargs
+from ratd.cliargs import CliArgs
+
+import sys
+
+# Redirect Standard Error from Argparse failures so they are quiet during testing
+sys.stderr = sys.stdout
+
+class CommandLineTestCases(unittest.TestCase):
+
+    def test_with_empty_args(self):
+        """
+        User passes no args, and no parameters, should fail with TypeError
+        """
+        with self.assertRaises(TypeError):
+             CliArgs()
+
+    def test_with_unknown_args(self):
+        """
+        User passes no args, should raise with CliArgError
+        """
+        with self.assertRaises(ratd.cliargs.CliArgError):
+             CliArgs('foomonkey')
+
+
+    def test_with_empty_profile_args(self):
+        """
+        User passes no args, should fail with SystemExit
+        """
+        with self.assertRaises(SystemExit):
+             CliArgs('profile')
+
+    def test_with_explicit_profile_args(self):
+        """
+        User passes args, should pass
+        """
+        test_dict = CliArgs('profile', ['-l', '-n','-u','foo','-v','-v']).__dict__
+        self.assertEqual('foo', test_dict['user'])
+        self.assertEqual(2, test_dict['verbosity'])
+
+        self.assertEqual(True, test_dict['listprofiles'])
+
+    def test_with_empty_sample_args(self):
+        """
+        User passes no args, should fail with SystemExit
+        """
+        with self.assertRaises(SystemExit):
+             CliArgs('sample')
+
+    def test_with_explicit_sample_args(self):
+        """
+        User passes args, should pass
+        """
+        test_dict = CliArgs('sample', ['-a', '26', '-s', 'somefile', '-n','-u','foo','-v']).__dict__
+        self.assertEqual('foo', test_dict['user'])
+        self.assertEqual(1, test_dict['verbosity'])
+        self.assertEqual('26', test_dict['analyzer_profile'])
+
+    def test_with_empty_watch_args(self):
+        """
+        User passes no args, should fail with SystemExit
+        """
+        with self.assertRaises(SystemExit):
+             CliArgs('watch')
+
+    def test_with_explicit_watch_args(self):
+        """
+        User passes args, should pass
+        """
+        test_dict = CliArgs('watch', ['-a', '26', '-d', 'dir', '-n','-u','foo','-v']).__dict__
+        self.assertEqual('foo', test_dict['user'])
+        self.assertEqual(1, test_dict['verbosity'])
+        self.assertEqual('dir', test_dict['directory'])
