@@ -124,12 +124,25 @@ Run All Selected?: On
 ```
 ### Managing Outputs
 
-Using Unix Return codes with Quiet output flag
+Using System Return codes with ``-q` Quiet output flag. When the quiet flag is
+used for submitting samples or searching reports the *severity* of the application
+is returned as a system exit/return code. Negative return codes indicate *faults*
+or failure during submission.
 
 ```
 (robust)>$ robust.py -n -a 26 -s ./.samples/Sample.exe -q
 (robust)>$ echo $?
 2
+```
+
+Common Fault codes:
+
+```
+    -1 ---> Error connecting to the ATD Server
+    -2 ---> Error uploading file to the ATD Server
+    -3 ---> Analysis failed
+    -4 ---> Error getting report
+    -5 ---> Error Obtaining vmprofilelist
 ```
 
 ## Robust (DOT) FILE
