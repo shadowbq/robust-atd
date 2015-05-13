@@ -32,6 +32,8 @@ class CliArgs():
             'profiles': '(l)ist analyzer profiles available\n\t\t(default: %(default)s)',
             'directory': '(d)irectory to watch for events\n\t\t(default: %(default)s)',
             'existing': '(e)xisting files in directory will be submitted\n\t\t(default: %(default)s)',
+            'rType': '(t)ype of report requested\n\t\t(default: %(default)s)',
+            'filename': '(f)ilename for saving the requested report\n\t\t(default: %(default)s)',
             'md5': '(m)d5 32bit hash of the sample to search\n\t\t(default: %(default)s)',
             'quiet': '(q)uiet all output\n\t\t(default: %(default)s)',
             'verbosity': 'increase output (v)erbosity\n\t\t(default: %(default)s)'
@@ -54,6 +56,7 @@ class CliArgs():
         elif tool == 'search':
             self.auth_args()
             self.search_args()
+            self.output_args()
 
         elif tool == 'watch':
             self.auth_args()
@@ -129,3 +132,9 @@ class CliArgs():
 
         search_group = self.parser.add_argument_group('Search parameters')
         search_group.add_argument('-m', required=True, type=check_md5, action='store', dest='md5', help=self.arg_dict['md5'])
+
+    def output_args(self):
+
+        output_group = self.parser.add_argument_group('Reporting parameters')
+        output_group.add_argument('-t', required=False, action='store', dest='rType', choices=['html','txt','xml','zip','json','ioc','stix','pdf','sample'], help=self.arg_dict['rType'])
+        output_group.add_argument('-f', required=False, action='store', dest='filename', help=self.arg_dict['filename'])

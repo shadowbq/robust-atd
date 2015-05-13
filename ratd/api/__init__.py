@@ -315,21 +315,35 @@ class Atd():
                 server_info = json.loads(r.content)
                 return (1, server_info)
 
-    def get_report_md5(self, md5):
+    def get_report_md5(self, md5, itype="json"):
         '''
         Description: Get the final result of the inspection of the sample submitted
         Input:       md5, Hash of the sample to find
+
+        iType can be one of the following types: String
+
+                • html — HTML report
+                • txt — Text report
+                • xml — XML report
+                • zip — All files packaged in a single zip file
+                • json — Same as xml but in the JSON format
+                • ioc - Indicators of Compromise format
+                • stix - Structured Threat Information expression
+                • pdf - Portable Document Format
+                • sample - Download sample from McAfee Advanced Threat Defense
+
         Output:      Possible values:
 
                  (0, error_info): Unsucessful procedure
+                 (1, itype, response) :
                  (2, 'Result is not ready')
                  (3, 'Report not found, Ex. file not supported')
-                 (1, {}): The dic includes all the json report
+
         '''
 
         url = 'https://%s/php/showreport.php' %self.atdserver
 
-        payload = {'md5': md5, 'iType': 'json'}
+        payload = {'md5': md5, 'iType': itype}
 
         custom_header = {
                     'Accept': 'application/vnd.ve.v1.0+json',
@@ -340,26 +354,69 @@ class Atd():
             r = requests.get(url, params=payload, headers=custom_header, verify=False)
         except Exception as e:
             error_info = 'Can not get report of md5: %d,\nReturned error: %s ' %(md5, e)
-            return (0, error_info)
+            return (0, 'error', error_info)
 
         if r.status_code == 400:
             info = 'Inspection not yet finished'
-            return(2, info)
+            return(2, 'error', info)
 
-        if r.content.split('\n')[0] == 'Result is not ready':
-            info = 'Result is not ready'
-            return (2, info)
-        else:
-            if 'report file not found' in r.content.lower():
-                server_info = 'Report not found - Ex. file not supported'
-                return (3, server_info)
-            elif 'submission not found' in r.content.lower():
-                server_info = 'Report not found'
-                return (3, server_info)
+        if r.status_code == 200:
+
+            if r.headers['Content-Type'] == 'text/plain;charset=UTF-8':
+                # XML iType Returned
+                if r.content.startswith('<?xml version='):
+                    return (1, itype, r.content)
+                # JSON iType Returned
+                elif r.content.startswith('{'):
+                    server_info = json.loads(r.content)
+                    return (1, itype, server_info)
+                elif r.content.split('\n')[0] == 'Result is not ready':
+                    info = 'Result is not ready'
+                    return (2, 'error', info)
+                else:
+                    if 'report file not found' in r.content.lower():
+                        return (3, 'error', 'Report not found - Ex. file not supported')
+                    elif 'submission not found' in r.content.lower():
+                        return (3, 'error', 'Report not found')
+                    else:
+                        return (0, 'error', 'fail.. something..something.')
+
+            elif r.headers['content-type'] == 'text/html; charset=UTF-8':
+                # TXT iType returned
+                if r.content.startswith('====='):
+                    return (1, itype, r.content)
+
+                # HTML iType  returned
+                elif r.content.startswith('<!DOCTYPE HTML PUBLIC'):
+                    return (1, itype, r.content)
+
+                # ioc iType  returned
+                elif r.content.startswith('<?xml version="'):
+                    return (1, itype, r.content)
+
+                # stix iType  returned
+                elif r.content.startswith('<stix:STIX_Package"'):
+                    return (1, itype, r.content)
+
+                elif 'content-disposition' in r.headers:
+
+                    # pdf iType  returned
+                    if r.content.startswith('%PDF'):
+                        return (1, itype, r.content)
+
+                    # zip|sample iType  returned
+                    elif r.content.startswith('PK\x03\x04'):
+                        return (1, itype, r.content)
+
+                    else:
+                        return (0, 'error', 'fail.. something..something.')
+                else:
+                    return (0, 'error', 'unknown content. {0}'.format(r.content[0:10]))
+
             else:
-                server_info = json.loads(r.content)
-                return (1, server_info)
-
+                return (0, 'error', 'fail.. unknown content-type. {0} '.format(r.headers['content-type']))
+        else:
+            return (0, 'error', 'fail.. bad status code. {0}'.format(r.status_code))
 
     def b64(self, user, password):
         '''

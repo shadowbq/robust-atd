@@ -2,6 +2,7 @@ from __future__ import print_function
 import sys
 import time
 import os
+import json
 
 from watchdog.observers import Observer
 import watchdog.events
@@ -12,6 +13,90 @@ from ratd.api import Atd
 EXIT_SUCCESS = 0
 EXIT_FAILURE = 1
 
+
+class CommonATD():
+
+    def connection_check(self):
+        if self.error_control == 0:
+            print (self.data)
+            sys.exit(-1)
+
+        if self.options.verbosity > 1:
+            print ('Connection successful...\n')
+            print ('Session Value:     ', self.myatd.session)
+            print ('User ID:           ', self.myatd.userId)
+            print ('ATD ver:           ', self.myatd.matdver)
+
+    def heartbeat(self):
+        if self.options.verbosity > 1:
+            if self.error_control == 0:
+                print ('ATD Box heartbeat: Error Obtaining value')
+            else:
+                print ('ATD Box heartbeat: ', self.data)
+
+    def report_errors(self):
+        if self.error_control == 0:
+            print ('\n', self.data)
+            self.myatd.disconnect()
+            sys.exit(-4)
+
+        if self.error_control == 3:
+            if self.options.quiet is not True:
+                print ('({0}:{1}) = {2}: \"{3}\"'.format('-', self.options.md5, '-', self.data))
+            self.myatd.disconnect()
+            sys.exit(0)
+
+
+    def report_rtype(self):
+        error_control, itype, self.data = self.myatd.get_report_md5(self.options.md5, self.options.rType)
+        self.report_errors()
+
+        if itype == 'json':
+                self.data = json.dumps(self.data)
+
+        with open(self.options.filename, 'w') as f:
+            f.write(self.data)
+        f.closed
+
+    def report_stdout(self):
+        while True:
+            error_control, itype, self.data = self.myatd.get_report_md5(self.options.md5)
+            self.report_errors()
+
+            if error_control == 1:
+                try:
+                    self.severity = self.data['Summary']['Verdict']['Severity']
+                    if 'Description' in self.data['Summary']['Verdict']:
+                        desc = self.data['Summary']['Verdict']['Description']
+                    else:
+                        desc = ""
+                except:
+                    print (sys.exc_info()[0])
+                    print ('\n**BOMB parser**')
+                    print (self.data)
+                    self.myatd.disconnect()
+                    sys.exit(-4)
+                else:
+                    if self.options.quiet is not True:
+                        print ('({0}:{1}) = {2}: \"{3}\"'.format(self.data['Summary']['Subject']['Name'], self.data['Summary']['Subject']['md5'], self.data['Summary']['Verdict']['Severity'],desc))
+                    if self.options.verbosity:
+                        print ('\nFinal results...')
+                        print (' Severity:    %s' %severity)
+                        print (' Description: %s' %desc)
+                        if self.options.verbosity > 1:
+                            print (self.data)
+                    break
+            # error_control = 2
+            if self.options.verbosity:
+                print (' %s ...' %self.data)
+                sys.stdout.flush()
+            if self.options.quiet is not True:
+                print ('({0}:{1}) = {2}: \"{3}\"'.format('-', self.options.md5, '-', '-'))
+            sys.exit(-4)
+
+
+    def rtnv(self):
+        return self.rtnv
 
 class ScanFolder:
     'Class defining a scan folder'
@@ -70,79 +155,67 @@ class ExistingFolder:
         return file_paths
 
 
-class SampleSubmit:
+class SampleSubmit(CommonATD):
     'Class defining a file submission'
 
     def __init__(self, options):
-        self.rtnv = EXIT_FAILURE
-
         # Create the ATD object and connect to it
-        myatd = Atd(options.atd_ip, options.skipssl)
-        error_control, data = myatd.connect(options.user, options.password)
+        self.rtnv = EXIT_FAILURE
+        self.options = options
 
-        if error_control == 0:
-            print (data)
-            sys.exit(-1)
-
-        if options.verbosity > 1:
-            print ('Connection successful...\n')
-            print ('Session Value:     ', myatd.session)
-            print ('User ID:           ', myatd.userId)
-            print ('ATD ver:           ', myatd.matdver)
+        # Get an authenticated connection to ATD
+        self.myatd = Atd(options.atd_ip, options.skipssl)
+        self.error_control, self.data = self.myatd.connect(self.options.user, self.options.password)
+        self.connection_check()
 
         # Get the heartbeat value of the ATD Box
-        error_control, data = myatd.heartbeat()
-
-        if options.verbosity > 1:
-            if error_control == 0:
-                print ('ATD Box heartbeat: Error Obtaining value')
-            else:
-                print ('ATD Box heartbeat: ', data)
+        self.error_control, self.data = self.myatd.heartbeat()
+        self.heartbeat()
 
         # Upload file to ATD Server
-        error_control, data = myatd.upload_file(options.file_to_upload, options.analyzer_profile)
+        error_control, self.data = self.myatd.upload_file(self.options.file_to_upload, self.options.analyzer_profile)
 
         if error_control == 0:
-            print (data)
+            print (self.data)
             myatd.disconnect()
             sys.exit(-2)
         else:
             if options.verbosity > 2:
-                print (data)
+                print (self.data)
 
-        jobId = data['jobId']
-        taskId = data['taskId']
+        jobId = self.data['jobId']
+        taskId = self.data['taskId']
 
-        if options.verbosity:
-            print ('\nFile %s uploaded\n' %data['file'])
-            print ('jobId:    ', data['jobId'])
-            print ('taskId:   ', data['taskId'])
-            print ('md5:      ', data['md5'])
-            print ('size:     ', data['size'])
-            print ('mimeType: ', data['mimeType'])
+        if self.options.verbosity:
+            print ('\nFile %s uploaded\n' %self.data['file'])
+            print ('jobId:    ', self.data['jobId'])
+            print ('taskId:   ', self.data['taskId'])
+            print ('md5:      ', self.data['md5'])
+            print ('size:     ', self.data['size'])
+            print ('mimeType: ', self.data['mimeType'])
             print ('')
 
         # Check status before requesting the report
         stepwait = 5
         while True:
-            error_control, data = myatd.check_status(taskId)
+            error_control, self.data = self.myatd.check_status(taskId)
             if error_control == 4 or error_control == 3:
-                if options.verbosity:
-                    print ('{0} - Waiting for {1} seconds'.format(data, stepwait))
+                if self.options.verbosity:
+                    print ('{0} - Waiting for {1} seconds'.format(self.data, stepwait))
                     sys.stdout.flush()
                 else:
-                    if options.quiet is not True:
+                    if self.options.quiet is not True:
                         print ('.', end="")
                         sys.stdout.flush()
             elif error_control == -1:
-                print (data)
-                myatd.disconnect()
+                print (self.data)
+                self.myatd.disconnect()
                 sys.exit(-3)
             else:  # Analysis done
-                if options.verbosity:
+                if self.options.verbosity:
                     print ('\nAnalysis done')
                 else:
-                    if options.quiet is not True:
+                    if self.options.quiet is not True:
                         print ('.', end="")
                         sys.stdout.flush()
                 break
@@ -151,189 +224,123 @@ class SampleSubmit:
                 stepwait = stepwait + 5
 
         # Getting Report information
-        if options.verbosity:
+        if self.options.verbosity:
             print ('\nGetting report information...')
 
         while True:
-            error_control, data = myatd.get_report(jobId)
+            error_control, self.data = self.myatd.get_report(jobId)
 
             if error_control == 0:
-                print ('\n', data)
-                myatd.disconnect()
+                print ('\n', self.data)
+                self.myatd.disconnect()
                 sys.exit(-4)
 
             if error_control == 3:
-                print ('\n', data)
-                myatd.disconnect()
+                print ('\n', self.data)
+                self.myatd.disconnect()
                 sys.exit(0)
 
             if error_control == 1:
                 try:
-                    severity = data['Summary']['Verdict']['Severity']
-                    if 'Description' in data['Summary']['Verdict']:
-                        desc = data['Summary']['Verdict']['Description']
+                    self.severity = self.data['Summary']['Verdict']['Severity']
+                    if 'Description' in self.data['Summary']['Verdict']:
+                        desc = self.data['Summary']['Verdict']['Description']
                     else:
                         desc = ""
                 except:
                     print ('\n**BOMB parser**')
-                    print (data)
-                    myatd.disconnect()
+                    print (self.data)
+                    self.myatd.disconnect()
                     sys.exit(-4)
                 else:
-                    if options.quiet is not True:
-                        print ('({0}:{1}) = {2}: \"{3}\"'.format(data['Summary']['Subject']['Name'], data['Summary']['Subject']['md5'], data['Summary']['Verdict']['Severity'],desc))
-                    if options.verbosity:
+                    if self.options.quiet is not True:
+                        print ('({0}:{1}) = {2}: \"{3}\"'.format(self.data['Summary']['Subject']['Name'], self.data['Summary']['Subject']['md5'], self.data['Summary']['Verdict']['Severity'],desc))
+                    if self.options.verbosity:
                         print ('\nFinal results...')
-                        print (' Severity:    %s' %severity)
+                        print (' Severity:    %s' %self.severity)
                         print (' Description: %s' %desc)
-                        if options.verbosity > 1:
-                            print (data)
+                        if self.options.verbosity > 1:
+                            print (self.data)
                     break
             # error_control = 2
-            if options.verbosity:
-                print (' %s - Waiting for 30 seconds...' %data)
+            if self.options.verbosity:
+                print (' %s - Waiting for 30 seconds...' %self.data)
                 sys.stdout.flush()
             time.sleep(30)
 
-        myatd.disconnect()
+        self.myatd.disconnect()
         print ('')
-        self.rtnv = int(severity)
+        self.rtnv = int(self.severity)
         return
 
-    def rtnv(self):
-        return self.rtnv
 
-
-class FetchProfiles():
+class FetchProfiles(CommonATD):
     'Class defining fetching the Analyzer Profiles from ATD'
 
     def __init__(self, options):
+
         # Create the ATD object and connect to it
         self.rtnv = EXIT_FAILURE
+        self.options = options
 
-        myatd = Atd(options.atd_ip, options.skipssl)
-        error_control, data = myatd.connect(options.user, options.password)
-
-        if error_control == 0:
-            print (data)
-            sys.exit(-1)
-
-        if options.verbosity > 1:
-            print ('Connection successful...\n')
-            print ('Session Value:     ', myatd.session)
-            print ('User ID:           ', myatd.userId)
-            print ('ATD ver:           ', myatd.matdver)
+        # Get an authenticated connection to ATD
+        self.myatd = Atd(options.atd_ip, options.skipssl)
+        self.error_control, self.data = self.myatd.connect(self.options.user, self.options.password)
+        self.connection_check()
 
         # Get the heartbeat value of the ATD Box
-        error_control, data = myatd.heartbeat()
-
-        if options.verbosity > 1:
-            if error_control == 0:
-                print ('ATD Box heartbeat: Error Obtaining value')
-            else:
-                print ('ATD Box heartbeat: ', data)
+        self.error_control, self.data = self.myatd.heartbeat()
+        self.heartbeat()
 
         # Get the vmprofilelist
-        if options.listprofiles:
-            error_control, data = myatd.get_vmprofiles()
-            if error_control == 0:
+        if self.options.listprofiles:
+            self.error_control, self.data = self.myatd.get_vmprofiles()
+            if self.error_control == 0:
                 print ('ATD Box profiles: Error Obtaining value')
-                myatd.disconnect()
+                self.myatd.disconnect()
                 sys.exit(-5)
             else:
-                print ('ATD profiles: ', len(data))
-                for profile in data:
+                print ('ATD profiles: ', len(self.data))
+                for profile in self.data:
                     print ('Profile id: ', profile['vmProfileid'])
                     print ('Name: ', profile['name'])
                     print ('OS:', profile['selectedOSName'])
                     print ('Run all down selects?: {0}'.format(['Off', 'On'][profile['recusiveAnalysis']]))
                     print ('******************')
-                myatd.disconnect()
+                self.myatd.disconnect()
                 self.rtnv = EXIT_SUCCESS
                 return
 
-    def rtnv(self):
-        return self.rtnv
 
-
-class SearchReports():
+class SearchReports(CommonATD):
     'Class defining fetching the Analyzer Profiles from ATD'
 
     def __init__(self, options):
         # Create the ATD object and connect to it
         self.rtnv = EXIT_FAILURE
+        self.options = options
 
-        myatd = Atd(options.atd_ip, options.skipssl)
-        error_control, data = myatd.connect(options.user, options.password)
-
-        if error_control == 0:
-            print (data)
-            sys.exit(-1)
-
-        if options.verbosity > 1:
-            print ('Connection successful...\n')
-            print ('Session Value:     ', myatd.session)
-            print ('User ID:           ', myatd.userId)
-            print ('ATD ver:           ', myatd.matdver)
+        # Get an authenticated connection to ATD
+        self.myatd = Atd(self.options.atd_ip, self.options.skipssl)
+        self.error_control, self.data = self.myatd.connect(self.options.user, self.options.password)
+        self.connection_check()
 
         # Get the heartbeat value of the ATD Box
-        error_control, data = myatd.heartbeat()
+        self.error_control, self.data = self.myatd.heartbeat()
+        self.heartbeat()
 
-        if options.verbosity > 1:
-            if error_control == 0:
-                print ('ATD Box heartbeat: Error Obtaining value')
+        # Get the Basic JSON Report
+        if not self.options.quiet:
+            self.report_stdout()
+
+        # Get the iType Report
+        if self.options.rType is not None:
+            if self.options.filename is None:
+                print('Filename (-f <filename>) not include when requesting report generation')
+                sys.exit(-1)
             else:
-                print ('ATD Box heartbeat: ', data)
+                self.report_rtype()
 
-        # Get the vmprofilelist
-
-        while True:
-            error_control, data = myatd.get_report_md5(options.md5)
-
-            if error_control == 0:
-                print ('\n', data)
-                myatd.disconnect()
-                sys.exit(-4)
-
-            if error_control == 3:
-                if options.quiet is not True:
-                    print ('({0}:{1}) = {2}: \"{3}\"'.format('-', options.md5, '-', data))
-                myatd.disconnect()
-                sys.exit(0)
-
-            if error_control == 1:
-                try:
-                    severity = data['Summary']['Verdict']['Severity']
-                    if 'Description' in data['Summary']['Verdict']:
-                        desc = data['Summary']['Verdict']['Description']
-                    else:
-                        desc = ""
-                except:
-                    print ('\n**BOMB parser**')
-                    print (data)
-                    myatd.disconnect()
-                    sys.exit(-4)
-                else:
-                    if options.quiet is not True:
-                        print ('({0}:{1}) = {2}: \"{3}\"'.format(data['Summary']['Subject']['Name'], data['Summary']['Subject']['md5'], data['Summary']['Verdict']['Severity'],desc))
-                    if options.verbosity:
-                        print ('\nFinal results...')
-                        print (' Severity:    %s' %severity)
-                        print (' Description: %s' %desc)
-                        if options.verbosity > 1:
-                            print (data)
-                    break
-            # error_control = 2
-            if options.verbosity:
-                print (' %s ...' %data)
-                sys.stdout.flush()
-            if options.quiet is not True:
-                print ('({0}:{1}) = {2}: \"{3}\"'.format('-', options.md5, '-', '-'))
-            sys.exit(-4)
-
-        myatd.disconnect()
-        self.rtnv = int(severity)
+        self.myatd.disconnect()
+        self.rtnv = int(self.severity)
         return
-
-    def rtnv(self):
-        return self.rtnv
