@@ -169,6 +169,15 @@ The `-e` flag can be passed to cause all existing files in the directory (recuri
 .....
 ````
 
+## robust-search
+
+A tool designed to search and return reports for a specific md5 hash.
+
+```shell
+(robust)$> $ robust-search.py -m 2F7568342339CDB8321B52FF7BEBE661 -n
+(Sample.exe:2F7568342339CDB8321B52FF7BEBE661) = 2: "Sample probably is suspicious"
+```
+
 ## Development Tasks
 
 ```shell

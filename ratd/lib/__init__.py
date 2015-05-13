@@ -252,3 +252,83 @@ class FetchProfiles():
 
     def rtnv(self):
         return self.rtnv
+
+
+class SearchReports():
+    'Class defining fetching the Analyzer Profiles from ATD'
+
+    def __init__(self, options):
+        # Create the ATD object and connect to it
+        self.rtnv = EXIT_FAILURE
+
+        myatd = Atd(options.atd_ip, options.skipssl)
+        error_control, data = myatd.connect(options.user, options.password)
+
+        if error_control == 0:
+            print (data)
+            sys.exit(-1)
+
+        if options.verbosity > 1:
+            print ('Connection successful...\n')
+            print ('Session Value:     ', myatd.session)
+            print ('User ID:           ', myatd.userId)
+            print ('ATD ver:           ', myatd.matdver)
+
+        # Get the heartbeat value of the ATD Box
+        error_control, data = myatd.heartbeat()
+
+        if options.verbosity > 1:
+            if error_control == 0:
+                print ('ATD Box heartbeat: Error Obtaining value')
+            else:
+                print ('ATD Box heartbeat: ', data)
+
+        # Get the vmprofilelist
+
+        while True:
+            error_control, data = myatd.get_report_md5(options.md5)
+
+            if error_control == 0:
+                print ('\n', data)
+                myatd.disconnect()
+                sys.exit(-4)
+
+            if error_control == 3:
+                print ('\n', data)
+                myatd.disconnect()
+                sys.exit(0)
+
+            if error_control == 1:
+                try:
+                    severity = data['Summary']['Verdict']['Severity']
+                    if 'Description' in data['Summary']['Verdict']:
+                        desc = data['Summary']['Verdict']['Description']
+                    else:
+                        desc = ""
+                except:
+                    print ('\n**BOMB parser**')
+                    print (data)
+                    myatd.disconnect()
+                    sys.exit(-4)
+                else:
+                    if options.quiet is not True:
+                        print ('({0}:{1}) = {2}: \"{3}\"'.format(data['Summary']['Subject']['Name'], data['Summary']['Subject']['md5'], data['Summary']['Verdict']['Severity'],desc))
+                    if options.verbosity:
+                        print ('\nFinal results...')
+                        print (' Severity:    %s' %severity)
+                        print (' Description: %s' %desc)
+                        if options.verbosity > 1:
+                            print (data)
+                    break
+            # error_control = 2
+            if options.verbosity:
+                print (' %s - Waiting for 5 seconds...' %data)
+                sys.stdout.flush()
+            time.sleep(5)
+
+        myatd.disconnect()
+        self.rtnv = int(severity)
+        return
+
+    def rtnv(self):
+        return self.rtnv

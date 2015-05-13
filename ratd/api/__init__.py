@@ -315,6 +315,52 @@ class Atd():
                 server_info = json.loads(r.content)
                 return (1, server_info)
 
+    def get_report_md5(self, md5hash):
+        '''
+        Description: Get the final result of the inspection of the sample submitted
+        Input:       md5, Hash of the sample to find
+        Output:      Possible values:
+
+                 (0, error_info): Unsucessful procedure
+                 (2, 'Result is not ready')
+                 (3, 'Report not found, Ex. file not supported')
+                 (1, {}): The dic includes all the json report
+        '''
+
+        url = 'https://%s/php/showreport.php' %self.atdserver
+
+        payload = {'md5': md5hash, 'iType': 'json'}
+
+        custom_header = {
+                    'Accept': 'application/vnd.ve.v1.0+json',
+                    'VE-SDK-API': '%s' %self.b64(self.session, self.userId)
+                    }
+
+        try:
+            r = requests.get(url, params=payload, headers=custom_header, verify=False)
+        except Exception as e:
+            error_info = 'Can not get report of md5: %d,\nReturned error: %s ' %(md5, e)
+            return (0, error_info)
+
+        if r.status_code == 400:
+            info = 'Inspection not yet finished'
+            return(2, info)
+
+        if r.content.split('\n')[0] == 'Result is not ready':
+            info = 'Result is not ready'
+            return (2, info)
+        else:
+            if 'report file not found' in r.content.lower():
+                server_info = 'Report not found - Ex. file not supported'
+                return (3, server_info)
+            elif 'submission not found' in r.content.lower():
+                server_info = 'Report not found'
+                return (3, server_info)
+            else:
+                server_info = json.loads(r.content)
+                return (1, server_info)
+
+
     def b64(self, user, password):
         '''
         Description: Internal procedure to get the base64 values used for authentication

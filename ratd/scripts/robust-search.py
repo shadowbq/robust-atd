@@ -9,7 +9,7 @@ import ratd.cliargs
 from ratd.cliargs import CliArgs
 
 import ratd.lib
-from ratd.lib import FetchProfiles
+from ratd.lib import SearchReports
 
 
 # ***************************************************************************************************************************************************
@@ -24,7 +24,7 @@ from ratd.lib import FetchProfiles
 
 if __name__ == '__main__':
     # Get the list of parameters passed from command line
-    options = CliArgs('profile')
+    options = CliArgs('search')
 
     if options.password is None:
         options.password = getpass.getpass()
@@ -32,5 +32,5 @@ if __name__ == '__main__':
     if options.verbosity:
         utils.copyleftnotice()
 
-    rtnv = FetchProfiles(options)
-    sys.exit(rtnv.exit())
+    sr = SearchReports(options)
+    sys.exit(sr.rtnv)

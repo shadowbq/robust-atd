@@ -59,7 +59,7 @@ setup(
     url='http://github.com/shadowbq/robust-atd',
     version=get_version(),
     packages=find_packages(),
-    scripts=['ratd/scripts/robust.py','ratd/scripts/robust-profiles.py','ratd/scripts/robust-watchdog.py'],
+    scripts=['ratd/scripts/robust.py','ratd/scripts/robust-profiles.py','ratd/scripts/robust-watchdog.py','ratd/scripts/robust-search.py'],
     #install_requires=[line for line in open('./requirements.txt')],
     install_requires=install_requires(),
     extras_require=extras_require,

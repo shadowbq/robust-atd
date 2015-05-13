@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# Copyright (C) 2015 McAfee, Inc.  All Rights Reserved.
 
 import sys
 import time

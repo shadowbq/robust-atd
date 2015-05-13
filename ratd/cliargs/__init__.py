@@ -22,6 +22,7 @@ class CliArgs():
             'profiles': '(l)ist analyzer profiles available\n\t\t(default: %(default)s)',
             'directory': '(d)irectory to watch for events\n\t\t(default: %(default)s)',
             'existing': '(e)xisting files in directory will be submitted\n\t\t(default: %(default)s)',
+            'md5': '(m)d5 hash of the sample to search\n\t\t(default: %(default)s)',
             'quiet': '(q)uiet all output\n\t\t(default: %(default)s)',
             'verbosity': 'increase output (v)erbosity\n\t\t(default: %(default)s)'
             }
@@ -40,6 +41,10 @@ class CliArgs():
             self.auth_args()
             self.sample_args()
 
+        elif tool == 'search':
+            self.auth_args()
+            self.search_args()
+
         elif tool == 'watch':
             self.auth_args()
 
@@ -56,7 +61,7 @@ class CliArgs():
         if explicit is None:
             self.parser.parse_args(namespace=self)
         else:
-            self.parser.parse_args(args=explicit, namespace=self)    
+            self.parser.parse_args(args=explicit, namespace=self)
 
     def dot_robust_helper(self):
         config = ConfigParser.ConfigParser({'user': False, 'password': False, 'host': False, 'skipssl': False})
@@ -109,3 +114,8 @@ class CliArgs():
         sample_group = self.parser.add_argument_group('Sample parameters')
         sample_group.add_argument('-s', required=True, action='store', dest='file_to_upload', help=self.arg_dict['sample'])
         sample_group.add_argument('-a', required=True, action='store', dest='analyzer_profile', help=self.arg_dict['analyzer'])
+
+    def search_args(self):
+
+        search_group = self.parser.add_argument_group('Search parameters')
+        search_group.add_argument('-m', required=True, action='store', dest='md5', help=self.arg_dict['md5'])

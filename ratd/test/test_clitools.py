@@ -74,3 +74,17 @@ class CommandLineTestCases(unittest.TestCase):
         self.assertEqual('foo', test_dict['user'])
         self.assertEqual(1, test_dict['verbosity'])
         self.assertEqual('dir', test_dict['directory'])
+
+    def test_with_empty_search_args(self):
+        """
+        User passes no args, should fail with SystemExit
+        """
+        with self.assertRaises(SystemExit):
+             CliArgs('search')
+
+    def test_with_explicit_search_args(self):
+        """
+        User passes args, should pass
+        """
+        test_dict = CliArgs('search', ['-m', 'c35b154e995a9380664a95ef132df41f', '-n','-u','foo','-v']).__dict__
+        self.assertEqual('c35b154e995a9380664a95ef132df41f', test_dict['md5'])
