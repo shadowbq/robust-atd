@@ -35,5 +35,5 @@ if __name__ == '__main__':
     if options.verbosity:
         utils.copyleftnotice()
 
-    rtnv = SampleSubmit(options)
-    sys.exit(rtnv.exit())
+    rb_rtnv = SampleSubmit(options)
+    sys.exit(rb_rtnv.rtnv)

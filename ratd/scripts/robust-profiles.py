@@ -32,5 +32,5 @@ if __name__ == '__main__':
     if options.verbosity:
         utils.copyleftnotice()
 
-    rtnv = FetchProfiles(options)
-    sys.exit(rtnv.exit())
+    rb_rtnv = FetchProfiles(options)
+    sys.exit(rb_rtnv.rtnv)

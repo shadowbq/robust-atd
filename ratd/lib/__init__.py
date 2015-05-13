@@ -180,6 +180,8 @@ class SampleSubmit:
                     myatd.disconnect()
                     sys.exit(-4)
                 else:
+                    if options.quiet is not True:
+                        print ('({0}:{1}) = {2}: \"{3}\"'.format(data['Summary']['Subject']['Name'], data['Summary']['Subject']['md5'], data['Summary']['Verdict']['Severity'],desc))
                     if options.verbosity:
                         print ('\nFinal results...')
                         print (' Severity:    %s' %severity)
@@ -322,9 +324,11 @@ class SearchReports():
                     break
             # error_control = 2
             if options.verbosity:
-                print (' %s - Waiting for 5 seconds...' %data)
+                print (' %s ...' %data)
                 sys.stdout.flush()
-            time.sleep(5)
+            if options.quiet is not True:
+                print ('({0}:{1}) = {2}: \"{3}\"'.format('-', options.md5, '-', '-'))
+            sys.exit(-4)
 
         myatd.disconnect()
         self.rtnv = int(severity)

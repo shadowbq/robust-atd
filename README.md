@@ -145,6 +145,17 @@ Common Fault codes:
     -5 ---> Error Obtaining vmprofilelist
 ```
 
+Malware ranking:
+(If the severity level of the sample is 3 and above it is generally regarded a threat)
+```
+    N/A -> Sample did not run
+    -1 --> Sample is white listed
+    0 ---> No malicious activity detected
+    2 ---> Sample is somewhat suspicious
+    4 ---> Sample is malicious
+    5 ---> Sample is malicious
+```
+
 ## Robust (DOT) FILE
 
 Robust can use a `~\.robust` file to load defaults in the auth context
