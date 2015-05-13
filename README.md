@@ -150,11 +150,12 @@ Malware ranking:
 ```
     N/A -> Sample did not run
     -1 --> Sample is white listed
-    0 ---> No malicious activity detected
-    1 ---> Sample is slightly suspicious
-    2 ---> Sample is somewhat suspicious
+    0 ---> No malicious activity detected (None)
+    1 ---> Sample is slightly suspicious (Low)
+    2 ---> Sample is somewhat/probably is suspicious
+    3 ---> Sample is malicious (Medium)
     4 ---> Sample is malicious
-    5 ---> Sample is malicious
+    5 ---> Sample is malicious (Very High)
 ```
 
 ## Robust (DOT) FILE
