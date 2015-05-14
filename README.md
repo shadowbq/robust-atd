@@ -15,7 +15,9 @@ A modified Fork of atdcli.py (Carlos Munoz - 2014) is included.
 $> pip install robust-atd
 ```
 
-## PKG Download
+## PKG Download Alternative
+
+Note: python setup.py will attempt to install dependencies from the internet via `pip`.
 
 ```
 $> mkvirtualenv robust
@@ -23,7 +25,6 @@ $> workon robust
 $(robust)> wget https://github.com/shadowbq/robust-atd/archive/master.zip
 $(robust)> unzip master.zip
 $(robust)> cd master
-$(robust)> pip install -r requirements.txt
 $(robust)> python setup.py install
 ```
 
