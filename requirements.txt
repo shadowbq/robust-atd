@@ -5,5 +5,9 @@
 ##
 #-e .[docs,test]
 
+PyYAML
+argparse
+pathtools
 urllib3
 requests==2.7.0
+watchdog==0.8.3
