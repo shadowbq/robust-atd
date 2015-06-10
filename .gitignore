@@ -65,3 +65,6 @@ idea
 *.settings
 
 .samples/*
+
+# temp files
+tmp/

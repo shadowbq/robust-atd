@@ -98,6 +98,9 @@ class CommonATD():
     def rtnv(self):
         return self.rtnv
 
+    def rtv_md5(self):
+        return self.md5
+
 class ScanFolder:
     'Class defining a scan folder'
 
@@ -118,9 +121,43 @@ class ScanFolder:
 
     def on_created(self, event):
         self.options.file_to_upload = event.src_path
+        filename = os.path.basename(event.src_path)
+
+        #self.options.md5 = md5(open(event.src_path, 'rb').read()).hexdigest()
+
         if self.options.verbosity:
             print("New File identified", event.src_path)
-        SampleSubmit(self.options)
+
+        print ('rType:', self.options.rType)
+        sample = SampleSubmit(self.options)
+        severity = sample.rtnv
+        md5 = sample.rtv_md5
+
+        if self.options.dirtydir:
+            if severity > 4:
+                target = self.options.dirtydir+filename
+                print('Move file {0}.. to dirty {1}'.format(event.src_path, target))
+                os.rename(event.src_path, target)
+            elif severity > 0:
+                target = self.options.cleandir+filename
+                print('Move file {0}.. to clean {1}'.format(event.src_path, target))
+                os.rename(event.src_path, target)
+            else:
+                target = self.options.errordir+filename
+                print('Move file {0}.. to ERROR {1}'.format(event.src_path, target))
+                os.rename(event.src_path, target)
+        if self.options.reportdir:
+            # find report by md5
+            self.options.md5 = md5
+            # Report ouput filename
+            if 1 == 1:
+                self.options.filename = self.options.reportdir + md5
+            else:
+                self.options.filename = self.options.reportdir + filename
+            print('Downloading zip report for \'{0}\' into report: {1}'.format(event.src_path, self.options.filename))
+            print ('rType:', self.options.rType)
+            rb_rtnv = SearchReports(self.options)
+
         if self.options.verbosity:
             print("Completed ScanFolder()")
 
@@ -141,7 +178,7 @@ class ExistingFolder:
 
         for file_name in full_file_paths:
             self.options.file_to_upload = file_name
-            SampleSubmit(self.options)
+            rtnv, md5 = SampleSubmit(self.options)
 
     def get_filepaths(self, directory):
 
@@ -243,6 +280,7 @@ class SampleSubmit(CommonATD):
             if error_control == 1:
                 try:
                     self.severity = self.data['Summary']['Verdict']['Severity']
+                    self.md5 = self.data['Summary']['Subject']['md5']
                     if 'Description' in self.data['Summary']['Verdict']:
                         desc = self.data['Summary']['Verdict']['Description']
                     else:
@@ -271,6 +309,7 @@ class SampleSubmit(CommonATD):
         self.myatd.disconnect()
         print ('')
         self.rtnv = int(self.severity)
+        self.rtv_md5 = self.md5
         return
 
 

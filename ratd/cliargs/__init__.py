@@ -9,6 +9,10 @@ def check_md5(value):
          raise argparse.ArgumentTypeError("%s is an invalid md5 hash value" % value)
     return value
 
+def slash_dir(value):
+    if value[len(value)-1] != "/":
+        raise argparse.ArgumentTypeError("%s should end in a slash" % value)
+    return value
 
 class CliArgError(Exception):
 
@@ -35,6 +39,11 @@ class CliArgs():
             'rType': '(t)ype of report requested\n\t\t(default: %(default)s)',
             'filename': '(f)ilename for saving the requested report\n\t\t(default: %(default)s)',
             'md5': '(m)d5 32bit hash of the sample to search\n\t\t(default: %(default)s)',
+            'cleandir': '(c) move clean files to this directory\n\t\t(default: %(default)s)',
+            'dirtydir': '(x) move processed dirty files to this directory\n\t\t(default: %(default)s)',
+            'reportdir': '(r) save reports to this directory\n\t\t(default: %(default)s)',
+            'errordir': '(z) move error or skip files to this directory \n\t\t(default: %(default)s)',
+            'maxthreads': '(j) max number of threads\n\t\t(default: %(default)s)',
             'quiet': '(q)uiet all output\n\t\t(default: %(default)s)',
             'verbosity': 'increase output (v)erbosity\n\t\t(default: %(default)s)'
             }
@@ -58,7 +67,7 @@ class CliArgs():
             self.search_args()
             self.output_args()
 
-        elif tool == 'watch':
+        elif tool == 'watch' or tool == 'convict':
             self.auth_args()
 
             watch_group = self.parser.add_argument_group('Watch parameters')
@@ -67,6 +76,35 @@ class CliArgs():
             watch_group.add_argument('-e', required=False, action='store_true', dest='existing', help=self.arg_dict['existing'])
             # SUPPRESSION flag for hidden submission
             watch_group.add_argument('--sample', dest='file_to_upload', help=argparse.SUPPRESS)
+
+            if tool == 'convict':
+                convict_group = self.parser.add_argument_group('Convict parameters')
+                if self.dot_robust.has_key('cleandir'):
+                    convict_group.add_argument('-c', required=False, action='store', type=slash_dir, default=self.dot_robust['cleandir'], dest='cleandir', help=self.arg_dict['cleandir'])
+                else:
+                    convict_group.add_argument('-c', required=True, action='store', type=slash_dir, dest='cleandir', help=self.arg_dict['cleandir'])
+
+                if self.dot_robust.has_key('dirtydir'):
+                    convict_group.add_argument('-x', required=False, action='store', type=slash_dir, default=self.dot_robust['dirtydir'], dest='dirtydir', help=self.arg_dict['dirtydir'])
+                else:
+                    convict_group.add_argument('-x', required=True, action='store', type=slash_dir, dest='dirtydir', help=self.arg_dict['dirtydir'])
+
+                if self.dot_robust.has_key('reportdir'):
+                    convict_group.add_argument('-r', required=False, action='store', type=slash_dir, default=self.dot_robust['reportdir'], dest='reportdir', help=self.arg_dict['reportdir'])
+                else:
+                    convict_group.add_argument('-r', required=True, action='store', type=slash_dir, dest='reportdir', help=self.arg_dict['reportdir'])
+
+                if self.dot_robust.has_key('errordir'):
+                    convict_group.add_argument('-c', required=False, action='store', type=slash_dir, default=self.dot_robust['errordir'], dest='errordir', help=self.arg_dict['errordir'])
+                else:
+                    convict_group.add_argument('-z', required=True, action='store', type=slash_dir, dest='errordir', help=self.arg_dict['errordir'])
+
+                if self.dot_robust.has_key('maxthreads'):
+                    convict_group.add_argument('-c', required=False, action='store', default=self.dot_robust['maxthreads'], dest='maxthreads', help=self.arg_dict['maxthreads'])
+                else:
+                    convict_group.add_argument('-j', required=False, action='store', dest='maxthreads', help=self.arg_dict['maxthreads'])
+
+                convict_group.add_argument('-t', required=False, action='store', dest='rType', choices=['html','txt','xml','zip','json','ioc','stix','pdf','sample'], help=self.arg_dict['rType'])    
         else:
             raise CliArgError(tool)
 
@@ -87,6 +125,15 @@ class CliArgs():
             'host': config.get("auth", "host"),
             'skipssl': config.get("auth", "skipssl")
             }
+            if config.has_section("convict"):
+                dot_robust_convict = {
+                'cleandir': config.get("convict", "cleandir"),
+                'dirtydir': config.get("convict", "dirtydir"),
+                'reportdir': config.get("convict", "reportdir"),
+                'errordir': config.get("convict", "errordir"),
+                'maxthreads': config.get("convict", "maxthreads")
+                }
+                dot_robust_dict = dot_robust_dict.update(dot_robust_convict)
         else:
             dot_robust_dict = {'user': False, 'password': False, 'host': False, 'skipssl': False}
         return dot_robust_dict
