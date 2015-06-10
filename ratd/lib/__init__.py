@@ -3,6 +3,7 @@ import sys
 import time
 import os
 import json
+import tempfile
 
 from watchdog.observers import Observer
 import watchdog.events
@@ -81,7 +82,7 @@ class CommonATD():
                         print ('({0}:{1}) = {2}: \"{3}\"'.format(self.data['Summary']['Subject']['Name'], self.data['Summary']['Subject']['md5'], self.data['Summary']['Verdict']['Severity'],desc))
                     if self.options.verbosity:
                         print ('\nFinal results...')
-                        print (' Severity:    %s' %severity)
+                        print (' Severity:    %s' %self.severity)
                         print (' Description: %s' %desc)
                         if self.options.verbosity > 1:
                             print (self.data)
@@ -108,6 +109,7 @@ class ScanFolder:
 
         self.options = options
         self.path = options.directory
+        self.temp_dir = tempfile.mkdtemp()
 
         # self.event_handler = watchdog.events.PatternMatchingEventHandler(patterns=["*.jpg", "*.jpeg", "*.png", "*.bmp", "*.pdf"],
         #                            ignore_patterns=[],
@@ -120,15 +122,23 @@ class ScanFolder:
         self.observer.start()
 
     def on_created(self, event):
-        self.options.file_to_upload = event.src_path
-        filename = os.path.basename(event.src_path)
-
-        #self.options.md5 = md5(open(event.src_path, 'rb').read()).hexdigest()
 
         if self.options.verbosity:
             print("New File identified", event.src_path)
 
-        print ('rType:', self.options.rType)
+        tmp_target =''
+        if self.options.dirtydir:
+            tmp_target = self.temp_dir+"/"+os.path.basename(event.src_path)
+            if self.options.verbosity:
+                print("moved to tmp: ", tmp_target)
+            os.rename(event.src_path, tmp_target)
+            self.options.file_to_upload = tmp_target
+            filename = os.path.basename(tmp_target)
+        else:
+            self.options.file_to_upload = event.src_path
+            filename = os.path.basename(event.src_path)
+
+
         sample = SampleSubmit(self.options)
         severity = sample.rtnv
         md5 = sample.rtv_md5
@@ -136,16 +146,19 @@ class ScanFolder:
         if self.options.dirtydir:
             if severity > 4:
                 target = self.options.dirtydir+filename
-                print('Move file {0}.. to dirty {1}'.format(event.src_path, target))
-                os.rename(event.src_path, target)
+                if self.options.verbosity:
+                    print('Move file {0}.. to dirty {1}'.format(filename, target))
+                os.rename(tmp_target, target)
             elif severity > 0:
                 target = self.options.cleandir+filename
-                print('Move file {0}.. to clean {1}'.format(event.src_path, target))
-                os.rename(event.src_path, target)
+                if self.options.verbosity:
+                    print('Move file {0}.. to clean {1}'.format(filename, target))
+                os.rename(tmp_target, target)
             else:
                 target = self.options.errordir+filename
-                print('Move file {0}.. to ERROR {1}'.format(event.src_path, target))
-                os.rename(event.src_path, target)
+                if self.options.verbosity:
+                    print('Move file {0}.. to ERROR {1}'.format(filename, target))
+                os.rename(tmp_target, target)
         if self.options.reportdir:
             # find report by md5
             self.options.md5 = md5
@@ -154,8 +167,9 @@ class ScanFolder:
                 self.options.filename = self.options.reportdir + md5
             else:
                 self.options.filename = self.options.reportdir + filename
-            print('Downloading zip report for \'{0}\' into report: {1}'.format(event.src_path, self.options.filename))
-            print ('rType:', self.options.rType)
+            if self.options.verbosity:
+                print('Downloading zip report for \'{0}\' into report: {1}'.format(event.src_path, self.options.filename))
+                print ('rType:', self.options.rType)
             rb_rtnv = SearchReports(self.options)
 
         if self.options.verbosity:
@@ -164,6 +178,7 @@ class ScanFolder:
     def stop(self):
         self.observer.stop()
         self.observer.join()
+        os.rmdir(self.temp_dir)
 
 
 class ExistingFolder:
@@ -307,7 +322,8 @@ class SampleSubmit(CommonATD):
             time.sleep(30)
 
         self.myatd.disconnect()
-        print ('')
+        if self.options.quiet is not True:
+            print ('')
         self.rtnv = int(self.severity)
         self.rtv_md5 = self.md5
         return
@@ -369,8 +385,8 @@ class SearchReports(CommonATD):
         self.heartbeat()
 
         # Get the Basic JSON Report
-        if not self.options.quiet:
-            self.report_stdout()
+        #if not self.options.quiet:
+        self.report_stdout()
 
         # Get the iType Report
         if self.options.rType is not None:

@@ -246,6 +246,67 @@ Reporting parameters:
                         		(default: None)
 ```
 
+## robust-convict
+
+Example Usage
+
+```
+robust-convict.py -n -a 26 -c ./tmp/clean/ -x ./tmp/dirty/ -r ./tmp/reports/ -z ./tmp/errors/ -d ./tmp/preprocess -j 10 -t zip -q
+```
+
+Options
+
+```shell
+usage: robust-convict.py [-h] [-u USER] [-p PASSWORD] [-i ATD IP] [-n] -a
+                         ANALYZER_PROFILE -d DIRECTORY [-e] -c CLEANDIR -x
+                         DIRTYDIR -r REPORTDIR -z ERRORDIR [-j MAXTHREADS]
+                         [-t {html,txt,xml,zip,json,ioc,stix,pdf,sample}]
+                         [--version] [-v | -q]
+
+Robust Intel Security ATD Python CLI tool
+
+optional arguments:
+  -h, --help            show this help message and exit
+  --version             show program's version number and exit
+  -v, --verbosity       increase output (v)erbosity
+                        		(default: None)
+  -q, --quiet           (q)uiet all output
+                        		(default: False)
+
+Authentication parameters:
+  -u USER               (u)sername for the API of the ATD
+                        		(default: robust)
+  -p PASSWORD           (p)assword for username
+                        		(default: P@ssword1!)
+  -i ATD IP             (i)p or hostname address of ATD
+                        		(default: atd.vanillasystem.com)
+  -n                    do (n)ot verify the SSL certificate for the communications
+                        		(default: False)
+
+Watch parameters:
+  -a ANALYZER_PROFILE   (a)nalyzer profile id to be used during analysis
+                        		(default: None)
+  -d DIRECTORY          (d)irectory to watch for events
+                        		(default: None)
+  -e                    (e)xisting files in directory will be submitted
+                        		(default: False)
+
+Convict parameters:
+  -c CLEANDIR           (c) move clean files to this directory
+                        		(default: None)
+  -x DIRTYDIR           (x) move processed dirty files to this directory
+                        		(default: None)
+  -r REPORTDIR          (r) save reports to this directory
+                        		(default: None)
+  -z ERRORDIR           (z) move error or skip files to this directory
+                        		(default: None)
+  -j MAXTHREADS         (j) max number of threads
+                        		(default: None)
+  -t {html,txt,xml,zip,json,ioc,stix,pdf,sample}
+                        (t)ype of report requested
+                        		(default: None)
+```
+
 ## Development Tasks
 
 ```shell

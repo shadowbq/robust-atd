@@ -104,7 +104,7 @@ class CliArgs():
                 else:
                     convict_group.add_argument('-j', required=False, action='store', dest='maxthreads', help=self.arg_dict['maxthreads'])
 
-                convict_group.add_argument('-t', required=False, action='store', dest='rType', choices=['html','txt','xml','zip','json','ioc','stix','pdf','sample'], help=self.arg_dict['rType'])    
+                convict_group.add_argument('-t', required=False, action='store', dest='rType', choices=['html','txt','xml','zip','json','ioc','stix','pdf','sample'], help=self.arg_dict['rType'])
         else:
             raise CliArgError(tool)
 
