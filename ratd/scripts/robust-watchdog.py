@@ -22,9 +22,6 @@ if __name__ == '__main__':
     if options.verbosity:
         utils.copyleftnotice()
 
-    if options.existing:
-        ratd.lib.ExistingFolder(options)
-
     job = ratd.lib.ScanFolder(options)
 
     try:

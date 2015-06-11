@@ -19,9 +19,6 @@ if __name__ == '__main__':
     if options.password is None:
         options.password = getpass.getpass()
 
-    if options.existing:
-        ratd.lib.ExistingFolder(options)
-
     job = ratd.lib.ScanFolder(options)
 
     try:

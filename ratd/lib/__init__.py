@@ -4,6 +4,7 @@ import time
 import os
 import json
 import tempfile
+from collections import namedtuple
 
 from watchdog.observers import Observer
 import watchdog.events
@@ -14,6 +15,9 @@ from ratd.api import Atd
 EXIT_SUCCESS = 0
 EXIT_FAILURE = 1
 
+
+def to_namedtuple(dictionary):
+    return namedtuple('GenericDict', dictionary.keys())(**dictionary)
 
 class CommonATD():
 
@@ -115,7 +119,18 @@ class ScanFolder:
         #                            ignore_patterns=[],
         #                            ignore_directories=True)
 
+        if self.options.existing:
+            full_file_paths = self.get_filepaths(self.path)
+
+            for file_name in full_file_paths:
+                # Inject Thread Calls here.
+                self.options.file_to_upload = file_name
+                event_dict = {'src_path' : self.options.file_to_upload}
+                event_struct = to_namedtuple(event_dict)
+                self.on_created(event_struct)
+
         self.event_handler = watchdog.events.FileSystemEventHandler()
+        # Thread handler
         self.event_handler.on_created = self.on_created
         self.observer = Observer()
         self.observer.schedule(self.event_handler, self.path, recursive=True)
@@ -180,21 +195,6 @@ class ScanFolder:
         self.observer.join()
         os.rmdir(self.temp_dir)
 
-
-class ExistingFolder:
-    'Submit Existing files in directory'
-
-    def __init__(self, options):
-        # Run the above function and store its results in a variable.
-        self.options = options
-        self.path = options.directory
-
-        full_file_paths = self.get_filepaths(self.path)
-
-        for file_name in full_file_paths:
-            self.options.file_to_upload = file_name
-            rtnv, md5 = SampleSubmit(self.options)
-
     def get_filepaths(self, directory):
 
         file_paths = []
@@ -205,7 +205,6 @@ class ExistingFolder:
                 file_paths.append(filepath)
 
         return file_paths
-
 
 class SampleSubmit(CommonATD):
     'Class defining a file submission'
