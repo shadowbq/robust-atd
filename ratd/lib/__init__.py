@@ -5,6 +5,7 @@ import os
 import json
 import tempfile
 from collections import namedtuple
+import threading
 
 from watchdog.observers import Observer
 import watchdog.events
@@ -15,9 +16,39 @@ from ratd.api import Atd
 EXIT_SUCCESS = 0
 EXIT_FAILURE = 1
 
+# import logging
+#logging.basicConfig(level=logging.DEBUG, format='%(asctime)s (T%(threadName)-2s) %(message)s',)
 
 def to_namedtuple(dictionary):
     return namedtuple('GenericDict', dictionary.keys())(**dictionary)
+
+def worker(s, pool, options, event):
+    #logging.debug('Waiting to join the pool')
+    with s:
+        name = threading.currentThread().getName()
+        pool.makeActive(name)
+        #r = random.randrange(1,15)
+        if options.verbosity:
+            print ("T{0} handling {1}".format(name, event.src_path))
+        file_created = Handler(options, event.src_path)
+        file_created.sort_file()
+        #time.sleep(r)
+        pool.makeInactive(name)
+
+class ActivePool(object):
+    def __init__(self):
+        super(ActivePool, self).__init__()
+        self.active = []
+        self.lock = threading.Lock()
+    def makeActive(self, name):
+        with self.lock:
+            self.active.append(name)
+            #logging.debug('MA Running: %s', self.active)
+    def makeInactive(self, name):
+        with self.lock:
+            self.active.remove(name)
+            #logging.debug('MI Running: %s', self.active)
+
 
 class CommonATD():
 
@@ -109,25 +140,31 @@ class CommonATD():
 class ScanFolder:
     'Class defining a scan folder'
 
+
     def __init__(self, options):
 
         self.options = options
         self.path = options.directory
         self.temp_dir = tempfile.mkdtemp()
-
+        self.i = 0
+        number_of_threads = int(self.options.maxthreads)
+        self.pool = ActivePool()
+        self.s = threading.Semaphore(number_of_threads)
         # self.event_handler = watchdog.events.PatternMatchingEventHandler(patterns=["*.jpg", "*.jpeg", "*.png", "*.bmp", "*.pdf"],
         #                            ignore_patterns=[],
         #                            ignore_directories=True)
 
         if self.options.existing:
             full_file_paths = self.get_filepaths(self.path)
-
+            self.i = 0
             for file_name in full_file_paths:
-                # Inject Thread Calls here.
+                self.i = self.i + 1
+                # Rework Inject Thread Calls from here to worker.
                 self.options.file_to_upload = file_name
                 event_dict = {'src_path' : self.options.file_to_upload}
                 event_struct = to_namedtuple(event_dict)
-                self.on_created(event_struct)
+                t = threading.Thread(target=worker, name=str(self.i), args=(self.s, self.pool, self.options, event_struct))
+                t.start()
 
         self.event_handler = watchdog.events.FileSystemEventHandler()
         # Thread handler
@@ -136,22 +173,57 @@ class ScanFolder:
         self.observer.schedule(self.event_handler, self.path, recursive=True)
         self.observer.start()
 
+
     def on_created(self, event):
+        options = self.options
+        #src_path = event.src_path
+        self.i = self.i + 1
+        t = threading.Thread(target=worker, name=str(self.i), args=(self.s, self.pool, options, event))
+        t.start()
+        #file_created = Handler(options, src_path)
+        #file_created.sort_file()
+
+    def stop(self):
+        self.observer.stop()
+        self.observer.join()
+        os.rmdir(self.temp_dir)
+
+    def get_filepaths(self, directory):
+
+        file_paths = []
+
+        for root, directories, files in os.walk(directory):
+            for filename in files:
+                filepath = os.path.join(root, filename)
+                file_paths.append(filepath)
+
+        return file_paths
+
+'''Class Handler needs to be Thread Safe!'''
+class Handler:
+    def __init__(self, options, src_path):
+        #
+        self.options = options
+        self.src_path = src_path
+        self.temp_dir = tempfile.mkdtemp()
+        #sortfile()
+
+    def sort_file(self):
 
         if self.options.verbosity:
-            print("New File identified", event.src_path)
+            print("New File identified", self.src_path)
 
         tmp_target =''
         if self.options.dirtydir:
-            tmp_target = self.temp_dir+"/"+os.path.basename(event.src_path)
+            tmp_target = self.temp_dir+"/"+os.path.basename(self.src_path)
             if self.options.verbosity:
                 print("moved to tmp: ", tmp_target)
-            os.rename(event.src_path, tmp_target)
+            os.rename(self.src_path, tmp_target)
             self.options.file_to_upload = tmp_target
             filename = os.path.basename(tmp_target)
         else:
-            self.options.file_to_upload = event.src_path
-            filename = os.path.basename(event.src_path)
+            self.options.file_to_upload = self.src_path
+            filename = os.path.basename(self.src_path)
 
 
         sample = SampleSubmit(self.options)
@@ -183,28 +255,12 @@ class ScanFolder:
             else:
                 self.options.filename = self.options.reportdir + filename
             if self.options.verbosity:
-                print('Downloading zip report for \'{0}\' into report: {1}'.format(event.src_path, self.options.filename))
+                print('Downloading zip report for \'{0}\' into report: {1}'.format(self.src_path, self.options.filename))
                 print ('rType:', self.options.rType)
             rb_rtnv = SearchReports(self.options)
 
         if self.options.verbosity:
             print("Completed ScanFolder()")
-
-    def stop(self):
-        self.observer.stop()
-        self.observer.join()
-        os.rmdir(self.temp_dir)
-
-    def get_filepaths(self, directory):
-
-        file_paths = []
-
-        for root, directories, files in os.walk(directory):
-            for filename in files:
-                filepath = os.path.join(root, filename)
-                file_paths.append(filepath)
-
-        return file_paths
 
 class SampleSubmit(CommonATD):
     'Class defining a file submission'
