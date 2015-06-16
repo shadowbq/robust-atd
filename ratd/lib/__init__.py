@@ -278,17 +278,14 @@ class SampleSubmit(CommonATD):
         # Get the heartbeat value of the ATD Box
         self.error_control, self.data = self.myatd.heartbeat()
         self.heartbeat()
+        self.connection_check()
 
         # Upload file to ATD Server
-        error_control, self.data = self.myatd.upload_file(self.options.file_to_upload, self.options.analyzer_profile)
+        self.error_control, self.data = self.myatd.upload_file(self.options.file_to_upload, self.options.analyzer_profile)
+        self.connection_check()
 
-        if error_control == 0:
+        if self.options.verbosity > 2:
             print (self.data)
-            myatd.disconnect()
-            sys.exit(-2)
-        else:
-            if options.verbosity > 2:
-                print (self.data)
 
         jobId = self.data['jobId']
         taskId = self.data['taskId']

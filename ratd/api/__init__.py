@@ -4,7 +4,7 @@
 
 import requests
 import json
-
+import pprint
 
 class Atd():
 
@@ -166,6 +166,7 @@ class Atd():
         payload = {"data": {"vmProfileList": vmprofile, "submitType": 0}, "amas_filename": self.get_filename(filetosubmit)}
 
         data = json.dumps(payload)
+        #print payload
 
         try:
             files = {'amas_filename': (self.get_filename(filetosubmit), open(filetosubmit, 'rb'))}
@@ -179,12 +180,20 @@ class Atd():
              'accept-encoding': 'gzip;q=0,deflate,sdch'
              }
 
+        #print url
+        #print custom_header
+        #print files
+        #print data
+
         try:
             r = requests.post(url, headers=custom_header, files=files, data={'data': data}, verify=False)
 
         except Exception as e:
             error_info = 'Error submitting file to ATD:\n%s' %e
             return(0, error_info)
+
+        #pp = pprint.PrettyPrinter(indent=4)
+        #print pp.pprint(r)
 
         if r.status_code == 200:
             server_info = json.loads(r.content)
