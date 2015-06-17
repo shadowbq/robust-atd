@@ -1,6 +1,7 @@
 import importlib
 import os
 from invoke import run, task
+import invoke
 
 @task
 def clean(docs=False, bytecode=True, extra=''):
@@ -48,3 +49,8 @@ def release(version):
 
     invoke.run("python setup.py sdist")
     invoke.run("python setup.py sdist bdist_wheel")
+
+# Publish to pypi
+# @task
+# def publish(version)
+    # invoke.run("twine upload -r pypi dist/robust-atd-{0}*".format(version))
