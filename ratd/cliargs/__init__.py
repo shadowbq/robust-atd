@@ -6,21 +6,23 @@ import ratd
 
 def check_md5(value):
     if len(value) != 32:
-         raise argparse.ArgumentTypeError("%s is an invalid md5 hash value" % value)
+        raise argparse.ArgumentTypeError("%s is an invalid md5 hash value" % value)
     return value
+
 
 def slash_dir(value):
     if value[len(value)-1] != "/":
         raise argparse.ArgumentTypeError("%s should end in a slash" % value)
     return value
 
+
 class CliArgError(Exception):
 
-     def __init__(self, value):
-         self.value = value
+    def __init__(self, value):
+        self.value = value
 
-     def __str__(self):
-         return repr(self.value)
+    def __str__(self):
+        return repr(self.value)
 
 
 class CliArgs():
@@ -46,7 +48,7 @@ class CliArgs():
             'maxthreads': '(j) max number of threads\n\t\t(default: %(default)s)',
             'quiet': '(q)uiet all output\n\t\t(default: %(default)s)',
             'verbosity': 'increase output (v)erbosity\n\t\t(default: %(default)s)'
-            }
+        }
         self.description = 'Robust Intel Security ATD Python CLI tool'
         self.epilog = ''
         self.dot_robust = self.dot_robust_helper()
@@ -104,7 +106,7 @@ class CliArgs():
                 else:
                     convict_group.add_argument('-j', required=False, action='store', dest='maxthreads', help=self.arg_dict['maxthreads'])
 
-                convict_group.add_argument('-t', required=False, action='store', dest='rType', choices=['html','txt','xml','zip','json','ioc','stix','pdf','sample'], help=self.arg_dict['rType'])
+                convict_group.add_argument('-t', required=False, action='store', dest='rType', choices=['html', 'txt', 'xml', 'zip', 'json', 'ioc', 'stix', 'pdf', 'sample'], help=self.arg_dict['rType'])
         else:
             raise CliArgError(tool)
 
@@ -120,18 +122,18 @@ class CliArgs():
         if os.path.isfile(fname):
             config.read(fname)
             dot_robust_dict = {
-            'user': config.get("auth", "user"),
-            'password': config.get("auth", "password"),
-            'host': config.get("auth", "host"),
-            'skipssl': config.get("auth", "skipssl")
+                'user': config.get("auth", "user"),
+                'password': config.get("auth", "password"),
+                'host': config.get("auth", "host"),
+                'skipssl': config.get("auth", "skipssl")
             }
             if config.has_section("convict"):
                 dot_robust_convict = {
-                'cleandir': config.get("convict", "cleandir"),
-                'dirtydir': config.get("convict", "dirtydir"),
-                'reportdir': config.get("convict", "reportdir"),
-                'errordir': config.get("convict", "errordir"),
-                'maxthreads': config.get("convict", "maxthreads")
+                    'cleandir': config.get("convict", "cleandir"),
+                    'dirtydir': config.get("convict", "dirtydir"),
+                    'reportdir': config.get("convict", "reportdir"),
+                    'errordir': config.get("convict", "errordir"),
+                    'maxthreads': config.get("convict", "maxthreads")
                 }
                 dot_robust_dict = dot_robust_dict.update(dot_robust_convict)
         else:
@@ -183,5 +185,5 @@ class CliArgs():
     def output_args(self):
 
         output_group = self.parser.add_argument_group('Reporting parameters')
-        output_group.add_argument('-t', required=False, action='store', dest='rType', choices=['html','txt','xml','zip','json','ioc','stix','pdf','sample'], help=self.arg_dict['rType'])
+        output_group.add_argument('-t', required=False, action='store', dest='rType', choices=['html', 'txt', 'xml', 'zip', 'json', 'ioc', 'stix', 'pdf', 'sample'], help=self.arg_dict['rType'])
         output_group.add_argument('-f', required=False, action='store', dest='filename', help=self.arg_dict['filename'])

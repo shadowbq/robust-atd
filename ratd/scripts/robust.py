@@ -38,5 +38,5 @@ if __name__ == '__main__':
     sample = SampleSubmit(options)
     severity = sample.rtnv
     md5 = sample.rtv_md5
-        
+
     sys.exit(severity)

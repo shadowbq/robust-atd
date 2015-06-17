@@ -4,7 +4,7 @@
 
 import requests
 import json
-import pprint
+
 
 class Atd():
 
@@ -37,17 +37,17 @@ class Atd():
         #
 
         authheader = {
-                'Accept': 'application/vnd.ve.v1.0+json',
-                'Content-Type': 'application/json',
-                'VE-SDK-API': '%s' %self.b64(user, password)
-                 }
+            'Accept': 'application/vnd.ve.v1.0+json',
+            'Content-Type': 'application/json',
+            'VE-SDK-API': '%s' % self.b64(user, password)
+        }
 
-        url = 'https://%s/php/session.php' %self.atdserver
+        url = 'https://%s/php/session.php' % self.atdserver
 
         try:
             r = requests.get(url, headers=authheader, verify=False)
         except Exception as e:
-            error_info = 'Error connecting to ATD:\n %s' %e
+            error_info = 'Error connecting to ATD:\n %s' % e
             return (0, error_info)
 
         if r.status_code == 200:
@@ -57,15 +57,15 @@ class Atd():
                 self.userId = server_info['results']['userId']
                 self.matdver = server_info['results']['matdVersion']
                 self.sessionhdr = {
-                  'Accept': 'application/vnd.ve.v1.0+json',
-                  'Content-Type': 'application/json',
-                  'VE-SDK-API': '%s' %self.b64(self.session, self.userId)
-                     }
+                    'Accept': 'application/vnd.ve.v1.0+json',
+                    'Content-Type': 'application/json',
+                    'VE-SDK-API': '%s' % self.b64(self.session, self.userId)
+                }
             else:
                 error_info = 'Connection unsucessful'
                 return (0, error_info)
         else:
-            error_info = 'Error conecting to ATD, Status Code: %d' %r.status_code
+            error_info = 'Error conecting to ATD, Status Code: %d' % r.status_code
             return(0, error_info)
 
         return(1, 'Connection sucessful')
@@ -78,12 +78,12 @@ class Atd():
                  (0, error_info): Unsucessful disconnection, error_info contain the cause of the error
                  (1, 'Disconnection sucessful): Sucessful disconnection
         '''
-        url = 'https://%s/php/session.php' %self.atdserver
+        url = 'https://%s/php/session.php' % self.atdserver
 
         try:
             r = requests.delete(url, headers=self.sessionhdr, verify=False)
         except Exception as e:
-            error_info = 'Error disconnecting from ATD:\n %s' %e
+            error_info = 'Error disconnecting from ATD:\n %s' % e
             return (0, error_info)
         if r.status_code == 200:
             server_info = json.loads(r.content)
@@ -94,7 +94,7 @@ class Atd():
                 error_info = 'Error disconecting from ATD - Check credentials or content type header'
                 return(0, error_info)
         else:
-            error_info = 'Error disconnection from ATD, Status Code: %d' %r.status_code
+            error_info = 'Error disconnection from ATD, Status Code: %d' % r.status_code
             return(0, error_info)
 
     def heartbeat(self):
@@ -105,12 +105,12 @@ class Atd():
                  (0, error_info): Error getting heartbeat value
                  (1, heartbeat_value): Heartbeat value
         '''
-        url = 'https://%s/php/heartbeat.php' %self.atdserver
+        url = 'https://%s/php/heartbeat.php' % self.atdserver
 
         try:
             r = requests.get(url, headers=self.sessionhdr, verify=False)
         except Exception as e:
-            error_info = 'Error getting heartbeat:\n%s' %e
+            error_info = 'Error getting heartbeat:\n%s' % e
             return(0, error_info)
 
         if r.status_code == 200:
@@ -123,16 +123,16 @@ class Atd():
                 error_info = 'Error getting heartbeat, check credentials or content type header'
                 return (0, error_info)
         else:
-            error_info = 'Error getting heartbeat, status code: %d' %r.status_code
+            error_info = 'Error getting heartbeat, status code: %d' % r.status_code
             return (0, error_info)
 
     def get_vmprofiles(self):
-        url = 'https://%s/php/vmprofiles.php' %self.atdserver
+        url = 'https://%s/php/vmprofiles.php' % self.atdserver
 
         try:
             r = requests.get(url, headers=self.sessionhdr, verify=False)
         except Exception as e:
-            error_info = 'Error getting vmprofiles:\n%s' %e
+            error_info = 'Error getting vmprofiles:\n%s' % e
             return(0, error_info)
 
         if r.status_code == 200:
@@ -145,7 +145,7 @@ class Atd():
                 error_info = 'Error getting vmprofiles, check credentials or content type header'
                 return (0, error_info)
         else:
-            error_info = 'Error getting vmprofiles, status code: %d' %r.status_code
+            error_info = 'Error getting vmprofiles, status code: %d' % r.status_code
             return (0, error_info)
 
     def upload_file(self, filetosubmit, vmprofile=1):
@@ -161,39 +161,30 @@ class Atd():
                  (1, {'jobID':'xxx','taskId':'xxx','file':'xxx','md5':'xxx','size':'xxx':'mimeType':'xxx'}): Sucessful upload
         '''
 
-        url = 'https://%s/php/fileupload.php' %self.atdserver
+        url = 'https://%s/php/fileupload.php' % self.atdserver
 
         payload = {"data": {"vmProfileList": vmprofile, "submitType": 0}, "amas_filename": self.get_filename(filetosubmit)}
 
         data = json.dumps(payload)
-        #print payload
 
         try:
             files = {'amas_filename': (self.get_filename(filetosubmit), open(filetosubmit, 'rb'))}
         except Exception as e:
-            error_info = 'Upload method: Error opening file: %s' %e
+            error_info = 'Upload method: Error opening file: %s' % e
             return(0, error_info)
 
         custom_header = {
-             'Accept': 'application/vnd.ve.v1.0+json',
-             'VE-SDK-API': '%s' %self.b64(self.session, self.userId),
-             'accept-encoding': 'gzip;q=0,deflate,sdch'
-             }
-
-        #print url
-        #print custom_header
-        #print files
-        #print data
+            'Accept': 'application/vnd.ve.v1.0+json',
+            'VE-SDK-API': '%s' % self.b64(self.session, self.userId),
+            'accept-encoding': 'gzip;q=0,deflate,sdch'
+        }
 
         try:
             r = requests.post(url, headers=custom_header, files=files, data={'data': data}, verify=False)
 
         except Exception as e:
-            error_info = 'Error submitting file to ATD:\n%s' %e
+            error_info = 'Error submitting file to ATD:\n%s' % e
             return(0, error_info)
-
-        #pp = pprint.PrettyPrinter(indent=4)
-        #print pp.pprint(r)
 
         if r.status_code == 200:
             server_info = json.loads(r.content)
@@ -205,20 +196,20 @@ class Atd():
                     'md5': server_info['results'][0]['md5'],
                     'size': server_info['results'][0]['size'],
                     'mimeType': server_info['mimeType']
-                    }
+                }
                 return (1, info)
             else:
                 error_info = 'Upload operation did not return a success value'
                 return (0, error_info)
         else:
-            error_info = 'Error uploading file, bad credentials or header - status code: %d' %r.status_code
+            error_info = 'Error uploading file, bad credentials or header - status code: %d' % r.status_code
             return (0, error_info)
 
-    def check_status(self, taskId):
+    def check_status(self, task_id):
         '''
         Description: Check the status of the uploded file to the ATD server for inspection
         Input:
-                 taskId:  ID of the task identifying the inspection operation
+                 task_id:  ID of the task identifying the inspection operation
         Output:      Possible values:
 
                  (0, error_info): Unsucessful procedure
@@ -234,14 +225,15 @@ class Atd():
                  'vmProfile':'xxx','vmName':'xxx','vmDesc':'xxx','summaryFiles':'xxx', 'useLogs':'xxx',
                  'asmListing':'xxx','PEInfo':'xxx', 'family':'xxx'})
         '''
-        url = 'https://%s/php/samplestatus.php' %self.atdserver
+        url = 'https://%s/php/samplestatus.php' % self.atdserver
 
-        payload = {'iTaskId': taskId}
+        # iTaskId This is the returned iTaskId value in the submission step. Datatype: Number
+        payload = {'iTaskId': task_id}
 
         try:
             r = requests.get(url, params=payload, headers=self.sessionhdr, verify=False)
         except Exception as e:
-            error_info = 'Can not get status of taskId: %d,\nReturned error: %s ' %(taskId, e)
+            error_info = 'Can not get status of taskId: %d,\nReturned error: %s ' % (task_id, e)
             return (0, error_info)
 
         if r.status_code == 200:
@@ -257,32 +249,32 @@ class Atd():
                     return (-1, 'Analysis failed')
                 elif status == 1 or status == 2:  # Sample correctly analyzed
                     info = {
-                            'jobid': server_info['results']['jobid'],
-                            'taskid': server_info['results']['taskid'],
-                            'filename': server_info['results']['filename'],
-                            'md5': server_info['results']['md5'],
-                            'submitTime': server_info['results']['submitTime'],
-                            'vmProfile': server_info['results']['vmProfile'],
-                            'vmName': server_info['results']['vmName'],
-                            'vmDesc': server_info['results']['vmDesc'],
-                            'summaryFiles': server_info['results']['summaryFiles'],
-                            'useLogs': server_info['results']['useLogs'],
-                            'asmListing': server_info['results']['asmListing'],
-                            'PEInfo': server_info['results']['PEInfo'],
-                            'family': server_info['results']['family']
-                           }
+                        'jobid': server_info['results']['jobid'],
+                        'taskid': server_info['results']['taskid'],
+                        'filename': server_info['results']['filename'],
+                        'md5': server_info['results']['md5'],
+                        'submitTime': server_info['results']['submitTime'],
+                        'vmProfile': server_info['results']['vmProfile'],
+                        'vmName': server_info['results']['vmName'],
+                        'vmDesc': server_info['results']['vmDesc'],
+                        'summaryFiles': server_info['results']['summaryFiles'],
+                        'useLogs': server_info['results']['useLogs'],
+                        'asmListing': server_info['results']['asmListing'],
+                        'PEInfo': server_info['results']['PEInfo'],
+                        'family': server_info['results']['family']
+                    }
                     return (status, info)
                 else:
-                    error_info = 'Unknown error checking status of taskId: %d' %taskId
+                    error_info = 'Unknown error checking status of taskId: %d' % task_id
                     return (0, error_info)
             else:
                 error_info = 'Check status operation did not return a success value'
                 return (0, error_info)
         else:
-            error_info = 'Error checking status, bad credentials or header - status code: %d' %r.status_code
+            error_info = 'Error checking status, bad credentials or header - status code: %d' % r.status_code
             return (0, error_info)
 
-    def get_report(self, jobId):
+    def get_report(self, job_id):
         '''
         Description: Get the final result of the inspection of the sample submitted
         Input:       jobId, identification of the job
@@ -294,19 +286,19 @@ class Atd():
                  (1, {}): The dic includes all the json report
         '''
 
-        url = 'https://%s/php/showreport.php' %self.atdserver
+        url = 'https://%s/php/showreport.php' % self.atdserver
 
-        payload = {'jobId': jobId, 'iType': 'json'}
+        payload = {'jobId': job_id, 'iType': 'json'}
 
         custom_header = {
-                    'Accept': 'application/vnd.ve.v1.0+json',
-                    'VE-SDK-API': '%s' %self.b64(self.session, self.userId)
-                    }
+            'Accept': 'application/vnd.ve.v1.0+json',
+            'VE-SDK-API': '%s' % self.b64(self.session, self.userId)
+        }
 
         try:
             r = requests.get(url, params=payload, headers=custom_header, verify=False)
         except Exception as e:
-            error_info = 'Can not get report of jobId: %d,\nReturned error: %s ' %(jobId, e)
+            error_info = 'Can not get report of jobId: %d,\nReturned error: %s ' % (job_id, e)
             return (0, error_info)
 
         if r.status_code == 400:
@@ -350,19 +342,19 @@ class Atd():
 
         '''
 
-        url = 'https://%s/php/showreport.php' %self.atdserver
+        url = 'https://%s/php/showreport.php' % self.atdserver
 
         payload = {'md5': md5, 'iType': itype}
 
         custom_header = {
-                    'Accept': 'application/vnd.ve.v1.0+json',
-                    'VE-SDK-API': '%s' %self.b64(self.session, self.userId)
-                    }
+            'Accept': 'application/vnd.ve.v1.0+json',
+            'VE-SDK-API': '%s' % self.b64(self.session, self.userId)
+        }
 
         try:
             r = requests.get(url, params=payload, headers=custom_header, verify=False)
         except Exception as e:
-            error_info = 'Can not get report of md5: %d,\nReturned error: %s ' %(md5, e)
+            error_info = 'Can not get report of md5: %d,\nReturned error: %s ' % (md5, e)
             return (0, 'error', error_info)
 
         if r.status_code == 400:

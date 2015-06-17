@@ -4,8 +4,11 @@ import time
 import os
 import json
 import tempfile
-from collections import namedtuple
+import copy
 import threading
+
+
+from collections import namedtuple
 
 from watchdog.observers import Observer
 import watchdog.events
@@ -13,51 +16,52 @@ import watchdog.events
 import ratd.api
 from ratd.api import Atd
 
-import pprint, random
-import copy
-
 EXIT_SUCCESS = 0
 EXIT_FAILURE = 1
 
 # import logging
-#logging.basicConfig(level=logging.DEBUG, format='%(asctime)s (T%(threadName)-2s) %(message)s',)
+# logging.basicConfig(level=logging.DEBUG, format='%(asctime)s (T%(threadName)-2s) %(message)s',)
 
-def to_namedtuple(dictionary):
-    return namedtuple('GenericDict', dictionary.keys())(**dictionary)
 
 def worker(sema, pool, unsafe_options, src_path):
-    #logging.debug('Waiting to join the pool')
-    #pp = pprint.PrettyPrinter(indent=4)
-    #pp.pprint(options.directory)
+
+    '''Worker for Thread Pool'''
+    # logging.debug('Waiting to join the pool')
     with sema:
         options = copy.copy(unsafe_options)
         name = threading.currentThread().getName()
-        pool.makeActive(name)
+        pool.make_active(name)
 
         if options.verbosity:
             print ("T{0}W file => {1}".format(name, src_path))
         file_created = Handler(options, src_path)
         file_created.sort_file()
 
-        pool.makeInactive(name)
+        pool.make_inactive(name)
+
 
 class ActivePool(object):
+
+    '''Semaphore pool allowing max active threads in a pool'''
     def __init__(self):
         super(ActivePool, self).__init__()
         self.active = []
         self.lock = threading.Lock()
-    def makeActive(self, name):
+
+    def make_active(self, name):
         with self.lock:
             self.active.append(name)
-            #logging.debug('MA Running: %s', self.active)
-    def makeInactive(self, name):
+            # logging.debug('MA Running: %s', self.active)
+
+    def make_inactive(self, name):
         with self.lock:
             self.active.remove(name)
-            #logging.debug('MI Running: %s', self.active)
+            # logging.debug('MI Running: %s', self.active)
 
 
 class CommonATD():
 
+    '''Common class for ATD sessions'''
     def connection_check(self):
         if self.error_control == 0:
             print (self.data)
@@ -84,13 +88,20 @@ class CommonATD():
 
         if self.error_control == 3:
             if self.options.quiet is not True:
-                print ('({0}:{1}) = {2}: \"{3}\"'.format('-', self.options.md5, '-', self.data))
+                print ('({0}:{1}) = {2}: \"{3}\"'.format(
+                    '-',
+                    self.options.md5,
+                    '-',
+                    self.data
+                ))
             self.myatd.disconnect()
             sys.exit(0)
 
-
     def report_rtype(self):
-        error_control, itype, self.data = self.myatd.get_report_md5(self.options.md5, self.options.rType)
+        error_control, itype, self.data = self.myatd.get_report_md5(
+            self.options.md5,
+            self.options.rType
+        )
         self.report_errors()
 
         if itype == 'json':
@@ -120,22 +131,26 @@ class CommonATD():
                     sys.exit(-4)
                 else:
                     if self.options.quiet is not True:
-                        print ('({0}:{1}) = {2}: \"{3}\"'.format(self.data['Summary']['Subject']['Name'], self.data['Summary']['Subject']['md5'], self.data['Summary']['Verdict']['Severity'],desc))
+                        print ('({0}:{1}) = {2}: \"{3}\"'.format(
+                            self.data['Summary']['Subject']['Name'],
+                            self.data['Summary']['Subject']['md5'],
+                            self.data['Summary']['Verdict']['Severity'],
+                            desc
+                        ))
                     if self.options.verbosity:
                         print ('\nFinal results...')
-                        print (' Severity:    %s' %self.severity)
-                        print (' Description: %s' %desc)
+                        print (' Severity:    %s' % self.severity)
+                        print (' Description: %s' % desc)
                         if self.options.verbosity > 1:
                             print (self.data)
                     break
             # error_control = 2
             if self.options.verbosity:
-                print (' %s ...' %self.data)
+                print (' %s ...' % self.data)
                 sys.stdout.flush()
             if self.options.quiet is not True:
                 print ('({0}:{1}) = {2}: \"{3}\"'.format('-', self.options.md5, '-', '-'))
             sys.exit(-4)
-
 
     def rtnv(self):
         return self.rtnv
@@ -143,12 +158,12 @@ class CommonATD():
     def rtv_md5(self):
         return self.md5
 
+
 class ScanFolder:
-    'Class defining a scan folder'
 
-
+    '''Class defining a scan folder'''
     def __init__(self, options):
-        pp = pprint.PrettyPrinter(indent=4)
+
         self.options = options
         self.path = options.directory
         self.temp_dir = tempfile.mkdtemp()
@@ -156,9 +171,10 @@ class ScanFolder:
         number_of_threads = int(self.options.maxthreads)
         self.pool = ActivePool()
         self.s = threading.Semaphore(number_of_threads)
-        # self.event_handler = watchdog.events.PatternMatchingEventHandler(patterns=["*.jpg", "*.jpeg", "*.png", "*.bmp", "*.pdf"],
-        #                            ignore_patterns=[],
-        #                            ignore_directories=True)
+        # self.event_handler = watchdog.events.PatternMatchingEventHandler(
+        #   patterns=["*.jpg", "*.jpeg", "*.png", "*.bmp", "*.pdf"],
+        #   ignore_patterns=[],
+        #   ignore_directories=True)
 
         if self.options.existing:
             full_file_paths = self.get_filepaths(self.path)
@@ -168,7 +184,16 @@ class ScanFolder:
                     print("M0 file => {}".format(file_name))
                 self.i = self.i + 1
                 self.options.file_to_upload = file_name
-                t = threading.Thread(target=worker, name=str(self.i), args=(self.s, self.pool, self.options, self.options.file_to_upload))
+                t = threading.Thread(
+                    target=worker,
+                    name=str(self.i),
+                    args=(
+                        self.s,
+                        self.pool,
+                        self.options,
+                        self.options.file_to_upload
+                    )
+                )
                 t.start()
 
         self.event_handler = watchdog.events.FileSystemEventHandler()
@@ -178,12 +203,15 @@ class ScanFolder:
         self.observer.schedule(self.event_handler, self.path, recursive=True)
         self.observer.start()
 
-
     def on_created(self, event):
         options = self.options
         src_path = copy.copy(event.src_path)
         self.i = self.i + 1
-        t = threading.Thread(target=worker, name=str(self.i), args=(self.s, self.pool, options, src_path))
+        t = threading.Thread(
+            target=worker,
+            name=str(self.i),
+            args=(self.s, self.pool, options, src_path)
+        )
         t.start()
 
     def stop(self):
@@ -202,8 +230,10 @@ class ScanFolder:
 
         return file_paths
 
-'''Class Handler needs to be Thread Safe!'''
+
 class Handler:
+
+    '''Class Handler needs to be Thread Safe!'''
     def __init__(self, options, src_path):
         #
         self.options = options
@@ -215,7 +245,7 @@ class Handler:
         if self.options.verbosity:
             print("New File identified", self.src_path)
 
-        tmp_target =''
+        tmp_target = ''
         if self.options.dirtydir:
             tmp_target = self.temp_dir+"/"+os.path.basename(self.src_path)
             if self.options.verbosity:
@@ -228,7 +258,11 @@ class Handler:
             filename = os.path.basename(self.src_path)
 
         if self.options.verbosity:
-            print ("T{1}H file => {0}, id(options) {2}".format(self.options.file_to_upload, threading.currentThread().getName(),id(self.options)))
+            print ("T{1}H file => {0}, id(options) {2}".format(
+                self.options.file_to_upload,
+                threading.currentThread().getName(),
+                id(self.options)
+            ))
         sample = SampleSubmit(self.options)
 
         severity = sample.rtnv
@@ -259,16 +293,20 @@ class Handler:
             else:
                 self.options.filename = self.options.reportdir + filename
             if self.options.verbosity:
-                print('Downloading zip report for \'{0}\' into report: {1}'.format(self.src_path, self.options.filename))
+                print('Downloading zip report for \'{0}\' into report: {1}'.format(
+                    self.src_path,
+                    self.options.filename
+                ))
                 print ('rType:', self.options.rType)
             rb_rtnv = SearchReports(self.options)
 
         if self.options.verbosity:
             print("Completed ScanFolder()")
 
-class SampleSubmit(CommonATD):
-    'Class defining a file submission'
 
+class SampleSubmit(CommonATD):
+
+    '''Class defining a file submission'''
     def __init__(self, options):
         # Create the ATD object and connect to it
         self.rtnv = EXIT_FAILURE
@@ -285,20 +323,27 @@ class SampleSubmit(CommonATD):
         self.connection_check()
 
         if self.options.verbosity:
-            print ("T{1}SS file => {0}, id(options) {2}".format(self.options.file_to_upload, threading.currentThread().getName(), id(self.options)))
+            print ("T{1}SS file => {0}, id(options) {2}".format(
+                self.options.file_to_upload,
+                threading.currentThread().getName(),
+                id(self.options)
+            ))
 
         # Upload file to ATD Server
-        self.error_control, self.data = self.myatd.upload_file(self.options.file_to_upload, self.options.analyzer_profile)
+        self.error_control, self.data = self.myatd.upload_file(
+            self.options.file_to_upload,
+            self.options.analyzer_profile
+        )
         self.connection_check()
 
         if self.options.verbosity > 2:
             print (self.data)
 
-        jobId = self.data['jobId']
-        taskId = self.data['taskId']
+        job_id = self.data['jobId']
+        task_id = self.data['taskId']
 
         if self.options.verbosity:
-            print ('\nFile %s uploaded\n' %self.data['file'])
+            print ('\nFile %s uploaded\n' % self.data['file'])
             print ('jobId:    ', self.data['jobId'])
             print ('taskId:   ', self.data['taskId'])
             print ('md5:      ', self.data['md5'])
@@ -309,7 +354,7 @@ class SampleSubmit(CommonATD):
         # Check status before requesting the report
         stepwait = 5
         while True:
-            error_control, self.data = self.myatd.check_status(taskId)
+            error_control, self.data = self.myatd.check_status(task_id)
             if error_control == 4 or error_control == 3:
                 if self.options.verbosity:
                     print ('{0} - Waiting for {1} seconds'.format(self.data, stepwait))
@@ -339,7 +384,7 @@ class SampleSubmit(CommonATD):
             print ('\nGetting report information...')
 
         while True:
-            error_control, self.data = self.myatd.get_report(jobId)
+            error_control, self.data = self.myatd.get_report(job_id)
 
             if error_control == 0:
                 print ('\n', self.data)
@@ -366,17 +411,22 @@ class SampleSubmit(CommonATD):
                     sys.exit(-4)
                 else:
                     if self.options.quiet is not True:
-                        print ('({0}:{1}) = {2}: \"{3}\"'.format(self.data['Summary']['Subject']['Name'], self.data['Summary']['Subject']['md5'], self.data['Summary']['Verdict']['Severity'],desc))
+                        print ('({0}:{1}) = {2}: \"{3}\"'.format(
+                            self.data['Summary']['Subject']['Name'],
+                            self.data['Summary']['Subject']['md5'],
+                            self.data['Summary']['Verdict']['Severity'],
+                            desc)
+                        )
                     if self.options.verbosity:
                         print ('\nFinal results...')
-                        print (' Severity:    %s' %self.severity)
-                        print (' Description: %s' %desc)
+                        print (' Severity:    %s' % self.severity)
+                        print (' Description: %s' % desc)
                         if self.options.verbosity > 1:
                             print (self.data)
                     break
             # error_control = 2
             if self.options.verbosity:
-                print (' %s - Waiting for 30 seconds...' %self.data)
+                print (' %s - Waiting for 30 seconds...' % self.data)
                 sys.stdout.flush()
             time.sleep(30)
 
@@ -396,8 +446,8 @@ class SampleSubmit(CommonATD):
 
 
 class FetchProfiles(CommonATD):
-    'Class defining fetching the Analyzer Profiles from ATD'
 
+    '''Class defining fetching the Analyzer Profiles from ATD'''
     def __init__(self, options):
 
         # Create the ATD object and connect to it
@@ -434,8 +484,8 @@ class FetchProfiles(CommonATD):
 
 
 class SearchReports(CommonATD):
-    'Class defining fetching the Analyzer Profiles from ATD'
 
+    '''Class defining fetching the Analyzer Profiles from ATD'''
     def __init__(self, options):
         # Create the ATD object and connect to it
         self.rtnv = EXIT_FAILURE
@@ -451,7 +501,7 @@ class SearchReports(CommonATD):
         self.heartbeat()
 
         # Get the Basic JSON Report
-        #if not self.options.quiet:
+        # if not self.options.quiet:
         self.report_stdout()
 
         # Get the iType Report
