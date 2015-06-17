@@ -13,6 +13,9 @@ import watchdog.events
 import ratd.api
 from ratd.api import Atd
 
+import pprint, random
+import copy
+
 EXIT_SUCCESS = 0
 EXIT_FAILURE = 1
 
@@ -22,17 +25,20 @@ EXIT_FAILURE = 1
 def to_namedtuple(dictionary):
     return namedtuple('GenericDict', dictionary.keys())(**dictionary)
 
-def worker(s, pool, options, event):
+def worker(sema, pool, unsafe_options, src_path):
     #logging.debug('Waiting to join the pool')
-    with s:
+    #pp = pprint.PrettyPrinter(indent=4)
+    #pp.pprint(options.directory)
+    with sema:
+        options = copy.copy(unsafe_options)
         name = threading.currentThread().getName()
         pool.makeActive(name)
-        #r = random.randrange(1,15)
+
         if options.verbosity:
-            print ("T{0} handling {1}".format(name, event.src_path))
-        file_created = Handler(options, event.src_path)
+            print ("T{0}W file => {1}".format(name, src_path))
+        file_created = Handler(options, src_path)
         file_created.sort_file()
-        #time.sleep(r)
+
         pool.makeInactive(name)
 
 class ActivePool(object):
@@ -142,7 +148,7 @@ class ScanFolder:
 
 
     def __init__(self, options):
-
+        pp = pprint.PrettyPrinter(indent=4)
         self.options = options
         self.path = options.directory
         self.temp_dir = tempfile.mkdtemp()
@@ -158,12 +164,11 @@ class ScanFolder:
             full_file_paths = self.get_filepaths(self.path)
             self.i = 0
             for file_name in full_file_paths:
+                if self.options.verbosity:
+                    print("M0 file => {}".format(file_name))
                 self.i = self.i + 1
-                # Rework Inject Thread Calls from here to worker.
                 self.options.file_to_upload = file_name
-                event_dict = {'src_path' : self.options.file_to_upload}
-                event_struct = to_namedtuple(event_dict)
-                t = threading.Thread(target=worker, name=str(self.i), args=(self.s, self.pool, self.options, event_struct))
+                t = threading.Thread(target=worker, name=str(self.i), args=(self.s, self.pool, self.options, self.options.file_to_upload))
                 t.start()
 
         self.event_handler = watchdog.events.FileSystemEventHandler()
@@ -176,12 +181,10 @@ class ScanFolder:
 
     def on_created(self, event):
         options = self.options
-        #src_path = event.src_path
+        src_path = copy.copy(event.src_path)
         self.i = self.i + 1
-        t = threading.Thread(target=worker, name=str(self.i), args=(self.s, self.pool, options, event))
+        t = threading.Thread(target=worker, name=str(self.i), args=(self.s, self.pool, options, src_path))
         t.start()
-        #file_created = Handler(options, src_path)
-        #file_created.sort_file()
 
     def stop(self):
         self.observer.stop()
@@ -206,7 +209,6 @@ class Handler:
         self.options = options
         self.src_path = src_path
         self.temp_dir = tempfile.mkdtemp()
-        #sortfile()
 
     def sort_file(self):
 
@@ -225,8 +227,10 @@ class Handler:
             self.options.file_to_upload = self.src_path
             filename = os.path.basename(self.src_path)
 
-
+        if self.options.verbosity:
+            print ("T{1}H file => {0}, id(options) {2}".format(self.options.file_to_upload, threading.currentThread().getName(),id(self.options)))
         sample = SampleSubmit(self.options)
+
         severity = sample.rtnv
         md5 = sample.rtv_md5
 
@@ -279,6 +283,9 @@ class SampleSubmit(CommonATD):
         self.error_control, self.data = self.myatd.heartbeat()
         self.heartbeat()
         self.connection_check()
+
+        if self.options.verbosity:
+            print ("T{1}SS file => {0}, id(options) {2}".format(self.options.file_to_upload, threading.currentThread().getName(), id(self.options)))
 
         # Upload file to ATD Server
         self.error_control, self.data = self.myatd.upload_file(self.options.file_to_upload, self.options.analyzer_profile)
@@ -378,6 +385,13 @@ class SampleSubmit(CommonATD):
             print ('')
         self.rtnv = int(self.severity)
         self.rtv_md5 = self.md5
+
+        # >>> DEBUG
+        # self.myatd.disconnect()
+        # self.rtnv = int(0)
+        # self.rtv_md5 = "HARDCODED"
+        # <<< END DEBUG
+
         return
 
 
