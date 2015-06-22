@@ -36,3 +36,10 @@ Example CLI
 ```
 $> robust-trust (-W|-B) (--query|--add|--drop) -H(--hash) md5
 ```
+
+## Robust-convicter thread mitigating an overflow of max_queued_events:
+
+It uses a dedicated thread to consume kernel events as quickly as possible.
+
+When the kernel reports an overflow, robust should assume that all the files have will need to be re-crawled as though it had just started watching the dir.
+This means that if an overflow does occur, you won't miss a legitimate new file notification, but files may be already queued in a thread. This should be mitigated as files are moved as soon as the thread becomes available, so if there are duplicate threads, the first thread will own the file and the second thread will error out. 
