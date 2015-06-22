@@ -307,6 +307,25 @@ Convict parameters:
                         		(default: None)
 ```
 
+## iNotify Tuning Parameters
+
+System Specific Preparation 
+
+### Linux `inotify` Limits 
+
+The inotify(7) subsystem has three important tunings that impact robust's directory watching.
+
+```
+/proc/sys/fs/inotify/max_user_instances impacts how many different root dirs you can watch.
+/proc/sys/fs/inotify/max_user_watches impacts how many dirs you can watch across all watched roots.
+/proc/sys/fs/inotify/max_queued_events impacts how likely it is that your system will experience a notification overflow.
+```
+
+You obviously need to ensure that `max_user_instances` and `max_user_watches` are set so that the system is capable of keeping track of your files.
+
+`max_queued_events` is important to size correctly; if it is too small, the kernel will drop events and robust won't be able to report on them. Making this value bigger reduces the risk of this happening.
+
+
 ## Development Tasks
 
 ```shell
