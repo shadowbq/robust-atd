@@ -1,5 +1,9 @@
 Robust ATD CLI tools
 ================
+## Support round-robin ATD Load balancing
+
+Support submitting to more than one ATD box. 
+
 
 ## Fix verbosity
 
