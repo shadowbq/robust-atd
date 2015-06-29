@@ -15,7 +15,7 @@ A modified Fork of atdcli.py (Carlos Munoz - 2014) is included.
 
 Note: robust-atd is not public nor published on pypi at this time.
 
-## PKG Download Alternative
+## PKG Download & Manual Install Alternative
 
 Note: python setup.py will attempt to install dependencies from the internet via `pip`.
 
