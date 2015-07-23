@@ -50,6 +50,20 @@ columns possible (correctly formatted)
 ":Reports:Submitted Time:Severity:File Name:File Type:User:Job Id:Task Id:URL:Analyzer Profile:VM Profile:Hash:File Size:Source IP:Destination IP"
 ```
 
+## BUG present in column selector.
+* One common factor is that the first column is omitted from the export
+* Second is that if Submittied Time is not the second column.. all hell breaks loose on the parser.
+
+This is a useful export.
+```
+":Reports:Submitted Time:Severity:Job Id:Task Id:Analyzer Profile:Hash"
+```
+
+It actually only exports 
+```
+:Submitted Time:Severity:Job Id: Task If: Analyzer:Hash:
+```
+
 Additional Dump
 
 ```js
