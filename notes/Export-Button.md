@@ -1,4 +1,8 @@
-EXTJS Export Request:
+# Export Button
+
+The export button is state tracked by the users previous request. This request must follow a analysis results query.
+
+## EXTJS Export Request:
 
 ```js
 exportResults : function(e, target, options){
