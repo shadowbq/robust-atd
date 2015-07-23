@@ -16,6 +16,9 @@ User-Agent:Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko
 VE-SDK-API:MnFtZGxzdTFrNGc4ZTYxYTlka3M0dThwOTA6MQ==
 X-Requested-With:XMLHttpRequest
 ```
+```js
+VE-SDK-API: Base64.encode(ValidEdge.utils.SingletonSession.session + ":" + ValidEdge.utils.SingletonSession.userId)
+```
 ## Query String Parameters
 ```
 userid:1
