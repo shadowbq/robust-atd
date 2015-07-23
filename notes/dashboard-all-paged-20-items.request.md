@@ -41,3 +41,22 @@ start:20
 limit:20
 sort:[{"property":"severity","direction":"DESC"}]
 ```
+
+### Show all
+
+If you want all the submissions, regardless of severity, set showAll to 1.
+
+```
+&showAll=1
+```
+
+### Time restriction
+
+The standard pull down does a time restriction in minutes from now.
+```
+// 1 Hour
+time=60
+// 30 Days
+time=43200
+```
+Omit if you want the entire DB.
