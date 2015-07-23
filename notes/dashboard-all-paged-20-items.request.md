@@ -59,4 +59,15 @@ time=60
 // 30 Days
 time=43200
 ```
-Omit if you want the entire DB.
+If you want the entire DB.
+```
+time=0
+```
+
+### File Restriction
+
+This returns the last X files submitted. Use of `files` is instead of `time`.
+
+```
+files:10
+```
