@@ -64,6 +64,21 @@ It actually only exports
 :Submitted Time:Severity:Job Id: Task If: Analyzer:Hash:
 ```
 
+```
+"Submitted Time",Severity,"Job Id","Task Id","Analyzer Profile",Hash
+"2015-07-22 15:54:21","Very High",21424,40048,"Win XP Down Select (Online)",5573641A9E543C104E9D58FD6AFA141D
+"2015-07-22 15:52:25","Very High",21417,40041,"Windows XP Full Run Online",5AA7BC2A4A3CA85F127D8678400028A5
+"2015-07-19 17:44:11","Very High",21121,39745,"Windows 7 64bit Down Select (Online)",C702A1441672050B54D1565970FACADE
+"2015-07-19 17:44:01","Very High",21119,39743,"Windows 7 64bit Down Select (Online)",C702A1441672050B54D1565970FACADE
+"2015-07-19 17:43:57","Very High",21117,39741,"Windows 7 64bit Down Select (Online)",C702A1441672050B54D1565970FACADE
+"2015-07-19 17:43:47","Very High",21114,39738,"Windows 7 64bit Down Select (Online)",C702A1441672050B54D1565970FACADE
+"2015-07-17 14:47:18","Very High",20750,39374,"Windows 7 64bit Down Select (Online)",9FE1F8407E73F02EC10FCE2EA64A4795
+"2015-07-17 13:30:02","Very High",20741,39365,"Windows 7 64bit Down Select (Online)",8E5F7F607ECAFA454A3ACA35B048A8EA
+"2015-07-16 09:43:45","Very High",20589,39213,"Windows 7 64bit Down Select (Online)",502DFDB990CFB62F56461EA5A077F043
+"2015-07-16 00:18:35","Very High",20585,39209,"Windows 7 64bit Down Select (Online)",950ACE1259DF56330759312A57ACC2E5
+"2015-07-15 13:50:33","Very High",20506,39130,"Windows 7 64bit Down Select (Online)",9A669FF30D7CAF9A70C524790E0AE8E4
+```
+
 Additional Dump
 
 ```js
