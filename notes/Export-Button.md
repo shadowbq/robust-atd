@@ -49,3 +49,14 @@ columns possible (correctly formatted)
 ```
 ":Reports:Submitted Time:Severity:File Name:File Type:User:Job Id:Task Id:URL:Analyzer Profile:VM Profile:Hash:File Size:Source IP:Destination IP"
 ```
+
+Additional Dump
+
+```js
+ValidEdge.utils.SingletonSession.userId
+"1"
+
+ValidEdge.utils.SingletonSession.session
+"2qmdlsu1k4g8e61a9dks4u8p90
+```
+
