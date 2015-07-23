@@ -1,3 +1,12 @@
+To Request a JSON data set of results 
+
+## General
+```
+Remote Address:50.134.25.194:443
+Request URL:https://atd.localhost.com/php/configloader/getremotesamplestatus.php?userid=1&status=5&showAll=0&time=0&showAll=0&host=localhost&page=1&start=0&limit=20&sort=%5B%7B%22property%22%3A%22severity%22%2C%22direction%22%3A%22DESC%22%7D%5D
+Request Method:GET
+Status Code:200 OK
+```
 
 ## Request Headers
 ```
