@@ -7,7 +7,7 @@ Robust ATD CLI tools
 
 This is *not a supported or official application of Intel Security*. This work is based off of publicly available published documentation for integrating with the ATD REST API.
 
-A modified Fork of atdcli.py (Carlos Munoz - 2014) is also included.
+A modified Fork of `atdcli.py` (Carlos Munoz - 2014) is also included.
 
 ## Install
 
