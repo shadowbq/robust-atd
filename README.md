@@ -1,11 +1,15 @@
 Robust ATD CLI tools
 ================
 
-"Robust" is a set of tools to leverage the HTTPS REST API of the Intel Security ATD 3.x appliance.
+"Robust" is a set of tools to leverage the HTTPS REST API of the [Intel Security Advanced Threat Detection](http://www.mcafee.com/us/products/advanced-threat-defense.aspx) 3.x appliance.
+
+
 
 ## Important
 
-This is *not a supported or official application of Intel Security*. This work is based off of publicly available published documentation for integrating with the ATD REST API.
+This is *not a supported or official application of Intel Security*. This work is based off of publicly available published documentation for integrating with the ATD REST API 3.x. 
+
+API Documentation is available here. https://kc.mcafee.com/resources/sites/MCAFEE/content/live/PRODUCT_DOCUMENTATION/25000/PD25810/en_US/ATD_344_API_Reference_Guide_revA_en_us.pdf
 
 A modified Fork of `atdcli.py` (Carlos Munoz - 2014) is also included.
 
