@@ -1,19 +1,19 @@
 Robust ATD CLI tools
 ================
 
-"Robust" is a set of tools to leverage the CLI of the Intel Security ATD appliance.
+"Robust" is a set of tools to leverage the HTTPS REST API of the Intel Security ATD 3.x appliance.
 
 ## Important
 
-This is *not a supported or official application of Intel Security*. This work is based off of published documentation for integrating with the ATD REST API.
+This is *not a supported or official application of Intel Security*. This work is based off of publicly available published documentation for integrating with the ATD REST API.
 
-A modified Fork of atdcli.py (Carlos Munoz - 2014) is included.
+A modified Fork of atdcli.py (Carlos Munoz - 2014) is also included.
 
 ## Install
 
 ~~pip install robust-atd~~
 
-Note: robust-atd is not public nor published on pypi at this time.
+Note: robust-atd is not published on pypi at this time.
 
 ## PKG Download & Manual Install Alternative
 
