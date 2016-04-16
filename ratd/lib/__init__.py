@@ -463,7 +463,7 @@ class FetchProfiles(CommonATD):
         self.options = options
 
         # Get an authenticated connection to ATD
-        self.myatd = Atd(options.atd_ip, options.skipssl)
+        self.myatd = Atd(options.ip, options.skipssl)
         self.error_control, self.data = self.myatd.connect(self.options.user, self.options.password)
         self.connection_check()
 

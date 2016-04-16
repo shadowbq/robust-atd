@@ -2,9 +2,8 @@ import argparse
 import ConfigParser
 import os.path
 import ratd
-import sys
-
 import ratd.utils as utils
+
 
 def check_md5(value):
     if len(value) != 32:
@@ -123,48 +122,34 @@ class CliArgs():
         fname = os.path.expanduser("~/.robust")
         if os.path.isfile(fname):
             config.read(fname)
-            #print ('DEBUG..\n')
-            #print ('Session Value:     ', config)
-            # merge_dicts(*dict_args):
             if config.has_section("auth"):
-                try:
-                    dot_robust_auth_dict = {
-                        'user': config.get("auth", "user"),
-                        'password': config.get("auth", "password")
-                    }
-                except KeyError:
-                    print ("Missing required key|value from defined auth section")
-                    sys.exit(1)
+                dot_robust_auth = {
+                    'user': config.get("auth", "user"),
+                    'password': config.get("auth", "password")
+                }
             else:
-                dot_robust_auth_dict = {}
+                dot_robust_auth = {}
 
             if config.has_section("connection"):
-                try:
-                    dot_robust_connection_dict = {
-                        'ip': config.get("connection", "ip"),
-                        'skipssl': config.get("connection", "skipssl"),
-                        'maxthreads': config.get("connection", "maxthreads")
-                    }
-                except KeyError:
-                    print ("Missing required key|value from defined connection section")
-                    sys.exit(1)
+                dot_robust_connection = {
+                    'ip': config.get("connection", "ip"),
+                    'skipssl': config.get("connection", "skipssl"),
+                    'maxthreads': config.get("connection", "maxthreads")
+                }
             else:
-                dot_robust_connection_dict = {}
+                dot_robust_connection = {}
 
             if config.has_section("convict"):
-                try:
-                    dot_robust_convict_dict = {
-                        'cleandir': config.get("convict", "cleandir"),
-                        'dirtydir': config.get("convict", "dirtydir"),
-                        'reportdir': config.get("convict", "reportdir"),
-                        'errordir': config.get("convict", "errordir")
-                    }
-                except KeyError:
-                    print ("Missing required key|value from defined convict section")
-                    sys.exit(1)
+                dot_robust_convict = {
+                    'cleandir': config.get("convict", "cleandir"),
+                    'dirtydir': config.get("convict", "dirtydir"),
+                    'reportdir': config.get("convict", "reportdir"),
+                    'errordir': config.get("convict", "errordir")
+                }
             else:
-                dot_robust_convict_dict = {}
-            dot_robust_dict = utils.merge_dicts(dot_robust_auth_dict, dot_robust_connection_dict, dot_robust_convict_dict)
+                dot_robust_convict = {}
+
+            dot_robust_dict = utils.merge_dicts(dot_robust_auth, dot_robust_connection, dot_robust_convict )
         else:
             dot_robust_dict = {'user': False, 'password': False, 'ip': False, 'skipssl': False, 'maxthreads': 1}
         return dot_robust_dict
