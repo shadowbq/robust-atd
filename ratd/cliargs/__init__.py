@@ -82,29 +82,29 @@ class CliArgs():
 
             if tool == 'convict':
                 convict_group = self.parser.add_argument_group('Convict parameters')
-                if self.dot_robust.has_key('cleandir'):
+                if 'cleandir' in self.dot_robust:
                     convict_group.add_argument('-c', required=False, action='store', type=slash_dir, default=self.dot_robust['cleandir'], dest='cleandir', help=self.arg_dict['cleandir'])
                 else:
                     convict_group.add_argument('-c', required=True, action='store', type=slash_dir, dest='cleandir', help=self.arg_dict['cleandir'])
 
-                if self.dot_robust.has_key('dirtydir'):
+                if 'dirtydir' in self.dot_robust:
                     convict_group.add_argument('-x', required=False, action='store', type=slash_dir, default=self.dot_robust['dirtydir'], dest='dirtydir', help=self.arg_dict['dirtydir'])
                 else:
                     convict_group.add_argument('-x', required=True, action='store', type=slash_dir, dest='dirtydir', help=self.arg_dict['dirtydir'])
 
-                if self.dot_robust.has_key('reportdir'):
+                if 'reportdir' in self.dot_robust:
                     convict_group.add_argument('-r', required=False, action='store', type=slash_dir, default=self.dot_robust['reportdir'], dest='reportdir', help=self.arg_dict['reportdir'])
                 else:
                     convict_group.add_argument('-r', required=True, action='store', type=slash_dir, dest='reportdir', help=self.arg_dict['reportdir'])
 
-                if self.dot_robust.has_key('errordir'):
+                if 'errordir' in self.dot_robust:
                     convict_group.add_argument('-c', required=False, action='store', type=slash_dir, default=self.dot_robust['errordir'], dest='errordir', help=self.arg_dict['errordir'])
                 else:
                     convict_group.add_argument('-z', required=True, action='store', type=slash_dir, dest='errordir', help=self.arg_dict['errordir'])
 
                 convict_group.add_argument('-t', required=False, action='store', dest='rType', choices=['html', 'txt', 'xml', 'zip', 'json', 'ioc', 'stix', 'pdf', 'sample'], help=self.arg_dict['rType'])
 
-            if self.dot_robust.has_key('maxthreads'):
+            if 'maxthreads' in self.dot_robust:
                 watch_group.add_argument('-j', required=False, action='store', default=self.dot_robust['maxthreads'], dest='maxthreads', help=self.arg_dict['maxthreads'])
             else:
                 watch_group.add_argument('-j', required=False, action='store', dest='maxthreads', help=self.arg_dict['maxthreads'])
@@ -149,7 +149,7 @@ class CliArgs():
             else:
                 dot_robust_convict = {}
 
-            dot_robust_dict = utils.merge_dicts(dot_robust_auth, dot_robust_connection, dot_robust_convict )
+            dot_robust_dict = utils.merge_dicts(dot_robust_auth, dot_robust_connection, dot_robust_convict)
         else:
             dot_robust_dict = {'user': False, 'password': False, 'ip': False, 'skipssl': False, 'maxthreads': 1}
         return dot_robust_dict
