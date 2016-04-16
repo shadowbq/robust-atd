@@ -2,7 +2,9 @@ import argparse
 import ConfigParser
 import os.path
 import ratd
+import sys
 
+import ratd.utils as utils
 
 def check_md5(value):
     if len(value) != 32:
@@ -101,12 +103,12 @@ class CliArgs():
                 else:
                     convict_group.add_argument('-z', required=True, action='store', type=slash_dir, dest='errordir', help=self.arg_dict['errordir'])
 
-                if self.dot_robust.has_key('maxthreads'):
-                    convict_group.add_argument('-c', required=False, action='store', default=self.dot_robust['maxthreads'], dest='maxthreads', help=self.arg_dict['maxthreads'])
-                else:
-                    convict_group.add_argument('-j', required=False, action='store', dest='maxthreads', help=self.arg_dict['maxthreads'])
-
                 convict_group.add_argument('-t', required=False, action='store', dest='rType', choices=['html', 'txt', 'xml', 'zip', 'json', 'ioc', 'stix', 'pdf', 'sample'], help=self.arg_dict['rType'])
+
+            if self.dot_robust.has_key('maxthreads'):
+                watch_group.add_argument('-j', required=False, action='store', default=self.dot_robust['maxthreads'], dest='maxthreads', help=self.arg_dict['maxthreads'])
+            else:
+                watch_group.add_argument('-j', required=False, action='store', dest='maxthreads', help=self.arg_dict['maxthreads'])
         else:
             raise CliArgError(tool)
 
@@ -117,27 +119,54 @@ class CliArgs():
             self.parser.parse_args(args=explicit, namespace=self)
 
     def dot_robust_helper(self):
-        config = ConfigParser.ConfigParser({'user': False, 'password': False, 'host': False, 'skipssl': False})
+        config = ConfigParser.ConfigParser({'user': False, 'password': False, 'ip': False, 'skipssl': False, 'maxthreads': 1})
         fname = os.path.expanduser("~/.robust")
         if os.path.isfile(fname):
             config.read(fname)
-            dot_robust_dict = {
-                'user': config.get("auth", "user"),
-                'password': config.get("auth", "password"),
-                'host': config.get("auth", "host"),
-                'skipssl': config.get("auth", "skipssl")
-            }
+            #print ('DEBUG..\n')
+            #print ('Session Value:     ', config)
+            # merge_dicts(*dict_args):
+            if config.has_section("auth"):
+                try:
+                    dot_robust_auth_dict = {
+                        'user': config.get("auth", "user"),
+                        'password': config.get("auth", "password")
+                    }
+                except KeyError:
+                    print ("Missing required key|value from defined auth section")
+                    sys.exit(1)
+            else:
+                dot_robust_auth_dict = {}
+
+            if config.has_section("connection"):
+                try:
+                    dot_robust_connection_dict = {
+                        'ip': config.get("connection", "ip"),
+                        'skipssl': config.get("connection", "skipssl"),
+                        'maxthreads': config.get("connection", "maxthreads")
+                    }
+                except KeyError:
+                    print ("Missing required key|value from defined connection section")
+                    sys.exit(1)
+            else:
+                dot_robust_connection_dict = {}
+
             if config.has_section("convict"):
-                dot_robust_convict = {
-                    'cleandir': config.get("convict", "cleandir"),
-                    'dirtydir': config.get("convict", "dirtydir"),
-                    'reportdir': config.get("convict", "reportdir"),
-                    'errordir': config.get("convict", "errordir"),
-                    'maxthreads': config.get("convict", "maxthreads")
-                }
-                dot_robust_dict = dot_robust_dict.update(dot_robust_convict)
+                try:
+                    dot_robust_convict_dict = {
+                        'cleandir': config.get("convict", "cleandir"),
+                        'dirtydir': config.get("convict", "dirtydir"),
+                        'reportdir': config.get("convict", "reportdir"),
+                        'errordir': config.get("convict", "errordir")
+                    }
+                except KeyError:
+                    print ("Missing required key|value from defined convict section")
+                    sys.exit(1)
+            else:
+                dot_robust_convict_dict = {}
+            dot_robust_dict = utils.merge_dicts(dot_robust_auth_dict, dot_robust_connection_dict, dot_robust_convict_dict)
         else:
-            dot_robust_dict = {'user': False, 'password': False, 'host': False, 'skipssl': False}
+            dot_robust_dict = {'user': False, 'password': False, 'ip': False, 'skipssl': False, 'maxthreads': 1}
         return dot_robust_dict
 
     def common_args(self):
@@ -161,10 +190,10 @@ class CliArgs():
         else:
             auth_group.add_argument('-p', required=False, action='store', dest='password', help=self.arg_dict['password'], metavar='PASSWORD')
 
-        if self.dot_robust['host']:
-            auth_group.add_argument('-i', required=False, action='store', default=self.dot_robust['host'], dest='atd_ip', help=self.arg_dict['ip'], metavar='ATD IP')
+        if self.dot_robust['ip']:
+            auth_group.add_argument('-i', required=False, action='store', default=self.dot_robust['ip'], dest='ip', help=self.arg_dict['ip'], metavar='ATD IP')
         else:
-            auth_group.add_argument('-i', required=True, action='store', dest='atd_ip', help=self.arg_dict['ip'], metavar='ATD IP')
+            auth_group.add_argument('-i', required=True, action='store', dest='ip', help=self.arg_dict['ip'], metavar='ATD IP')
 
         if self.dot_robust['skipssl']:
             auth_group.add_argument('-n', required=False, action='store_true', default=True, dest='skipssl', help=self.arg_dict['skipssl'])

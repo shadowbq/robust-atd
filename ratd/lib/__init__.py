@@ -246,14 +246,15 @@ class Handler:
             print("New File identified", self.src_path)
 
         tmp_target = ''
-        if self.options.dirtydir:
-            tmp_target = self.temp_dir+"/"+os.path.basename(self.src_path)
-            if self.options.verbosity:
-                print("moved to tmp: ", tmp_target)
-            os.rename(self.src_path, tmp_target)
-            self.options.file_to_upload = tmp_target
-            filename = os.path.basename(tmp_target)
-        else:
+        try:
+            if self.options.dirtydir:
+                tmp_target = self.temp_dir+"/"+os.path.basename(self.src_path)
+                if self.options.verbosity:
+                    print("moved to tmp: ", tmp_target)
+                os.rename(self.src_path, tmp_target)
+                self.options.file_to_upload = tmp_target
+                filename = os.path.basename(tmp_target)
+        except AttributeError:
             self.options.file_to_upload = self.src_path
             filename = os.path.basename(self.src_path)
 
@@ -268,37 +269,44 @@ class Handler:
         severity = sample.rtnv
         md5 = sample.rtv_md5
 
-        if self.options.dirtydir:
-            if severity > 4:
-                target = self.options.dirtydir+filename
+        try:
+            if self.options.dirtydir:
+                if severity > 4:
+                    target = self.options.dirtydir+filename
+                    if self.options.verbosity:
+                        print('Move file {0}.. to dirty {1}'.format(filename, target))
+                    os.rename(tmp_target, target)
+                elif severity > 0:
+                    target = self.options.cleandir+filename
+                    if self.options.verbosity:
+                        print('Move file {0}.. to clean {1}'.format(filename, target))
+                    os.rename(tmp_target, target)
+                else:
+                    target = self.options.errordir+filename
+                    if self.options.verbosity:
+                        print('Move file {0}.. to ERROR {1}'.format(filename, target))
+                    os.rename(tmp_target, target)
+        except AttributeError:
+            pass
+
+        try:
+            if self.options.reportdir:
+                # find report by md5
+                self.options.md5 = md5
+                # Report ouput filename
+                if 1 == 1:
+                    self.options.filename = self.options.reportdir + md5
+                else:
+                    self.options.filename = self.options.reportdir + filename
                 if self.options.verbosity:
-                    print('Move file {0}.. to dirty {1}'.format(filename, target))
-                os.rename(tmp_target, target)
-            elif severity > 0:
-                target = self.options.cleandir+filename
-                if self.options.verbosity:
-                    print('Move file {0}.. to clean {1}'.format(filename, target))
-                os.rename(tmp_target, target)
-            else:
-                target = self.options.errordir+filename
-                if self.options.verbosity:
-                    print('Move file {0}.. to ERROR {1}'.format(filename, target))
-                os.rename(tmp_target, target)
-        if self.options.reportdir:
-            # find report by md5
-            self.options.md5 = md5
-            # Report ouput filename
-            if 1 == 1:
-                self.options.filename = self.options.reportdir + md5
-            else:
-                self.options.filename = self.options.reportdir + filename
-            if self.options.verbosity:
-                print('Downloading zip report for \'{0}\' into report: {1}'.format(
-                    self.src_path,
-                    self.options.filename
-                ))
-                print ('rType:', self.options.rType)
-            rb_rtnv = SearchReports(self.options)
+                    print('Downloading zip report for \'{0}\' into report: {1}'.format(
+                        self.src_path,
+                        self.options.filename
+                    ))
+                    print ('rType:', self.options.rType)
+                rb_rtnv = SearchReports(self.options)
+        except AttributeError:
+            pass
 
         if self.options.verbosity:
             print("Completed ScanFolder()")
@@ -313,7 +321,7 @@ class SampleSubmit(CommonATD):
         self.options = options
 
         # Get an authenticated connection to ATD
-        self.myatd = Atd(options.atd_ip, options.skipssl)
+        self.myatd = Atd(options.ip, options.skipssl)
         self.error_control, self.data = self.myatd.connect(self.options.user, self.options.password)
         self.connection_check()
 
@@ -492,7 +500,7 @@ class SearchReports(CommonATD):
         self.options = options
 
         # Get an authenticated connection to ATD
-        self.myatd = Atd(self.options.atd_ip, self.options.skipssl)
+        self.myatd = Atd(self.options.ip, self.options.skipssl)
         self.error_control, self.data = self.myatd.connect(self.options.user, self.options.password)
         self.connection_check()
 

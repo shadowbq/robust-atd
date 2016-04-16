@@ -6,14 +6,14 @@ Get started
 
 Install Test workspace
 
-`$> mkvirtualenv test`
+`$> mkvirtualenv robust`
 
-Look inside the new `virutalenv test`
+Look inside the new `virutalenv robust`
 
 ```shell
-$> workon test
+$> workon robust
 
-(test)$> pip list
+(robust)$> pip list
 argparse (1.2.1)
 pbr (0.10.0)
 pip (1.5.6)
@@ -28,15 +28,15 @@ wsgiref (0.1.2)
 Exit test ENV
 
 ``` shell
-(test)$>deactivate
+(robust)$>deactivate
 $>
 ```
 
-List the Availabled ENV
+List the Available Python Virtual Environments
 
 ```shell
-$> lsvirtualenv 
-test
+$> lsvirtualenv
+robust
 ===
 test-1
 ======
@@ -46,8 +46,8 @@ test-1
 Blow away test ENV
 
 ```shell
-$> rmvirtualenv test
-Removing test...
+$> rmvirtualenv robust
+Removing robust...
 ```
 
 * For more on Python Virtualenv Burrito [https://github.com/brainsik/virtualenv-burrito]

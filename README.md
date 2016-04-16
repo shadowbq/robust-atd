@@ -1,17 +1,13 @@
 Robust ATD CLI tools
 ================
 
-"Robust" is a set of tools to leverage the HTTPS REST API of the [Intel Security Advanced Threat Detection](http://www.mcafee.com/us/products/advanced-threat-defense.aspx) 3.x appliance.
-
-
+"Robust" is a set of python cli tools to leverage the HTTPS REST API of the [Intel Security Advanced Threat Detection](http://www.mcafee.com/us/products/advanced-threat-defense.aspx) 3.x appliance.
 
 ## Important
 
-This is *not a supported or official application of Intel Security*. This work is based off of publicly available published documentation for integrating with the ATD REST API 3.x. 
+This is *not a supported or official application of Intel Security*.
 
-API Documentation is available here. https://kc.mcafee.com/resources/sites/MCAFEE/content/live/PRODUCT_DOCUMENTATION/25000/PD25810/en_US/ATD_344_API_Reference_Guide_revA_en_us.pdf
-
-A modified Fork of `atdcli.py` (Carlos Munoz - 2014) is also included.
+This work is based off of publicly available published documentation for integrating with the McAfee ATD REST API 3.x.
 
 ## Install
 
@@ -19,7 +15,7 @@ A modified Fork of `atdcli.py` (Carlos Munoz - 2014) is also included.
 
 Note: robust-atd is not published on pypi at this time.
 
-## PKG Download & Manual Install Alternative
+### PKG Download & Manual Install
 
 Note: python setup.py will attempt to install dependencies from the internet via `pip`.
 
@@ -31,17 +27,55 @@ $(robust)> unzip master.zip
 $(robust)> cd master
 $(robust)> python setup.py install
 ```
+## Configuration
 
-### Install Development
+### .robust (DOT) Configuration file
 
+Robust can use a `~\.robust` file to load defaults in executables.
+
+Authentication Section `[auth]` :
+
+```shell
+$(robust)> cat ~/.robust
+[auth]
+user: admin
+password: password!
 ```
-$(robust)> pip install -r devel-requirements.txt
 
+Connection Section `[connection]` :
+
+```shell
+$(robust)> cat ~/.robust
+[connection]
+host: atd.localhost.localdomain
+skipssl: true
+maxthreads: 15
 ```
 
-## Example Outputs:
+Convict Section `[convict]`:
 
-Using `robust` for submitting samples.
+```shell
+$(robust)> cat ~/.robust
+[convict]
+cleandir: ./clean
+dirtydir: ./dirty
+reportdir: ./reports
+errordir: ./errors
+```
+
+This file is expanded via the `os` module and maps to windows too.
+
+## Tools Overview
+
+  * robust
+  * robust-profiles
+  * robust-search
+  * robust-watchdog
+  * robust-convict
+
+## Robust:
+
+Using the basic `robust` tool for submitting samples directly to the ATD.
 
 ```
 usage: robust.py [-h] [-u USER] [-p PASSWORD] [-i ATD IP] [-n] -s
@@ -80,13 +114,13 @@ Examples:
 
 ### Submitting a Sample
 
-A sample can be submitted via cli with full flags, .robust configs, or interrupt passwords.
+A sample can be submitted via cli with full flags, `.robust` configuration file, or interrupt passwords.
 
 ```shell
 $(robust)> robust.py -u admin -p password! -i atd.localhost.localdomain -s /home/malware/non-malicious-container/putty_upx_7.exe
 ```
 
-Using interupt passwords
+Using interrupt (interactive) passwords:
 
 ```shell
 $(robust)> robust-profiles.py -n -l
@@ -99,34 +133,6 @@ Run all down selects?: Off
 ******************
 ```
 
-### Pulling the Policy List
-
-In order to submit a sample using `robust` you must identify the Analyzer Profile ID. `robust-profiles` assists in identifing the available profiles your user can submit to.
-
-```
-$(robust)> robust-profiles.py -n -l
-ATD profiles:  10
-Profile id:  1
-Name:  Android
-OS: android
-Run All Selected?: Off
-******************
-Profile id:  26
-Name:  Win XP Down Select (Online)
-OS: winXPsp3
-Run All Selected?: Off
-******************
-Profile id:  25
-Name:  Windows XP Full Run (Offline)
-OS: winXPsp3
-Run All Selected?: On
-******************
-Profile id:  24
-Name:  Windows XP Full Run (Online)
-OS: winXPsp3
-Run All Selected?: On
-******************
-```
 ### Managing Outputs
 
 Using System Return codes with `-q` Quiet output flag. When the quiet flag is
@@ -162,47 +168,38 @@ Malware ranking:
     4 ---> Sample is malicious
     5 ---> Sample is malicious (Very High)
 ```
+## robust-profiles
 
-## Robust (DOT) FILE
+Pulling the Policy List - In order to submit a sample using `robust` you must identify the Analyzer Profile ID. `robust-profiles` assists in identifying the available profiles your user can submit samples to.
 
-Robust can use a `~\.robust` file to load defaults in the auth context
-
-```shell
-$(robust)> cat ~/.robust
-[auth]
-user: admin
-password: password!
-host: atd.localhost.localdomain
 ```
-
-This file is expanded via the `os` module and maps to windows too.
-
-## robust-watchdog
-
-A tool that watches a directory recursively for any new files to submit.
-
-Example CLI
+$(robust)> robust-profiles.py -n -l
+ATD profiles:  10
+Profile id:  1
+Name:  Android
+OS: android
+Run All Selected?: Off
+******************
+Profile id:  26
+Name:  Win XP Down Select (Online)
+OS: winXPsp3
+Run All Selected?: Off
+******************
+Profile id:  25
+Name:  Windows XP Full Run (Offline)
+OS: winXPsp3
+Run All Selected?: On
+******************
+Profile id:  24
+Name:  Windows XP Full Run (Online)
+OS: winXPsp3
+Run All Selected?: On
+******************
 ```
-$(robust)> usage: robust-watchdog.py [-h] [-u USER] [-p PASSWORD] [-i ATD IP] [-n] -a
-                          ANALYZER_PROFILE -d DIRECTORY [-e] [--version]
-                          [-v | -q]
-```
-
-Let it run in a shell and open another one or the file browser to create files in the /path/to/directory. Since the handler is printing the results, the output will reflect the flags chosen similar to `robust.py`:
-
-The `-e` flag can be passed to cause all existing files in the directory (recurisively) to be submitted upon start.
-
-```shell
-(robust)$> robust-watchdog.py -a 26 -d ./ -n -e
-.
-...
-.
-.....
-````
 
 ## robust-search
 
-A tool designed to search and return reports for a specific md5 hash.
+`robust-search` is a tool designed to search and return reports for a specific md5 hash.
 
 ```shell
 (robust)$> $ robust-search.py -m 2F7568342339CDB8321B52FF7BEBE661 -n
@@ -230,11 +227,11 @@ optional arguments:
 
 Authentication parameters:
   -u USER               (u)sername for the API of the ATD
-                        		(default: robust)
+                        		(default: admin)
   -p PASSWORD           (p)assword for username
-                        		(default: P@ssword1!)
+                        		(default: password!)
   -i ATD IP             (i)p or hostname address of ATD
-                        		(default: atd.vanillasystem.com)
+                        		(default: atd.localhost.localdomain)
   -n                    do (n)ot verify the SSL certificate for the communications
                         		(default: False)
 
@@ -250,7 +247,63 @@ Reporting parameters:
                         		(default: None)
 ```
 
+## robust-watchdog
+
+`robust-watchdog` is a tool that watches a directory recursively for any new files to submit. Use other tools like `robust-search` to fetch the results.
+
+Example CLI
+```
+usage: robust-watchdog.py [-h] [-u USER] [-p PASSWORD] [-i ATD IP] [-n] -a
+                          ANALYZER_PROFILE -d DIRECTORY [-e] [-j MAXTHREADS]
+                          [--version] [-v | -q]
+
+Robust Intel Security ATD Python CLI tool
+
+optional arguments:
+  -h, --help           show this help message and exit
+  --version            show program's version number and exit
+  -v, --verbosity      increase output (v)erbosity
+                       		(default: None)
+  -q, --quiet          (q)uiet all output
+                       		(default: False)
+
+Authentication parameters:
+  -u USER              (u)sername for the API of the ATD
+                       		(default: admin)
+  -p PASSWORD          (p)assword for username
+                       		(default: password!)
+  -i ATD IP            (i)p or hostname address of ATD
+                       		(default: atd.localhost.localdomain)
+  -n                   do (n)ot verify the SSL certificate for the communications
+                       		(default: True)
+
+Watch parameters:
+  -a ANALYZER_PROFILE  (a)nalyzer profile id to be used during analysis
+                       		(default: None)
+  -d DIRECTORY         (d)irectory to watch for events
+                       		(default: None)
+  -e                   (e)xisting files in directory will be submitted
+                       		(default: False)
+  -j MAXTHREADS        (j) max number of threads
+                       		(default: 1)
+
+```
+
+Let it run in a shell and open another one or the file browser to create files in the /path/to/directory. Since the handler is printing the results, the output will reflect the flags chosen similar to `robust.py`:
+
+The `-e` flag can be passed to cause all existing files in the directory (recurisively) to be submitted upon start.
+
+```shell
+(robust)$> robust-watchdog.py -a 26 -d ./ -n -e
+.
+...
+.
+.....
+```
+
 ## robust-convict
+
+`robust-convict` is a tool designed like `robust-watchdog` but its purpose is to help sort large directories of malware samples into directories, while downloading their corresponding reports.
 
 Example Usage
 
@@ -260,7 +313,7 @@ robust-convict.py -n -a 26 -c ./tmp/clean/ -x ./tmp/dirty/ -r ./tmp/reports/ -z 
 
 Options
 
-```shell
+```
 usage: robust-convict.py [-h] [-u USER] [-p PASSWORD] [-i ATD IP] [-n] -a
                          ANALYZER_PROFILE -d DIRECTORY [-e] -c CLEANDIR -x
                          DIRTYDIR -r REPORTDIR -z ERRORDIR [-j MAXTHREADS]
@@ -279,11 +332,11 @@ optional arguments:
 
 Authentication parameters:
   -u USER               (u)sername for the API of the ATD
-                        		(default: robust)
+                        		(default: admin)
   -p PASSWORD           (p)assword for username
-                        		(default: P@ssword1!)
+                        		(default: password!)
   -i ATD IP             (i)p or hostname address of ATD
-                        		(default: atd.vanillasystem.com)
+                        		(default: atd.localhost.localdomain)
   -n                    do (n)ot verify the SSL certificate for the communications
                         		(default: False)
 
@@ -313,9 +366,9 @@ Convict parameters:
 
 ## iNotify Tuning Parameters
 
-System Specific Preparation 
+System Specific Preparation
 
-### Linux `inotify` Limits 
+### Linux `inotify` Limits
 
 The inotify(7) subsystem has three important tunings that impact robust's directory watching.
 
@@ -329,6 +382,18 @@ You obviously need to ensure that `max_user_instances` and `max_user_watches` ar
 
 `max_queued_events` is important to size correctly; if it is too small, the kernel will drop events and robust won't be able to report on them. Making this value bigger reduces the risk of this happening.
 
+# Developers
+
+Official McAfee ATD API Documentation is available here.
+
+https://support.mcafee.com/ServicePortal/faces/knowledgecenter?q=api&v=&p=Advanced+Threat+Defense
+
+## Install Development Tools
+
+```
+$(robust)> pip install -r devel-requirements.txt
+
+```
 
 ## Development Tasks
 
@@ -366,3 +431,7 @@ Clearing rm -rf ./*.pyc
 1       N802 function name should be lowercase
 5       W601 .has_key() is deprecated, use 'in'
 ```
+
+## Notes on License
+
+A modified Fork of `atdcli.py` (Carlos Munoz - 2014) is also included.
