@@ -238,11 +238,11 @@ optional arguments:
 
 Authentication parameters:
   -u USER               (u)sername for the API of the ATD
-                        		(default: robust)
+                        		(default: admin)
   -p PASSWORD           (p)assword for username
-                        		(default: P@ssword1!)
+                        		(default: password!)
   -i ATD IP             (i)p or hostname address of ATD
-                        		(default: atd.vanillasystem.com)
+                        		(default: atd.localhost.localdomain)
   -n                    do (n)ot verify the SSL certificate for the communications
                         		(default: False)
 
@@ -343,11 +343,11 @@ optional arguments:
 
 Authentication parameters:
   -u USER               (u)sername for the API of the ATD
-                        		(default: robust)
+                        		(default: admin)
   -p PASSWORD           (p)assword for username
-                        		(default: P@ssword1!)
+                        		(default: password!)
   -i ATD IP             (i)p or hostname address of ATD
-                        		(default: atd.vanillasystem.com)
+                        		(default: atd.localhost.localdomain)
   -n                    do (n)ot verify the SSL certificate for the communications
                         		(default: False)
 
