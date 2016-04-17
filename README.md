@@ -443,7 +443,7 @@ A modified Fork of `atdcli.py` (Carlos Munoz - 2014) is also included.
 
 ## VX Workshop Appliance Option
 
-There is a fully operational Xubuntu 14.04liveCD that includes on 
+There is a fully operational Xubuntu 14.04 liveCD that includes: 
 
 * robust - https://github.com/shadowbq/robust-atd
 * maltrieve - https://github.com/shadowbq/maltrieve
@@ -458,5 +458,5 @@ It also includes
 * etc..
 
 xubuntu-14.04.4-desktop-x86_64-VX-Workshop-0.4.iso (~ 1.2 GB)
- 
-Available to download here: https://goo.gl/flcvew
+
+Available to download with READMEs here: https://goo.gl/flcvew
