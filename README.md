@@ -440,3 +440,23 @@ Clearing rm -rf ./*.pyc
 ### Additional LICENSE information
 
 A modified Fork of `atdcli.py` (Carlos Munoz - 2014) is also included.
+
+## VX Workshop Appliance Option
+
+There is a fully operational Xubuntu 14.04liveCD that includes on 
+
+* robust - https://github.com/shadowbq/robust-atd
+* maltrieve - https://github.com/shadowbq/maltrieve
+* vxcage - https://github.com/shadowbq/vxcage
+
+It also includes 
+
+* hexeditors
+* static analysis tools
+* google chrome
+* vmtools
+* etc..
+
+xubuntu-14.04.4-desktop-x86_64-VX-Workshop-0.4.iso (~ 1.2 GB)
+ 
+Available to download here: https://goo.gl/flcvew
