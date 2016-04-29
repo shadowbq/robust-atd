@@ -14,6 +14,8 @@ https://support.mcafee.com/ServicePortal/faces/knowledgecenter?q=api&v=&p=Advanc
 
 ## Install
 
+Req: Python 2.7.x
+
 ~~pip install robust-atd~~
 
 Note: robust-atd is not published on pypi at this time.
@@ -381,6 +383,43 @@ Convict parameters:
                         		(default: None)
 ```
 
+## robust-reporter
+
+`robust-reporter` is a tool designed to quickly summarize the downloaded *.json files in your 'reports' directory.
+
+Options
+
+```
+usage: robust-reporter.py [-h] [-r REPORTDIR] [--version] [-v | -q]
+
+Robust Intel Security ATD Python CLI tool
+
+optional arguments:
+  -h, --help       show this help message and exit
+  --version        show program's version number and exit
+  -v, --verbosity  increase output (v)erbosity
+                   		(default: None)
+  -q, --quiet      (q)uiet all output
+                   		(default: False)
+
+Reporter parameters:
+  -r REPORTDIR     (r) reports are processed or stored using this directory
+                   		(default: ~/robust/reports/)
+```
+Sample Run
+
+```
+$ robust-reporter.py
+82344C9864B0F1D120C0D1AB7F7C54C3 (---) : Somewhat/probably is suspicious(Low-Medium) - 24sec
+D012492123E4CF0CFB3A017A2E92C077 (Malware.Dynamic) : Malicious(High) - 194sec
+DB273A97C54E3E23F411EA7C9B5A82DA (Malware.Dynamic) : Malicious (Medium) - 53sec
+165A36C02B3FAAF4DE38F93A3DCB821B (---) : Somewhat/probably is suspicious(Low-Medium) - 36sec
+D10195670651A40C46C22972CD839E89 (Artemis!D10195670651) : Malicious (Very High) - 32sec
+8271093E0E78574428BBDDDA6F34A980 (Malware.Dynamic) : Malicious(High) - 192sec
+86DAFA0262BF217F5344A3B057C0DB06 (Malware.Dynamic) : Malicious(High) - 193sec
+8DA4CDC3E2EE16021F237EA7A043DA8E (Malware.Dynamic) : Malicious(High) - 191sec
+```
+
 ## Tunning for Linux File Watchers
 
 ### iNotify Tuning Parameters
@@ -445,7 +484,9 @@ Clearing rm -rf ./*.pyc
 
 ### Additional LICENSE information
 
-A modified Fork of `atdcli.py` (Carlos Munoz - 2014) is also included.
+A modified Fork of `atdcli.py` (Carlos Munoz - 2014).
+
+https://pypi.python.org/pypi/atd
 
 ## VX Workshop Appliance Option
 

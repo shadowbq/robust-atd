@@ -46,7 +46,7 @@ class CliArgs():
             'md5': '(m)d5 32bit hash of the sample to search\n\t\t(default: %(default)s)',
             'cleandir': '(c) move clean files to this directory\n\t\t(default: %(default)s)',
             'dirtydir': '(x) move processed dirty files to this directory\n\t\t(default: %(default)s)',
-            'reportdir': '(r) save reports to this directory\n\t\t(default: %(default)s)',
+            'reportdir': '(r) reports are processed or stored using this directory\n\t\t(default: %(default)s)',
             'errordir': '(z) move error or skip files to this directory \n\t\t(default: %(default)s)',
             'severity': '(y) treat sample as dirty with this severity [0-5] or higher\n\t\t(default: %(default)s)',
             'maxthreads': '(j) max number of threads\n\t\t(default: %(default)s)',
@@ -72,6 +72,13 @@ class CliArgs():
             self.auth_args()
             self.search_args()
             self.output_args()
+            
+        elif tool == 'reporter':
+            reporter_group = self.parser.add_argument_group('Reporter parameters')
+            if 'reportdir' in self.dot_robust:
+                reporter_group.add_argument('-r', required=False, action='store', type=slash_dir, default=self.dot_robust['reportdir'], dest='reportdir', help=self.arg_dict['reportdir'])
+            else:
+                reporter_group.add_argument('-r', required=True, action='store', type=slash_dir, dest='reportdir', help=self.arg_dict['reportdir'])
 
         elif tool == 'watch' or tool == 'convict':
             self.auth_args()

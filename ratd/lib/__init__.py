@@ -523,3 +523,63 @@ class SearchReports(CommonATD):
         self.myatd.disconnect()
         self.rtnv = int(self.severity)
         return
+
+class Reporter():
+    '''Class defining a scan folder'''
+    def __init__(self, options):
+
+        self.options = options
+        if self.options.verbosity:
+            print("Reporter Started for {}".format(self.options.reportdir))
+
+        full_file_paths = self.get_filepaths(self.options.reportdir)
+        self.i = 0
+        for file_name in full_file_paths:
+            if self.options.verbosity:
+                print("Report file => {}".format(file_name))
+            self.i = self.i + 1
+
+            with open(file_name, 'r') as f:
+                parsed_json = json.load(f)
+                #parsed_json = json.loads(json_string)
+            sys.stdout.write(parsed_json['Summary']['Subject']['md5'] + " ")
+            sys.stdout.write("(" + self.malware_name(parsed_json['Summary']['Selectors'])+ ") : ")
+            sys.stdout.write(self.map_severity(parsed_json['Summary']['Verdict']['Severity']))
+            sys.stdout.write(" - ")
+            sys.stdout.write(parsed_json['Summary']['Data']['analysis_seconds'] + "sec")
+            print ("")
+
+    def malware_name(self, selectors_tuple):
+        name = "---"
+        for engine in selectors_tuple:
+            #selectors_tuple.iteritems()
+            #print engine["MalwareName"]
+            if engine["MalwareName"] != "---":
+                if engine["MalwareName"] == "Malware.Dynamic" and name == "---":
+                    name = engine["MalwareName"]
+                elif engine["MalwareName"] != "Malware.Dynamic":
+                    name = engine["MalwareName"]
+        return name
+
+    def map_severity(self, severity):
+        try:
+            sev_map = {"-1": "White listed", "0": "No malicious activity detected (None)", \
+            "1": "Slightly suspicious (Low)", "2": "Somewhat/probably is suspicious(Low-Medium)", \
+            "3": "Malicious (Medium)", "4": "Malicious(High)", \
+            "5": "Malicious (Very High)"}
+            rtv = sev_map[severity]
+        except:
+            rtv = "Unknown Severity Value: ({})".format(severity)
+        return rtv
+
+    def get_filepaths(self, directory):
+
+        file_paths = []
+
+        for root, directories, files in os.walk(directory):
+            for filename in files:
+                if filename.endswith('json'):
+                    filepath = os.path.join(root, filename)
+                    file_paths.append(filepath)
+
+        return file_paths
