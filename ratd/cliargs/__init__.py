@@ -14,6 +14,7 @@ def check_md5(value):
 def slash_dir(value):
     if value[len(value)-1] != "/":
         raise argparse.ArgumentTypeError("%s should end in a slash" % value)
+    value = os.path.expanduser(value)
     return value
 
 
@@ -32,6 +33,7 @@ class CliArgs():
         self.arg_dict = {
             'user': '(u)sername for the API of the ATD\n\t\t(default: %(default)s)',
             'password': '(p)assword for username\n\t\t(default: %(default)s) ',
+            'password_secured': '(p)assword for username\n\t\t(default: ****<.robust>*****) ',
             'ip': '(i)p or hostname address of ATD\n\t\t(default: %(default)s) ',
             'sample': '(s)ample or file to be analyzed\n\t\t(default: %(default)s)',
             'skipssl': 'do (n)ot verify the SSL certificate for the communications\n\t\t(default: %(default)s)',
@@ -46,6 +48,7 @@ class CliArgs():
             'dirtydir': '(x) move processed dirty files to this directory\n\t\t(default: %(default)s)',
             'reportdir': '(r) save reports to this directory\n\t\t(default: %(default)s)',
             'errordir': '(z) move error or skip files to this directory \n\t\t(default: %(default)s)',
+            'severity': '(y) treat sample as dirty with this severity [0-5] or higher\n\t\t(default: %(default)s)',
             'maxthreads': '(j) max number of threads\n\t\t(default: %(default)s)',
             'quiet': '(q)uiet all output\n\t\t(default: %(default)s)',
             'verbosity': 'increase output (v)erbosity\n\t\t(default: %(default)s)'
@@ -82,6 +85,11 @@ class CliArgs():
 
             if tool == 'convict':
                 convict_group = self.parser.add_argument_group('Convict parameters')
+                if 'severity' in self.dot_robust:
+                    convict_group.add_argument('-y', required=False, action='store', default=self.dot_robust['severity'], dest='severity', help=self.arg_dict['severity'])
+                else:
+                    convict_group.add_argument('-y', required=False, action='store', dest='severity', help=self.arg_dict['severity'])
+
                 if 'cleandir' in self.dot_robust:
                     convict_group.add_argument('-c', required=False, action='store', type=slash_dir, default=self.dot_robust['cleandir'], dest='cleandir', help=self.arg_dict['cleandir'])
                 else:
@@ -108,6 +116,7 @@ class CliArgs():
                 watch_group.add_argument('-j', required=False, action='store', default=self.dot_robust['maxthreads'], dest='maxthreads', help=self.arg_dict['maxthreads'])
             else:
                 watch_group.add_argument('-j', required=False, action='store', dest='maxthreads', help=self.arg_dict['maxthreads'])
+
         else:
             raise CliArgError(tool)
 
@@ -117,41 +126,72 @@ class CliArgs():
         else:
             self.parser.parse_args(args=explicit, namespace=self)
 
+    def config_section_map(self, config, section, defaults):
+        dict1 = {}
+        options = config.options(section)
+
+        for option in options:
+            try:
+                dict1[option] = config.get(section, option)
+                if dict1[option] == -1:
+                    DebugPrint("skip: %s" % option)
+            except:
+                try:
+                    dict1[option] = defaults[option]
+                except:
+                    print("exception on %s!" % option)
+                    dict1[option] = None
+
+        for k,v in defaults.iteritems():
+            if not k in dict1:
+                dict1[k] = v
+
+        return dict1
+
     def dot_robust_helper(self):
-        config = ConfigParser.ConfigParser({'user': False, 'password': False, 'ip': False, 'skipssl': False, 'maxthreads': 1})
+        config = ConfigParser.ConfigParser({})
         fname = os.path.expanduser("~/.robust")
+
+        auth_defaults = {'user': False, 'password': False}
+        connection_defaults = {'ip': False, 'skipssl': False, 'maxthreads': 1}
+        storage_defaults = {'severity': 3, 'cleandir': '~/robust/clean/', 'dirtydir': '~/robust/malware/', 'reportdir': '~/robust/reports/', 'errordir': '~/robust/errors/'}
+
         if os.path.isfile(fname):
             config.read(fname)
             if config.has_section("auth"):
+                auth = self.config_section_map(config, "auth", auth_defaults)
                 dot_robust_auth = {
-                    'user': config.get("auth", "user"),
-                    'password': config.get("auth", "password")
+                    'user': auth["user"],
+                    'password':  auth["password"]
                 }
             else:
-                dot_robust_auth = {}
+                dot_robust_auth = auth_defaults
 
             if config.has_section("connection"):
+                connection = self.config_section_map(config, "connection", connection_defaults)
                 dot_robust_connection = {
-                    'ip': config.get("connection", "ip"),
-                    'skipssl': config.get("connection", "skipssl"),
-                    'maxthreads': config.get("connection", "maxthreads")
+                    'ip': connection["ip"],
+                    'skipssl': connection["skipssl"],
+                    'maxthreads': connection["maxthreads"]
                 }
             else:
-                dot_robust_connection = {}
+                dot_robust_connection = connection_defaults
 
-            if config.has_section("convict"):
-                dot_robust_convict = {
-                    'cleandir': config.get("convict", "cleandir"),
-                    'dirtydir': config.get("convict", "dirtydir"),
-                    'reportdir': config.get("convict", "reportdir"),
-                    'errordir': config.get("convict", "errordir")
+            if config.has_section("storage"):
+                storage = self.config_section_map(config, "storage", storage_defaults)
+                dot_robust_storage = {
+                    'severity': storage["severity"],
+                    'cleandir': storage["cleandir"],
+                    'dirtydir': storage["dirtydir"],
+                    'reportdir': storage["reportdir"],
+                    'errordir': storage["errordir"]
                 }
             else:
-                dot_robust_convict = {}
+                dot_robust_storage = storage_defaults
 
-            dot_robust_dict = utils.merge_dicts(dot_robust_auth, dot_robust_connection, dot_robust_convict)
+            dot_robust_dict = utils.merge_dicts(dot_robust_auth, dot_robust_connection, dot_robust_storage)
         else:
-            dot_robust_dict = {'user': False, 'password': False, 'ip': False, 'skipssl': False, 'maxthreads': 1}
+            dot_robust_dict = utils.merge_dicts(auth_defaults, connection_defaults, storage_defaults)
         return dot_robust_dict
 
     def common_args(self):
@@ -171,7 +211,7 @@ class CliArgs():
             auth_group.add_argument('-u', required=True, action='store', dest='user', help=self.arg_dict['user'], metavar='USER')
 
         if self.dot_robust['password']:
-            auth_group.add_argument('-p', required=False, action='store', default=self.dot_robust['password'], dest='password', help=self.arg_dict['password'], metavar='PASSWORD')
+            auth_group.add_argument('-p', required=False, action='store', default=self.dot_robust['password'], dest='password', help=self.arg_dict['password_secured'], metavar='PASSWORD')
         else:
             auth_group.add_argument('-p', required=False, action='store', dest='password', help=self.arg_dict['password'], metavar='PASSWORD')
 
@@ -181,7 +221,7 @@ class CliArgs():
             auth_group.add_argument('-i', required=True, action='store', dest='ip', help=self.arg_dict['ip'], metavar='ATD IP')
 
         if self.dot_robust['skipssl']:
-            auth_group.add_argument('-n', required=False, action='store_true', default=True, dest='skipssl', help=self.arg_dict['skipssl'])
+            auth_group.add_argument('-n', required=False, action='store_true', default=self.dot_robust['skipssl'], dest='skipssl', help=self.arg_dict['skipssl'])
         else:
             auth_group.add_argument('-n', required=False, action='store_true', dest='skipssl', help=self.arg_dict['skipssl'])
 

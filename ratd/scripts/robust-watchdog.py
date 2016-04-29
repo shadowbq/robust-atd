@@ -22,6 +22,12 @@ if __name__ == '__main__':
     if options.verbosity:
         utils.copyleftnotice()
 
+    try:
+        mkdirs = utils.Mkdirs(options)
+    except:
+        print 'Failed to create configured directories'
+        sys.exit(1)    
+
     job = ratd.lib.ScanFolder(options)
 
     try:

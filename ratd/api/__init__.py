@@ -65,8 +65,12 @@ class Atd():
                 error_info = 'Connection unsucessful'
                 return (0, error_info)
         else:
-            error_info = 'Error conecting to ATD, Status Code: %d' % r.status_code
-            return(0, error_info)
+            if r.status_code == 401:
+                error_info = 'Error conecting to ATD, Username / Password combination not accepted.'
+                return(0, error_info)
+            else:
+                error_info = 'Error conecting to ATD, Status Code: %d' % r.status_code
+                return(0, error_info)
 
         return(1, 'Connection sucessful')
 

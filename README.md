@@ -52,25 +52,28 @@ user: admin
 password: password!
 ```
 
-Connection Section `[connection]` :
+Connection Detail Section `[connection]` :
 
 ```shell
 $(robust)> cat ~/.robust
 [connection]
-host: atd.localhost.localdomain
+ip: atd.localhost.localdomain
 skipssl: true
 maxthreads: 15
 ```
 
-Convict Section `[convict]`:
+Data Storage Section `[storage]`:
+
+Note: Datastorage locations will be created if they do not exist.
 
 ```shell
 $(robust)> cat ~/.robust
-[convict]
-cleandir: ./clean
-dirtydir: ./dirty
-reportdir: ./reports
-errordir: ./errors
+[storage]
+severity: 3
+cleandir: ~/robust/clean
+dirtydir: ~/robust/dirty
+reportdir: ~/robust/reports
+errordir: ~/robust/errors
 ```
 
 This file is expanded via the `os` module and maps to windows too.
@@ -326,10 +329,11 @@ Options
 
 ```
 usage: robust-convict.py [-h] [-u USER] [-p PASSWORD] [-i ATD IP] [-n] -a
-                         ANALYZER_PROFILE -d DIRECTORY [-e] -c CLEANDIR -x
-                         DIRTYDIR -r REPORTDIR -z ERRORDIR [-j MAXTHREADS]
+                         ANALYZER_PROFILE -d DIRECTORY [-e] [-y SEVERITY]
+                         [-c CLEANDIR] [-x DIRTYDIR] [-r REPORTDIR]
+                         [-z ERRORDIR]
                          [-t {html,txt,xml,zip,json,ioc,stix,pdf,sample}]
-                         [--version] [-v | -q]
+                         [-j MAXTHREADS] [--version] [-v | -q]
 
 Robust Intel Security ATD Python CLI tool
 
@@ -343,13 +347,13 @@ optional arguments:
 
 Authentication parameters:
   -u USER               (u)sername for the API of the ATD
-                        		(default: admin)
+                        		(default: robust)
   -p PASSWORD           (p)assword for username
-                        		(default: password!)
+                        		(default: ****<.robust>*****)
   -i ATD IP             (i)p or hostname address of ATD
                         		(default: atd.localhost.localdomain)
   -n                    do (n)ot verify the SSL certificate for the communications
-                        		(default: False)
+                        		(default: True)
 
 Watch parameters:
   -a ANALYZER_PROFILE   (a)nalyzer profile id to be used during analysis
@@ -358,18 +362,20 @@ Watch parameters:
                         		(default: None)
   -e                    (e)xisting files in directory will be submitted
                         		(default: False)
+  -j MAXTHREADS         (j) max number of threads
+                        		(default: 1)
 
 Convict parameters:
+  -y SEVERITY           (y) treat sample as dirty with this severity [0-5] or higher
+                        		(default: 3)
   -c CLEANDIR           (c) move clean files to this directory
-                        		(default: None)
+                        		(default: ~/robust/clean/)
   -x DIRTYDIR           (x) move processed dirty files to this directory
-                        		(default: None)
+                        		(default: ~/robust/malware/)
   -r REPORTDIR          (r) save reports to this directory
-                        		(default: None)
+                        		(default: ~/robust/reports/)
   -z ERRORDIR           (z) move error or skip files to this directory
-                        		(default: None)
-  -j MAXTHREADS         (j) max number of threads
-                        		(default: None)
+                        		(default: ~/robust/errors/)
   -t {html,txt,xml,zip,json,ioc,stix,pdf,sample}
                         (t)ype of report requested
                         		(default: None)
@@ -443,13 +449,13 @@ A modified Fork of `atdcli.py` (Carlos Munoz - 2014) is also included.
 
 ## VX Workshop Appliance Option
 
-There is a fully operational Xubuntu 14.04 liveCD that includes: 
+There is a fully operational Xubuntu 14.04 liveCD that includes:
 
 * robust - https://github.com/shadowbq/robust-atd
 * maltrieve - https://github.com/shadowbq/maltrieve
 * vxcage - https://github.com/shadowbq/vxcage
 
-It also includes 
+It also includes
 
 * hexeditors
 * static analysis tools

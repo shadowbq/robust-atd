@@ -6,7 +6,7 @@ import json
 import tempfile
 import copy
 import threading
-
+import ratd.utils as utils
 
 from collections import namedtuple
 
@@ -271,7 +271,7 @@ class Handler:
 
         try:
             if self.options.dirtydir:
-                if severity > 4:
+                if severity >= self.options.severity:
                     target = self.options.dirtydir+filename
                     if self.options.verbosity:
                         print('Move file {0}.. to dirty {1}'.format(filename, target))
@@ -295,7 +295,7 @@ class Handler:
                 self.options.md5 = md5
                 # Report ouput filename
                 if 1 == 1:
-                    self.options.filename = self.options.reportdir + md5
+                    self.options.filename = self.options.reportdir + md5 + "." + self.options.rType
                 else:
                     self.options.filename = self.options.reportdir + filename
                 if self.options.verbosity:
