@@ -42,6 +42,7 @@ class CliArgs():
             'directory': '(d)irectory to watch for events\n\t\t(default: %(default)s)',
             'existing': '(e)xisting files in directory will be submitted\n\t\t(default: %(default)s)',
             'rType': '(t)ype of report requested\n\t\t(default: %(default)s)',
+            'rPrint': '(o)utput type for reporter \n\t\t(default: %(default)s)',
             'filename': '(f)ilename for saving the requested report\n\t\t(default: %(default)s)',
             'md5': '(m)d5 32bit hash of the sample to search\n\t\t(default: %(default)s)',
             'cleandir': '(c) move clean files to this directory\n\t\t(default: %(default)s)',
@@ -75,6 +76,7 @@ class CliArgs():
             
         elif tool == 'reporter':
             reporter_group = self.parser.add_argument_group('Reporter parameters')
+            reporter_group.add_argument('-o', required=False, action='store', dest='rPrint', choices=['txt', 'csv'], help=self.arg_dict['rPrint'])
             if 'reportdir' in self.dot_robust:
                 reporter_group.add_argument('-r', required=False, action='store', type=slash_dir, default=self.dot_robust['reportdir'], dest='reportdir', help=self.arg_dict['reportdir'])
             else:

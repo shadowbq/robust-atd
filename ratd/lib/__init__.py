@@ -558,12 +558,28 @@ class Reporter():
             with open(file_name, 'r') as f:
                 parsed_json = json.load(f)
                 #parsed_json = json.loads(json_string)
-            sys.stdout.write(parsed_json['Summary']['Subject']['md5'] + " ")
-            sys.stdout.write("(" + self.malware_name(parsed_json['Summary']['Selectors'])+ ") : ")
-            sys.stdout.write(self.map_severity(parsed_json['Summary']['Verdict']['Severity']))
-            sys.stdout.write(" - ")
-            sys.stdout.write(parsed_json['Summary']['Data']['analysis_seconds'] + "sec")
-            print ("")
+
+	    if self.options.rPrint == 'txt':
+            	self.printer_txt(parsed_json)
+    	    elif self.options.rPrint == 'csv':
+            	self.printer_csv(parsed_json)
+	    else: 
+		self.printer_txt(parsed_json)
+
+    def printer_txt(self, parsed_json):
+        sys.stdout.write(parsed_json['Summary']['Subject']['md5'] + " ")
+        sys.stdout.write("(" + self.malware_name(parsed_json['Summary']['Selectors'])+ ") : ")
+        sys.stdout.write(self.map_severity(parsed_json['Summary']['Verdict']['Severity']))
+        sys.stdout.write(" - ")
+        sys.stdout.write(parsed_json['Summary']['Data']['analysis_seconds'] + "sec")
+        print ("")
+
+    def printer_csv(self, parsed_json):
+        sys.stdout.write(parsed_json['Summary']['Subject']['md5'] + ",")
+        sys.stdout.write(self.malware_name(parsed_json['Summary']['Selectors']) + ",")
+        sys.stdout.write(self.map_severity(parsed_json['Summary']['Verdict']['Severity']) + "," + parsed_json['Summary']['Verdict']['Severity'] + "," )
+        sys.stdout.write(parsed_json['Summary']['Data']['analysis_seconds'] + " sec")
+        print ("")
 
     def malware_name(self, selectors_tuple):
         name = "---"
