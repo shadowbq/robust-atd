@@ -2,6 +2,7 @@ from __future__ import print_function
 import sys
 import time
 import os
+import shutil
 import json
 import tempfile
 import copy
@@ -224,6 +225,8 @@ class ScanFolder:
         file_paths = []
 
         for root, directories, files in os.walk(directory):
+            files = [f for f in files if not f[0] == '.']
+            directories[:] = [d for d in directories if not d[0] == '.']
             for filename in files:
                 filepath = os.path.join(root, filename)
                 file_paths.append(filepath)
@@ -251,7 +254,10 @@ class Handler:
                 tmp_target = self.temp_dir+"/"+os.path.basename(self.src_path)
                 if self.options.verbosity:
                     print("moved to tmp: ", tmp_target)
-                os.rename(self.src_path, tmp_target)
+                try:
+                    os.rename(self.src_path, tmp_target)
+                except OSError:
+                    shutil.move(self.src_path, tmp_target)
                 self.options.file_to_upload = tmp_target
                 filename = os.path.basename(tmp_target)
         except AttributeError:
@@ -275,22 +281,32 @@ class Handler:
                     target = self.options.dirtydir+filename
                     if self.options.verbosity:
                         print('Move file {0}.. to dirty {1}'.format(filename, target))
-                    os.rename(tmp_target, target)
+                    try:
+                        os.rename(tmp_target, target)
+                    except OSError:
+                        shutil.move(tmp_target, target)
                 elif severity > 0:
                     target = self.options.cleandir+filename
                     if self.options.verbosity:
                         print('Move file {0}.. to clean {1}'.format(filename, target))
-                    os.rename(tmp_target, target)
+                    try:
+                        os.rename(tmp_target, target)
+                    except OSError:
+                        shutil.move(tmp_target, target)
                 else:
                     target = self.options.errordir+filename
                     if self.options.verbosity:
                         print('Move file {0}.. to ERROR {1}'.format(filename, target))
-                    os.rename(tmp_target, target)
+                    try:
+                        os.rename(tmp_target, target)
+                    except OSError:
+                        shutil.move(tmp_target, target)
+
         except AttributeError:
             pass
 
         try:
-            if self.options.reportdir:
+            if self.options.rType:
                 # find report by md5
                 self.options.md5 = md5
                 # Report ouput filename
