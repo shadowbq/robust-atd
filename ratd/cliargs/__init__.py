@@ -73,10 +73,10 @@ class CliArgs():
             self.auth_args()
             self.search_args()
             self.output_args()
-            
+
         elif tool == 'reporter':
             reporter_group = self.parser.add_argument_group('Reporter parameters')
-            reporter_group.add_argument('-o', required=False, action='store', dest='rPrint', choices=['txt', 'csv'], help=self.arg_dict['rPrint'])
+            reporter_group.add_argument('-o', required=False, action='store', dest='rPrint', default='txt', choices=['txt', 'csv'], help=self.arg_dict['rPrint'])
             if 'reportdir' in self.dot_robust:
                 reporter_group.add_argument('-r', required=False, action='store', type=slash_dir, default=self.dot_robust['reportdir'], dest='reportdir', help=self.arg_dict['reportdir'])
             else:

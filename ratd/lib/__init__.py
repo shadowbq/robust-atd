@@ -544,27 +544,30 @@ class Reporter():
     '''Class defining a scan folder'''
     def __init__(self, options):
 
+        self.engine_names = ["GTI File Reputation", "Gateway Anti-Malware", "Anti-Malware", "YARA", "CustomRules","Sandbox"]
         self.options = options
         if self.options.verbosity:
             print("Reporter Started for {}".format(self.options.reportdir))
 
         full_file_paths = self.get_filepaths(self.options.reportdir)
-        self.i = 0
+        if self.options.rPrint == 'csv':
+            sys.stdout.write('Timestamp,md5,sha-1,sha-256,size,Type,File Name,Malware Name,Severity,')
+            for engine_name in self.engine_names:
+                sys.stdout.write(engine_name + "," + engine_name + " Severity," + engine_name + " Malware Name,")
+            sys.stdout.write('Severity Value,Analysis Seconds\n')
         for file_name in full_file_paths:
-            if self.options.verbosity:
-                print("Report file => {}".format(file_name))
-            self.i = self.i + 1
-
             with open(file_name, 'r') as f:
                 parsed_json = json.load(f)
-                #parsed_json = json.loads(json_string)
 
-	    if self.options.rPrint == 'txt':
-            	self.printer_txt(parsed_json)
-    	    elif self.options.rPrint == 'csv':
-            	self.printer_csv(parsed_json)
-	    else: 
-		self.printer_txt(parsed_json)
+            parsed_json['Summary']['Selectors'] = self.pad_engine_values(parsed_json['Summary']['Selectors'])
+            if self.options.rPrint == 'txt':
+                self.printer_txt(parsed_json)
+
+            elif self.options.rPrint == 'csv':
+                self.printer_csv(parsed_json)
+
+            else:
+                self.printer_txt(parsed_json)
 
     def printer_txt(self, parsed_json):
         sys.stdout.write(parsed_json['Summary']['Subject']['md5'] + " ")
@@ -575,8 +578,22 @@ class Reporter():
         print ("")
 
     def printer_csv(self, parsed_json):
+        sys.stdout.write(parsed_json['Summary']['Subject']['Timestamp'] + ",")
         sys.stdout.write(parsed_json['Summary']['Subject']['md5'] + ",")
+        sys.stdout.write(parsed_json['Summary']['Subject']['sha-1'] + ",")
+        sys.stdout.write(parsed_json['Summary']['Subject']['sha-256'] + ",")
+        sys.stdout.write(parsed_json['Summary']['Subject']['size'] + ",")
+        sys.stdout.write(parsed_json['Summary']['Subject']['Type'] + ",")
+        sys.stdout.write(parsed_json['Summary']['Subject']['Name'] + ",")
         sys.stdout.write(self.malware_name(parsed_json['Summary']['Selectors']) + ",")
+
+        order_dict = {value_of_engine: idx for idx, value_of_engine in enumerate(self.engine_names)};
+        parsed_json['Summary']['Selectors'].sort(key=lambda d: order_dict[d['Engine']])
+        for engine in parsed_json['Summary']['Selectors']:
+            sys.stdout.write(engine['Engine'] + ",")
+            sys.stdout.write(engine['Severity'] + ",")
+            sys.stdout.write(engine['MalwareName'] + ",")
+
         sys.stdout.write(self.map_severity(parsed_json['Summary']['Verdict']['Severity']) + "," + parsed_json['Summary']['Verdict']['Severity'] + "," )
         sys.stdout.write(parsed_json['Summary']['Data']['analysis_seconds'] + " sec")
         print ("")
@@ -592,6 +609,22 @@ class Reporter():
                 elif engine["MalwareName"] != "Malware.Dynamic":
                     name = engine["MalwareName"]
         return name
+
+    def pad_engine_values(self, selectors_tuple):
+        
+        for engine in self.engine_names:
+        	found = False
+        	for ran_engine in selectors_tuple:
+        		if engine == ran_engine["Engine"]:
+        			found = True
+        	if not found:
+        		empty_engine = {}
+        		empty_engine["Engine"] = engine
+        		empty_engine["Severity"] = '0'
+        		empty_engine["MalwareName"] = '---'
+        		selectors_tuple.append(empty_engine)
+        return selectors_tuple
+
 
     def map_severity(self, severity):
         try:
