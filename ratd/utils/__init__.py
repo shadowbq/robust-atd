@@ -27,15 +27,10 @@ class Mkdirs:
 
     '''Class defining the mkdir_p algorithm folder'''
     def __init__(self, options):
-
-        print 'in mkdirs'
         self.options = options
         self.path = options.directory
-        print '1st mkdirs'
         try:
-            print '1st mkdirs try'
             if self.options.dirtydir:
-                print '1st mkdirs found'
                 self.mkdir_p(self.options.dirtydir)
         except AttributeError:
             pass
@@ -60,7 +55,6 @@ class Mkdirs:
 
     def mkdir_p(self, path):
         try:
-            print 'mkdirs_p run'
             os.makedirs(path)
             if self.options.verbosity:
                 print ('mkdir_p %s' % path)

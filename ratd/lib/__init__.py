@@ -551,10 +551,10 @@ class Reporter():
 
         full_file_paths = self.get_filepaths(self.options.reportdir)
         if self.options.rPrint == 'csv':
-            sys.stdout.write('Timestamp,md5,sha-1,sha-256,size,Type,File Name,Malware Name,Severity,')
+            sys.stdout.write('Timestamp,md5,sha-1,sha-256,size,Type,File Name,Malware Name,')
             for engine_name in self.engine_names:
                 sys.stdout.write(engine_name + "," + engine_name + " Severity," + engine_name + " Malware Name,")
-            sys.stdout.write('Severity Value,Analysis Seconds\n')
+            sys.stdout.write('Severity,Severity Value,Analysis Seconds\n')
         for file_name in full_file_paths:
             with open(file_name, 'r') as f:
                 parsed_json = json.load(f)
@@ -611,7 +611,7 @@ class Reporter():
         return name
 
     def pad_engine_values(self, selectors_tuple):
-        
+
         for engine in self.engine_names:
         	found = False
         	for ran_engine in selectors_tuple:
