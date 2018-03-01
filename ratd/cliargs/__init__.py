@@ -54,7 +54,7 @@ class CliArgs():
             'quiet': '(q)uiet all output\n\t\t(default: %(default)s)',
             'verbosity': 'increase output (v)erbosity\n\t\t(default: %(default)s)'
         }
-        self.description = 'Robust Intel Security ATD Python CLI tool'
+        self.description = 'Robust McAfee ATD Python CLI tool'
         self.epilog = ''
         self.dot_robust = self.dot_robust_helper()
 

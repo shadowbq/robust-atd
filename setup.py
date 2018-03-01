@@ -53,7 +53,7 @@ extras_require = {
 
 setup(
     name='robust-atd',
-    description='Manipulate Intel Security ATD appliance',
+    description='Manipulate McAfee ATD appliance',
     author='Shadowbq',
     author_email='shadowbq@gmail.com',
     url='http://github.com/shadowbq/robust-atd',

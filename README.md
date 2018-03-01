@@ -1,12 +1,12 @@
 Robust ATD CLI tools
 ================
 
-"Robust" is a set of tools to leverage the HTTPS REST API of the [Intel Security Advanced Threat Detection](http://www.mcafee.com/us/products/advanced-threat-defense.aspx) 3.x appliance.
+"Robust" is a set of tools to leverage the HTTPS REST API of the [McAfee Advanced Threat Detection](http://www.mcafee.com/us/products/advanced-threat-defense.aspx) 3.x appliance.
 
 
 ## Important
 
-This is *not a supported or official application of Intel Security*. This work is based off of publicly available published documentation for integrating with the McAfee ATD REST API 3.x.
+This is *not a supported or official application of McAfee*. This work is based off of publicly available published documentation for integrating with the McAfee ATD REST API 3.x.
 
 Official API Documentation is available here.
 https://support.mcafee.com/ServicePortal/faces/knowledgecenter?q=api&v=&p=Advanced+Threat+Defense
@@ -96,7 +96,7 @@ Using `robust` for submitting samples.
 usage: robust.py [-h] [-u USER] [-p PASSWORD] [-i ATD IP] [-n] -s
                  FILE_TO_UPLOAD -a ANALYZER_PROFILE [-v] [--version]
 
-Robust Intel Security ATD Python CLI tool
+Robust McAfee ATD Python CLI tool
 
 optional arguments:
   -h, --help           show this help message and exit
@@ -231,7 +231,7 @@ usage: robust-search.py [-h] [-u USER] [-p PASSWORD] [-i ATD IP] [-n] -m MD5
                         [-t {html,txt,xml,zip,json,ioc,stix,pdf,sample}]
                         [-f FILENAME] [--version] [-v | -q]
 
-Robust Intel Security ATD Python CLI tool
+Robust McAfee ATD Python CLI tool
 
 optional arguments:
   -h, --help            show this help message and exit
@@ -274,7 +274,7 @@ usage: robust-watchdog.py [-h] -u USER [-p PASSWORD] -i ATD IP [-n] -a
                           ANALYZER_PROFILE -d DIRECTORY [-e] [-j MAXTHREADS]
                           [--version] [-v | -q]
 
-Robust Intel Security ATD Python CLI tool
+Robust McAfee ATD Python CLI tool
 
 optional arguments:
   -h, --help           show this help message and exit
@@ -337,7 +337,7 @@ usage: robust-convict.py [-h] [-u USER] [-p PASSWORD] [-i ATD IP] [-n] -a
                          [-t {html,txt,xml,zip,json,ioc,stix,pdf,sample}]
                          [-j MAXTHREADS] [--version] [-v | -q]
 
-Robust Intel Security ATD Python CLI tool
+Robust McAfee ATD Python CLI tool
 
 optional arguments:
   -h, --help            show this help message and exit
@@ -392,7 +392,7 @@ Options
 ```
 usage: robust-reporter.py [-h] [-r REPORTDIR] [--version] [-v | -q]
 
-Robust Intel Security ATD Python CLI tool
+Robust McAfee ATD Python CLI tool
 
 optional arguments:
   -h, --help       show this help message and exit
