@@ -468,6 +468,27 @@ class SampleSubmit(CommonATD):
 
         return
 
+class ServerVersionCheck(CommonATD):
+
+    '''Class defining fetching the Analyzer Profiles from ATD'''
+    def __init__(self, options):
+
+        # Create the ATD object and connect to it
+        self.rtnv = EXIT_FAILURE
+        self.options = options
+
+        # Get an authenticated connection to ATD
+        self.myatd = Atd(options.ip, options.skipssl)
+        self.error_control, self.data = self.myatd.connect(self.options.user, self.options.password)
+        self.options.verbosity = 3
+        self.connection_check()
+
+        # Get the heartbeat value of the ATD Box
+        self.error_control, self.data = self.myatd.heartbeat()
+        self.heartbeat()
+
+        self.myatd.disconnect()
+        self.rtnv = EXIT_SUCCESS
 
 class FetchProfiles(CommonATD):
 

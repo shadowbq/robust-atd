@@ -60,7 +60,10 @@ class CliArgs():
 
         self.parser = argparse.ArgumentParser(epilog=self.epilog, description=self.description, formatter_class=argparse.RawTextHelpFormatter)
 
-        if tool == 'profile':
+        if tool == 'authOnly':
+            self.auth_args()
+
+        elif tool == 'profile':
             self.auth_args()
             profile_group = self.parser.add_argument_group('Profile parameters')
             profile_group.add_argument('-l', required=True, action='store_true', dest='listprofiles', help=self.arg_dict['profiles'])

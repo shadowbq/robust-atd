@@ -18,6 +18,7 @@ class Atd():
         self.session = ''
         self.userId = ''
         self.matdver = ''
+        self.apiver = '1.5.0' # API version implemented. (MATD has yet to iterate this)
 
         self.sessionhdr = {}
 
@@ -39,6 +40,7 @@ class Atd():
         authheader = {
             'Accept': 'application/vnd.ve.v1.0+json',
             'Content-Type': 'application/json',
+            'VE-API-Version': self.apiver,
             'VE-SDK-API': '%s' % self.b64(user, password)
         }
 
@@ -59,6 +61,7 @@ class Atd():
                 self.sessionhdr = {
                     'Accept': 'application/vnd.ve.v1.0+json',
                     'Content-Type': 'application/json',
+                    'VE-API-Version': self.apiver,
                     'VE-SDK-API': '%s' % self.b64(self.session, self.userId)
                 }
             else:

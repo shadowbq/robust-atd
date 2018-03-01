@@ -1,16 +1,23 @@
 Robust ATD CLI tools
 ================
 
-"Robust" is a set of tools to leverage the HTTPS REST API of the [McAfee Advanced Threat Detection](http://www.mcafee.com/us/products/advanced-threat-defense.aspx) 3.x appliance.
+"Robust" is a set of tools to leverage the HTTPS REST API of the [McAfee Advanced Threat Detection](http://www.mcafee.com/us/products/advanced-threat-defense.aspx) 3.8 - 4.x appliance.
 
 
 ## Important
 
-This is *not a supported or official application of McAfee*. This work is based off of publicly available published documentation for integrating with the McAfee ATD REST API 3.x.
+This is *not a supported or official application of McAfee*. This work is based off of publicly available published documentation for integrating with the McAfee ATD REST API 3.6.x to 4.x
 
-Official API Documentation is available here.
-https://support.mcafee.com/ServicePortal/faces/knowledgecenter?q=api&v=&p=Advanced+Threat+Defense
+Official API Documentation is available here:
 
+* https://support.mcafee.com/ServicePortal/faces/knowledgecenter?q=api&v=&p=Advanced+Threat+Defense
+
+## McAfee ATD - Advanced Threat defense
+
+McAfee ATD is a commercial grade enterprise security sandbox analysis appliance. It main function is to provide advanced detection for stealthy, zero-day malware. McAfee Advanced Threat Defense is available as an on-premises appliance or a virtual form factor, with support for both private and public cloud with availability in the Azure Marketplace.
+
+* https://www.mcafee.com/us/products/advanced-threat-defense.aspx
+* https://www.mcafee.com/us/resources/data-sheets/ds-advanced-threat-defense.pdf
 
 ## Install
 
@@ -22,7 +29,15 @@ Note: robust-atd is not published on pypi at this time.
 
 ### PKG Download & Manual Install Alternative
 
-Note: python setup.py will attempt to install dependencies from the internet via `pip`.
+Note: `python setup.py install` will attempt to install dependencies from the internet via `pip`.
+
+For offline runtime installation, please download the pip packages listed in the `requirements.txt`.
+
+### Virutalenv
+
+It is recommended to install virtualenv & virtualenvwrapper via Virtualenv Burrito.
+
+See: README_PYTHON_UP.md
 
 ```
 $> mkvirtualenv robust
@@ -35,13 +50,13 @@ $(robust)> python setup.py install
 
 ### Robust (DOT) Configuration file
 
-Robust can use a `~\.robust` file to load defaults in executables.
+Robust will use the `~\.robust` configuration file to load defaults into the scripts.
 
-The file is broken into multiple sections. If you use a section you must define all the settings in that section.
+The configuration file is broken into multiple sections. If you use a section you must define all the settings in that section.
 
-  * auth
-  * connection
-  * convict
+  * [auth]
+  * [connection]
+  * [convict]
 
 It is recommended to set the file to `read-write` only for the current user, and remove all world `(-)rwx` permissions.
 
@@ -51,7 +66,7 @@ Authentication Section `[auth]` :
 $(robust)> cat ~/.robust
 [auth]
 user: admin
-password: password!
+password: password.
 ```
 
 Connection Detail Section `[connection]` :
@@ -78,7 +93,7 @@ reportdir: ~/robust/reports
 errordir: ~/robust/errors
 ```
 
-This file is expanded via the `os` module and maps to windows too.
+This file is expanded via the `os` module is compliant with windows user directories.
 
 ## Tools Overview
 
@@ -111,7 +126,7 @@ Authentication parameters:
   -u USER              (u)sername for the API of the ATD
                                (default: admin)
   -p PASSWORD          (p)assword for username
-                               (default: password!)
+                               (default: password.)
   -i ATD IP            (i)p or hostname address of ATD
                                (default: atd.localhost.localdomain)
   -n                   do (n)ot verify the SSL certificate for the communications
@@ -124,7 +139,7 @@ Sample parameters:
                                (default: None)
 
 Examples:
-    robust.py -u admin -p password! -i atd.localhost.localdomain -s /usr/local/bin/file_to_scan -a 1
+    robust.py -u admin -p password. -i atd.localhost.localdomain -s /usr/local/bin/file_to_scan -a 1
 ```
 
 ### Submitting a Sample
@@ -132,7 +147,7 @@ Examples:
 A sample can be submitted via cli with full flags, `.robust` configuration file, or interrupt passwords.
 
 ```shell
-$(robust)> robust.py -u admin -p password! -i atd.localhost.localdomain -s /home/malware/non-malicious-container/putty_upx_7.exe
+$(robust)> robust.py -u admin -p password. -i atd.localhost.localdomain -s /home/malware/non-malicious-container/putty_upx_7.exe
 ```
 
 Using interrupt (interactive) passwords:
@@ -183,7 +198,19 @@ Malware ranking:
     4 ---> Sample is malicious
     5 ---> Sample is malicious (Very High)
 ```
+## robust-version-checker
 
+You can quickly test your connection settings in the CLI.
+
+```
+$(robust)> robust-version-checker.py -u robust -p password. -i atd.example.com -n
+Connection successful...
+
+Session Value:      g7aenj99pfp0gbrogfbqsd9085
+User ID:            57
+ATD ver:            4.2.2.16
+ATD Box heartbeat:  1519939175
+```
 
 ## robust-profiles
 
@@ -245,7 +272,7 @@ Authentication parameters:
   -u USER               (u)sername for the API of the ATD
                         		(default: admin)
   -p PASSWORD           (p)assword for username
-                        		(default: password!)
+                        		(default: password.)
   -i ATD IP             (i)p or hostname address of ATD
                         		(default: atd.localhost.localdomain)
   -n                    do (n)ot verify the SSL certificate for the communications

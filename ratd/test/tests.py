@@ -12,7 +12,7 @@ class ATDTests(unittest.TestCase):
     @vcr.use_cassette('fixtures/vcr_cassettes/connect.yaml')
     def setUp(self):
         self.myatd = Atd('atd.localhost.localdomain')
-        error_control, data = self.myatd.connect('admin', 'password!')
+        error_control, data = self.myatd.connect('admin', 'password.')
         self.assertEqual(1, error_control)
 
     # Test myatd properties
