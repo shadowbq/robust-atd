@@ -28,11 +28,11 @@ McAfee ATD is a commercial grade enterprise security sandbox analysis appliance.
 
 ## Install
 
-Req: Python 2.7.x
+Req: Python 2.7.x.
 
-~~pip install robust-atd~~
+`pip install robust-atd`
 
-Note: robust-atd is not published on pypi at this time.
+Note: Python 3.x is not supported.
 
 ### PKG Download & Manual Install Alternative
 
@@ -53,6 +53,14 @@ $(robust)> wget https://github.com/shadowbq/robust-atd/archive/master.zip
 $(robust)> unzip master.zip
 $(robust)> cd master
 $(robust)> python setup.py install
+```
+
+-or-
+
+```
+$> mkvirtualenv --python=2.7 robust
+$> workon robust
+$(robust)> pip install robust-atd
 ```
 
 ### Robust (DOT) Configuration file
