@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# A tool designed to pull the Analyzer Profile policy list available to a specific user.
 
 import sys
 import getpass

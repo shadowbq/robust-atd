@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# A tool designed to quickly summarize the downloaded *.json files in your ENV['reports'] directory.
 
 import sys
 import getpass

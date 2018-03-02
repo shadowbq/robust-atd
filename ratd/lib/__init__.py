@@ -115,6 +115,7 @@ class CommonATD():
     def report_stdout(self):
         while True:
             error_control, itype, self.data = self.myatd.get_report_md5(self.options.md5)
+            #DEBUG print (' %s ...' % self.data)
             self.report_errors()
 
             if error_control == 1:
@@ -530,7 +531,7 @@ class FetchProfiles(CommonATD):
 
 class SearchReports(CommonATD):
 
-    '''Class defining fetching the Analyzer Profiles from ATD'''
+    '''Class defining searching for a report via an MD5'''
     def __init__(self, options):
         # Create the ATD object and connect to it
         self.rtnv = EXIT_FAILURE

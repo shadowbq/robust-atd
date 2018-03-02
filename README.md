@@ -214,6 +214,8 @@ ATD Box heartbeat:  1519939175
 
 ## robust-profiles
 
+A tool designed to pull the *Analyzer Profile* policy list available to a specific user.
+
 Pulling the Policy List - In order to submit a sample using `robust` you must identify the Analyzer Profile ID. `robust-profiles` assists in identifying the available profiles your user can submit samples to.
 
 ```

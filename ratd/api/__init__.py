@@ -370,7 +370,7 @@ class Atd():
 
         if r.status_code == 200:
 
-            if r.headers['Content-Type'] == 'text/plain;charset=UTF-8':
+            if r.headers['Content-Type'] == 'text/plain;charset=UTF-8' or r.headers['Content-Type'] == 'text/plain':
                 # XML iType Returned
                 if r.content.startswith('<?xml version='):
                     return (1, itype, r.content)
@@ -422,6 +422,7 @@ class Atd():
                     return (0, 'error', 'unknown content. {0}'.format(r.content[0:10]))
 
             else:
+                # DEBUG: print (r.content)
                 return (0, 'error', 'fail.. unknown content-type. {0} '.format(r.headers['content-type']))
         else:
             return (0, 'error', 'fail.. bad status code. {0}'.format(r.status_code))

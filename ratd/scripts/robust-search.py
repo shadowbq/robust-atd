@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# A tool designed to search and return reports for a specific md5 hash.
 
 import sys
 import getpass
