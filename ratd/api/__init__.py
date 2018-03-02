@@ -389,7 +389,7 @@ class Atd():
                     else:
                         return (0, 'error', 'fail.. something..something.')
 
-            elif r.headers['content-type'] == 'text/html; charset=UTF-8':
+            elif r.headers['content-type'] == 'text/html; charset=UTF-8' or r.headers['Content-Type'] == 'text/html':
                 # TXT iType returned
                 if r.content.startswith('====='):
                     return (1, itype, r.content)
