@@ -39,7 +39,7 @@ McAfee ATD is a commercial grade enterprise security sandbox analysis appliance.
 
 Req: Python 2.7.x.
 
-`pip install robust-atd`
+Bug #5: https://github.com/shadowbq/robust-atd/issues/5 - ~~`pip install robust-atd`~~
 
 Note: Python 3.x is not supported.
 
