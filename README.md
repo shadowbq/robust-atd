@@ -67,7 +67,7 @@ $(robust)> python setup.py install
 -or-
 
 ```
-$> mkvirtualenv --python=2.7 robust
+$> mkvirtualenv --python=python2.7 robust
 $> workon robust
 $(robust)> pip install robust-atd
 ```
