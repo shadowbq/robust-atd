@@ -13,7 +13,7 @@ Note: This is an online installer and you must understand the danger of piping i
 
 ## Install Test workspace
 
-`$> mkvirtualenv --python=2.7 robust`
+`$> mkvirtualenv --python=python2.7 robust`
 
 Look inside the new `virutalenv robust`
 
