@@ -1,6 +1,13 @@
 Robust ATD CLI tools
 ================
 
+
+![GitHub release](https://img.shields.io/github/release/shadowbq/robust-atd.svg?style=for-the-badge)
+![license](https://img.shields.io/github/license/shadowbq/robust-atd.svg?style=for-the-badge)
+![GitHub Release Date](https://img.shields.io/github/release-date/shadowbq/robust-atd.svg?style=for-the-badge)
+![Code](https://img.shields.io/badge/Language-Python--2.7-ff69b4.svg?style=for-the-badge)
+
+
 "Robust" is a set of tools to leverage the HTTPS REST API of the [McAfee Advanced Threat Detection](http://www.mcafee.com/us/products/advanced-threat-defense.aspx) 3.8 - 4.x appliance.
 
 
