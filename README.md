@@ -10,6 +10,15 @@ Robust ATD CLI tools
 
 "Robust" is a set of tools to leverage the HTTPS REST API of the [McAfee Advanced Threat Detection](http://www.mcafee.com/us/products/advanced-threat-defense.aspx) 3.8 - 4.x appliance.
 
+## Tools Overview
+
+* `robust` : basic cli submission of a single piece of malware to a MATD server.
+* `robust-profiles` : list the available MATD profiles
+* `robust-search` : search MATD via MD5 for a report.
+* `robust-watchdog` : monitor a directory for files and submit `multithreaded` to MATD
+* `robust-convict` : submit `multithreaded` a directory filled with samples and sort into malicious, clean, error, etc.
+* `robust-reporter` : parse offline the json files returned during large batch submissions.
+* `robust-version-checker` : Check the MATD Server Version
 
 ## Important
 
@@ -110,13 +119,6 @@ errordir: ~/robust/errors
 
 This file is expanded via the `os` module is compliant with windows user directories.
 
-## Tools Overview
-
-* robust
-* robust-profiles
-* robust-search
-* robust-watchdog
-* robust-convict
 
 ## Robust:
 
