@@ -42,9 +42,9 @@ For offline runtime installation, please download the pip packages listed in the
 
 ### Virutalenv
 
-It is recommended to install virtualenv & virtualenvwrapper via Virtualenv Burrito.
+It is recommended to install virtualenv & virtualenvwrapper via `Virtualenv Burrito`.
 
-See: README_PYTHON_UP.md
+See: [README_PYTHON_UP.md](/README_PYTHON_UP.md)
 
 ```
 $> mkvirtualenv robust
