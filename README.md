@@ -253,12 +253,12 @@ A tool designed to search and return reports for a specific md5 hash.
 ```
 ### Help details
 
-`robust-search` has the options `-f` and `-t` to collect the proper report on the submission.
+`robust-search` has the options `-w` and `-t` to collect the proper report on the submission.
 
 ```
 usage: robust-search.py [-h] [-u USER] [-p PASSWORD] [-i ATD IP] [-n] -m MD5
                         [-t {html,txt,xml,zip,json,ioc,stix,pdf,sample}]
-                        [-f FILENAME] [--version] [-v | -q]
+                        [-w FILENAME] [--version] [-v | -q]
 
 Robust McAfee ATD Python CLI tool
 
@@ -288,7 +288,7 @@ Reporting parameters:
   -t {html,txt,xml,zip,json,ioc,stix,pdf,sample}
                         (t)ype of report requested
                         		(default: None)
-  -f FILENAME           (f)ilename for saving the requested report
+  -w FILENAME           (w)rite filename for saving the requested report
                         		(default: None)
 ```
 
@@ -324,6 +324,8 @@ Authentication parameters:
                        		(default: False)
 
 Watch parameters:
+  -f                   (f)ollow and watch the directory for new files to submit
+                          (default: True)
   -a ANALYZER_PROFILE  (a)nalyzer profile id to be used during analysis
                        		(default: None)
   -d DIRECTORY         (d)irectory to watch for events
@@ -387,6 +389,8 @@ Authentication parameters:
                         		(default: True)
 
 Watch parameters:
+  -f                   (f)ollow and watch the directory for new files to submit
+                          (default: False)
   -a ANALYZER_PROFILE   (a)nalyzer profile id to be used during analysis
                         		(default: None)
   -d DIRECTORY          (d)irectory to watch for events
@@ -414,7 +418,7 @@ Convict parameters:
 
 ## robust-reporter
 
-`robust-reporter` is a tool designed to quickly summarize the downloaded *.json files in your 'reports' directory.
+`robust-reporter` is a tool designed to quickly summarize the downloaded `*.json` files in your 'reports' directory.
 
 Options
 

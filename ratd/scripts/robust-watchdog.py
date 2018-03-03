@@ -23,10 +23,12 @@ if __name__ == '__main__':
         utils.copyleftnotice()
 
     try:
+        if options.verbosity > 0:
+            print 'Checking sorting directories.'
         mkdirs = utils.Mkdirs(options)
     except:
-        print 'Failed to create configured directories'
-        sys.exit(1)    
+        print 'Failed to create configured directories, please check permissions.'
+        sys.exit(1)
 
     job = ratd.lib.ScanFolder(options)
 

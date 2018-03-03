@@ -173,6 +173,7 @@ class ScanFolder:
         number_of_threads = int(self.options.maxthreads)
         self.pool = ActivePool()
         self.s = threading.Semaphore(number_of_threads)
+
         # self.event_handler = watchdog.events.PatternMatchingEventHandler(
         #   patterns=["*.jpg", "*.jpeg", "*.png", "*.bmp", "*.pdf"],
         #   ignore_patterns=[],
@@ -198,12 +199,13 @@ class ScanFolder:
                 )
                 t.start()
 
-        self.event_handler = watchdog.events.FileSystemEventHandler()
-        # Thread handler
-        self.event_handler.on_created = self.on_created
-        self.observer = Observer()
-        self.observer.schedule(self.event_handler, self.path, recursive=True)
-        self.observer.start()
+        if self.options.follow:
+            self.event_handler = watchdog.events.FileSystemEventHandler()
+            # Thread handler
+            self.event_handler.on_created = self.on_created
+            self.observer = Observer()
+            self.observer.schedule(self.event_handler, self.path, recursive=True)
+            self.observer.start()
 
     def on_created(self, event):
         options = self.options

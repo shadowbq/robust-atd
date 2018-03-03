@@ -43,7 +43,8 @@ class CliArgs():
             'existing': '(e)xisting files in directory will be submitted\n\t\t(default: %(default)s)',
             'rType': '(t)ype of report requested\n\t\t(default: %(default)s)',
             'rPrint': '(o)utput type for reporter \n\t\t(default: %(default)s)',
-            'filename': '(f)ilename for saving the requested report\n\t\t(default: %(default)s)',
+            'follow': '(f)ollow and watch the directory for new files to submit\n\t\t(default: %(default)s)',
+            'filename': '(w)rite report to filename for saving the requested report\n\t\t(default: %(default)s)',
             'md5': '(m)d5 32bit hash of the sample to search\n\t\t(default: %(default)s)',
             'cleandir': '(c) move clean files to this directory\n\t\t(default: %(default)s)',
             'dirtydir': '(x) move processed dirty files to this directory\n\t\t(default: %(default)s)',
@@ -89,6 +90,12 @@ class CliArgs():
             self.auth_args()
 
             watch_group = self.parser.add_argument_group('Watch parameters')
+
+            if tool == 'watch':
+                watch_group.add_argument('-f', required=False, action='store_true', default=True, dest='follow', help=self.arg_dict['follow'])
+            else:
+                watch_group.add_argument('-f', required=False, action='store_true', dest='follow', help=self.arg_dict['follow'])
+
             watch_group.add_argument('-a', required=True, action='store', dest='analyzer_profile', help=self.arg_dict['analyzer'])
             watch_group.add_argument('-d', required=True, action='store', dest='directory', help=self.arg_dict['directory'])
             watch_group.add_argument('-e', required=False, action='store_true', dest='existing', help=self.arg_dict['existing'])
@@ -252,4 +259,4 @@ class CliArgs():
 
         output_group = self.parser.add_argument_group('Reporting parameters')
         output_group.add_argument('-t', required=False, action='store', dest='rType', choices=['html', 'txt', 'xml', 'zip', 'json', 'ioc', 'stix', 'pdf', 'sample'], help=self.arg_dict['rType'])
-        output_group.add_argument('-f', required=False, action='store', dest='filename', help=self.arg_dict['filename'])
+        output_group.add_argument('-w', required=False, action='store', dest='filename', help=self.arg_dict['filename'])

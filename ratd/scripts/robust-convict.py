@@ -18,12 +18,16 @@ if __name__ == '__main__':
 
     if options.password is None:
         options.password = getpass.getpass()
+
+    if options.verbosity:
+        utils.copyleftnotice()
+
     try:
-        print 'starting mkdirs'
+        if options.verbosity > 0:
+            print 'Checking sorting directories.'
         mkdirs = utils.Mkdirs(options)
-        print 'running mkdirs'
     except:
-        print 'Failed to create configured directories'
+        print 'Failed to create configured directories, please check permissions.'
         sys.exit(1)
 
     job = ratd.lib.ScanFolder(options)
