@@ -1,8 +1,24 @@
 Robust ATD CLI tools
 ================
 
+
+![GitHub release](https://img.shields.io/github/release/shadowbq/robust-atd.svg?style=for-the-badge)
+![license](https://img.shields.io/github/license/shadowbq/robust-atd.svg?style=for-the-badge)
+![GitHub Release Date](https://img.shields.io/github/release-date/shadowbq/robust-atd.svg?style=for-the-badge)
+![Code](https://img.shields.io/badge/Language-Python--2.7-ff69b4.svg?style=for-the-badge)
+
+
 "Robust" is a set of tools to leverage the HTTPS REST API of the [McAfee Advanced Threat Detection](http://www.mcafee.com/us/products/advanced-threat-defense.aspx) 3.8 - 4.x appliance.
 
+## Tools Overview
+
+* `robust` : basic cli submission of a single piece of malware to a MATD server.
+* `robust-profiles` : list the available MATD profiles
+* `robust-search` : search MATD via MD5 for a report.
+* `robust-watchdog` : monitor a directory for files and submit `multithreaded` to MATD
+* `robust-convict` : submit `multithreaded` a directory filled with samples and sort into malicious, clean, error, etc.
+* `robust-reporter` : parse offline the json files returned during large batch submissions.
+* `robust-version-checker` : Check the MATD Server Version
 
 ## Important
 
@@ -21,11 +37,11 @@ McAfee ATD is a commercial grade enterprise security sandbox analysis appliance.
 
 ## Install
 
-Req: Python 2.7.x
+Req: Python 2.7.x.
 
-~~pip install robust-atd~~
+Bug #5: https://github.com/shadowbq/robust-atd/issues/5 - ~~`pip install robust-atd`~~
 
-Note: robust-atd is not published on pypi at this time.
+Note: Python 3.x is not supported.
 
 ### PKG Download & Manual Install Alternative
 
@@ -35,9 +51,9 @@ For offline runtime installation, please download the pip packages listed in the
 
 ### Virutalenv
 
-It is recommended to install virtualenv & virtualenvwrapper via Virtualenv Burrito.
+It is recommended to install virtualenv & virtualenvwrapper via `Virtualenv Burrito`.
 
-See: README_PYTHON_UP.md
+See: [README_PYTHON_UP.md](/README_PYTHON_UP.md)
 
 ```
 $> mkvirtualenv robust
@@ -46,6 +62,14 @@ $(robust)> wget https://github.com/shadowbq/robust-atd/archive/master.zip
 $(robust)> unzip master.zip
 $(robust)> cd master
 $(robust)> python setup.py install
+```
+
+-or-
+
+```
+$> mkvirtualenv --python=python2.7 robust
+$> workon robust
+$(robust)> pip install robust-atd
 ```
 
 ### Robust (DOT) Configuration file
@@ -95,13 +119,6 @@ errordir: ~/robust/errors
 
 This file is expanded via the `os` module is compliant with windows user directories.
 
-## Tools Overview
-
-* robust
-* robust-profiles
-* robust-search
-* robust-watchdog
-* robust-convict
 
 ## Robust:
 
