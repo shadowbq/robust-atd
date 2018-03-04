@@ -34,12 +34,13 @@ def worker(sema, pool, unsafe_options, src_path):
         pool.make_active(name)
 
         if options.verbosity:
-            print ("TP Worker {0} file => {1}".format(name, src_path))
+            print ("TPW{0} file => {1} opening".format(name, src_path))
         file_created = Handler(options, src_path)
         file_created.sort_file()
 
         pool.make_inactive(name)
-
+        if options.verbosity:
+            print ("TPW{0} file => {1} completed.".format(name, src_path))
 
 class ActivePool(object):
 
@@ -334,7 +335,7 @@ class Handler:
             pass
 
         if self.options.verbosity:
-            print("Completed ScanFolder()")
+            print("Thread completed".format(threading.currentThread().getName()))
 
 
 class SampleSubmit(CommonATD):
