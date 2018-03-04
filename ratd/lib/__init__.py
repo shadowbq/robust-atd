@@ -277,6 +277,7 @@ class Handler:
         #        self.options.file_to_upload = sample_fullpath
         #        filename = os.path.basename(tmp_target)
         #except AttributeError:
+
         self.options.file_to_upload = self.src_path
         filename = os.path.basename(self.src_path)
         sample_fullpath = self.options.file_to_upload
@@ -288,9 +289,16 @@ class Handler:
                 id(self.options)
             ))
         sample = SampleSubmit(self.options)
-
         severity = sample.rtnv
         md5 = sample.rtv_md5
+
+        #Severity = 5 Known malicious
+        #..
+        #Severity = 1 Known Trusted
+        #Severity = 0 means unverified (no of engines provided any score within maximum execution time)
+        #Severity = -1 means GTI Clean
+        #Severity = -2 means failed (either sample execution got terminated or platform is not supported)
+        #Severity = -6 means incomplete (sample analysis is not completed)
 
         try:
             if self.options.dirtydir:
@@ -651,16 +659,16 @@ class Reporter():
     def pad_engine_values(self, selectors_tuple):
 
         for engine in self.engine_names:
-        	found = False
-        	for ran_engine in selectors_tuple:
-        		if engine == ran_engine["Engine"]:
-        			found = True
-        	if not found:
-        		empty_engine = {}
-        		empty_engine["Engine"] = engine
-        		empty_engine["Severity"] = '0'
-        		empty_engine["MalwareName"] = '---'
-        		selectors_tuple.append(empty_engine)
+            found = False
+            for ran_engine in selectors_tuple:
+                if engine == ran_engine["Engine"]:
+                    found = True
+            if not found:
+                empty_engine = {}
+                empty_engine["Engine"] = engine
+                empty_engine["Severity"] = '0'
+                empty_engine["MalwareName"] = '---'
+                selectors_tuple.append(empty_engine)
         return selectors_tuple
 
 
