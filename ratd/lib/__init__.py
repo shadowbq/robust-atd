@@ -229,6 +229,9 @@ class ScanFolder:
         try:
             self.observer.stop()
             self.observer.join()
+        except:
+            if self.options.verbosity:
+                print 'Watchdog not found or thread could not be joined.'
         os.rmdir(self.temp_dir)
 
     def get_filepaths(self, directory):
