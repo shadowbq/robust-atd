@@ -32,9 +32,12 @@ if __name__ == '__main__':
 
     job = ratd.lib.ScanFolder(options)
 
-    try:
-        while True:
-            time.sleep(1)
-    except KeyboardInterrupt:
-        job.stop()
+    if options.follow:
+        try:
+            while True:
+                time.sleep(1)
+        except KeyboardInterrupt:
+            job.stop()
+            sys.exit(0)
+    else:
         sys.exit(0)
