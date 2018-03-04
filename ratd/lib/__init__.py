@@ -260,23 +260,26 @@ class Handler:
     def sort_file(self):
 
         if self.options.verbosity:
-            print("T{1}H - New File identified".format(self.src_path,threading.currentThread().getName()))
+            print("T{1}H - New File identified {0}".format(self.src_path,threading.currentThread().getName()))
 
-        tmp_target = ''
-        try:
-            if self.options.dirtydir:
-                tmp_target = self.temp_dir+"/"+os.path.basename(self.src_path)
-                if self.options.verbosity:
-                    print("moved to tmp: ", tmp_target)
-                try:
-                    os.rename(self.src_path, tmp_target)
-                except OSError:
-                    shutil.move(self.src_path, tmp_target)
-                self.options.file_to_upload = tmp_target
-                filename = os.path.basename(tmp_target)
-        except AttributeError:
-            self.options.file_to_upload = self.src_path
-            filename = os.path.basename(self.src_path)
+        # Why are moving twice?
+        # tmp_target = ''
+        # try:
+        #    if self.options.dirtydir:
+        #        tmp_target = self.temp_dir+"/"+os.path.basename(self.src_path)
+        #        if self.options.verbosity:
+        #            print("moving to tmp: ", tmp_target)
+        #        try:
+        #            os.rename(self.src_path, tmp_target)
+        #        except OSError:
+        #            shutil.move(self.src_path, tmp_target)
+        #        sample_fullpath = tmp_target
+        #        self.options.file_to_upload = sample_fullpath
+        #        filename = os.path.basename(tmp_target)
+        #except AttributeError:
+        self.options.file_to_upload = self.src_path
+        filename = os.path.basename(self.src_path)
+        sample_fullpath = self.options.file_to_upload
 
         if self.options.verbosity:
             print ("T{1}H file => {0}, id(options) {2}".format(
@@ -292,29 +295,29 @@ class Handler:
         try:
             if self.options.dirtydir:
                 if severity >= int(self.options.severity):
-                    target = self.options.dirtydir+filename
+                    sorted_fullpath = self.options.dirtydir+filename
                     if self.options.verbosity:
-                        print('Move file {0}.. to dirty {1}'.format(filename, target))
+                        print('Move file {0}.. to dirty {1}'.format(filename, sorted_fullpath))
                     try:
-                        os.rename(tmp_target, target)
+                        os.rename(sample_fullpath, sorted_fullpath)
                     except OSError:
-                        shutil.move(tmp_target, target)
+                        shutil.move(sample_fullpath, sorted_fullpath)
                 elif severity > 0 or severity == -1:
-                    target = self.options.cleandir+filename
+                    sorted_fullpath = self.options.cleandir+filename
                     if self.options.verbosity:
-                        print('Move file {0}.. to clean {1}'.format(filename, target))
+                        print('Move file {0}.. to clean {1}'.format(filename, sorted_fullpath))
                     try:
-                        os.rename(tmp_target, target)
+                        os.rename(sample_fullpath, sorted_fullpath)
                     except OSError:
-                        shutil.move(tmp_target, target)
+                        shutil.move(sample_fullpath, sorted_fullpath)
                 else:
-                    target = self.options.errordir+filename
+                    sorted_fullpath = self.options.errordir+filename
                     if self.options.verbosity:
-                        print('Move file {0}.. to ERROR {1}'.format(filename, target))
+                        print('Move file {0}.. to ERROR {1}'.format(filename, sorted_fullpath))
                     try:
-                        os.rename(tmp_target, target)
+                        os.rename(sample_fullpath, sorted_fullpath)
                     except OSError:
-                        shutil.move(tmp_target, target)
+                        shutil.move(sample_fullpath, sorted_fullpath)
 
         except AttributeError:
             pass
