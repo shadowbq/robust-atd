@@ -226,8 +226,9 @@ class ScanFolder:
         t.start()
 
     def stop(self):
-        self.observer.stop()
-        self.observer.join()
+        try:
+            self.observer.stop()
+            self.observer.join()
         os.rmdir(self.temp_dir)
 
     def get_filepaths(self, directory):
