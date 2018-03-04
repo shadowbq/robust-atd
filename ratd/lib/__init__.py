@@ -34,7 +34,7 @@ def worker(sema, pool, unsafe_options, src_path):
         pool.make_active(name)
 
         if options.verbosity:
-            print ("T{0}W file => {1}".format(name, src_path))
+            print ("TP Worker {0} file => {1}".format(name, src_path))
         file_created = Handler(options, src_path)
         file_created.sort_file()
 
@@ -180,11 +180,13 @@ class ScanFolder:
         #   ignore_directories=True)
 
         if self.options.existing:
+            if self.options.verbosity:
+                print("Parsing Existing")
             full_file_paths = self.get_filepaths(self.path)
             self.i = 0
             for file_name in full_file_paths:
                 if self.options.verbosity:
-                    print("M0 file => {}".format(file_name))
+                    print("Existing file => {}".format(file_name))
                 self.i = self.i + 1
                 self.options.file_to_upload = file_name
                 t = threading.Thread(
@@ -200,6 +202,8 @@ class ScanFolder:
                 t.start()
 
         if self.options.follow:
+            if self.options.verbosity:
+                print("Starting Watchdog handlers")
             self.event_handler = watchdog.events.FileSystemEventHandler()
             # Thread handler
             self.event_handler.on_created = self.on_created
@@ -210,6 +214,8 @@ class ScanFolder:
     def on_created(self, event):
         options = self.options
         src_path = copy.copy(event.src_path)
+        if self.options.verbosity:
+            print("New File Created Hook: {}".format(src_path))
         self.i = self.i + 1
         t = threading.Thread(
             target=worker,
