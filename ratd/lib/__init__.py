@@ -255,7 +255,7 @@ class Handler:
     def sort_file(self):
 
         if self.options.verbosity:
-            print("New File identified", self.src_path)
+            print("T{1}H - New File identified".format(self.src_path,threading.currentThread().getName()))
 
         tmp_target = ''
         try:
@@ -286,7 +286,7 @@ class Handler:
 
         try:
             if self.options.dirtydir:
-                if severity >= self.options.severity:
+                if severity >= int(self.options.severity):
                     target = self.options.dirtydir+filename
                     if self.options.verbosity:
                         print('Move file {0}.. to dirty {1}'.format(filename, target))
@@ -294,7 +294,7 @@ class Handler:
                         os.rename(tmp_target, target)
                     except OSError:
                         shutil.move(tmp_target, target)
-                elif severity > 0:
+                elif severity > 0 or severity == -1:
                     target = self.options.cleandir+filename
                     if self.options.verbosity:
                         print('Move file {0}.. to clean {1}'.format(filename, target))
