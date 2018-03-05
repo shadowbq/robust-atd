@@ -4,6 +4,11 @@ Virtualenv and virtualenvwrapper will let you define isolated Python runtime env
 
 Virtualenv Burrito enables with one command, have a working Python virtualenv + virtualenvwrapper environment.
 
+You should have Python 2.7.10 (As of Mar 2018) compiled and ready to use as an alternative binary.
+
+## Installing Python 2.7.x Latest as a system alternative
+Centos: https://blacksaildivision.com/how-to-install-openssl-on-centos
+Debian/Ubuntu: https://gist.github.com/subsetpark/367f0d3fde503a1e481c
 
 ## Get started
 
