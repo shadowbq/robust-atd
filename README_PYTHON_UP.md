@@ -7,6 +7,9 @@ Virtualenv Burrito enables with one command, have a working Python virtualenv + 
 You should have Python 2.7.10 (As of Mar 2018) compiled and ready to use as an alternative binary.
 
 ## Installing Python 2.7.x Latest as a system alternative
+
+Installing the latest python binary as a system alternative is important because you do not want to break the operating system dependency chain. Installing as an alt-binary will allow for the latest to be mixed into `virutalenv` while living side-by-side with the system version.
+
 * Centos: https://gist.github.com/shadowbq/57e194fb2331a3cdb0dae6231c1611e2 
 * Debian/Ubuntu: https://gist.github.com/subsetpark/367f0d3fde503a1e481c
 
