@@ -72,7 +72,7 @@ setup(
     install_requires=install_requires(),
     extras_require=extras_require,
     long_description=readme,
-    python_requires='>=2.6, !=3.*'
+    python_requires='>=2.6, !=3.*',
     keywords="atd mcafee ioc",
     classifiers=[
         'Development Status :: 4 - Beta',
