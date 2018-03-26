@@ -47,7 +47,10 @@ def release(ctx,version):
     ctx.run("git tag -a robust-atd-{0} -m \"robust-atd {0} release\"".format(version))
     ctx.run("git push --tags")
 
+    # https://packaging.python.org/tutorials/distributing-packages/#source-distributions
     ctx.run("python setup.py sdist")
+
+    # https://packaging.python.org/tutorials/distributing-packages/#pure-python-wheels
     ctx.run("python setup.py sdist bdist_wheel")
 
 # Publish to pypi

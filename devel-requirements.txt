@@ -14,7 +14,7 @@ flake8
 pep8-naming
 
 # +-+- MultiPlatform Testing +-+-
-# tox
+tox
 
 # Toolsets
 invoke
