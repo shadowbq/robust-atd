@@ -4,6 +4,14 @@ Virtualenv and virtualenvwrapper will let you define isolated Python runtime env
 
 Virtualenv Burrito enables with one command, have a working Python virtualenv + virtualenvwrapper environment.
 
+You should have Python 2.7.10 (As of Mar 2018) compiled and ready to use as an alternative binary.
+
+## Installing Python 2.7.x Latest as a system alternative
+
+Installing the latest python binary as a system alternative is important because you do not want to break the operating system dependency chain. Installing as an alt-binary will allow for the latest to be mixed into `virutalenv` while living side-by-side with the system version.
+
+* Centos: https://gist.github.com/shadowbq/57e194fb2331a3cdb0dae6231c1611e2 
+* Debian/Ubuntu: https://gist.github.com/subsetpark/367f0d3fde503a1e481c
 
 ## Get started
 
@@ -62,3 +70,4 @@ Removing robust...
 * For more on Python Virtualenv Burrito [https://github.com/brainsik/virtualenv-burrito]
 * For more on Puthon Virutalenv & Virtualenvwrapper [http://chrisstrelioff.ws/sandbox/2014/09/04/virtualenv_and_virtualenvwrapper_on_ubuntu_14_04.html]
 * Dangers of Piping to the shell [https://www.seancassidy.me/dont-pipe-to-your-shell.html]
+* Centos more indepth: https://danieleriksson.net/2017/02/08/how-to-install-latest-python-on-centos/
