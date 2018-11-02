@@ -9,5 +9,5 @@ PyYAML
 argparse
 pathtools
 urllib3
-requests==2.7.0
+requests>=2.20.0
 watchdog==0.8.3
