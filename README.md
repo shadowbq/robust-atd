@@ -6,6 +6,7 @@ Robust ATD CLI tools
 [![license](https://img.shields.io/github/license/shadowbq/robust-atd.svg?style=for-the-badge)](/LICENSE)
 [![GitHub Release Date](https://img.shields.io/github/release-date/shadowbq/robust-atd.svg?style=for-the-badge)](https://github.com/shadowbq/robust-atd/releases)
 [![Code](https://img.shields.io/badge/Language-Python--2.7-ff69b4.svg?style=for-the-badge)](/README.md)
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fshadowbq%2Frobust-atd.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Fshadowbq%2Frobust-atd?ref=badge_shield)
 
 
 "Robust" is a set of tools to leverage the HTTPS REST API of the [McAfee Advanced Threat Detection](http://www.mcafee.com/us/products/advanced-threat-defense.aspx) 3.8 - 4.x appliance.
@@ -541,6 +542,9 @@ Clearing rm -rf ./*.pyc
 A modified Fork of `atdcli.py` (Carlos Munoz - 2014).
 
 https://pypi.python.org/pypi/atd
+
+
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fshadowbq%2Frobust-atd.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2Fshadowbq%2Frobust-atd?ref=badge_large)
 
 ## VX Workshop Appliance Option
 
